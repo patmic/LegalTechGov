@@ -241,4 +241,24 @@ python env/tools/scraper_cj.py --verificar <run_id>      # re-hash de una corrid
 ```
 
 Este proyecto está subido a:
-https://github.com/patmic/frameworkLegalTech
+https://github.com/patmic/LegalTechGov.git
+
+## CMD 
+
+Inicializar el proyecto:
+
+docker compose down
+docker compose up --build
+
+### Eso te lista todas las rutas que comparten el mismo contenido físico. Si aparece más de una ruta, ahí está la causa raíz.
+
+fsutil hardlink list "C:\pat_mic\pat_GDrive\LegalTechGov\frontend\pages\maltg.html"
+
+
+## USO:
+
+Inicio / dashboard: http://localhost:8080/
+Páginas individuales: http://localhost:8080/pages/methodology.html (y análogas para las otras 12)
+API docs (Swagger): http://localhost:8080/docs
+Health check: http://localhost:8080/api/health
+

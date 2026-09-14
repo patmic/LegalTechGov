@@ -36,6 +36,25 @@ const delay  = ms => new Promise(r => setTimeout(r, ms));
 // para no tener que renombrar los ~90 sitios que ya lo llaman así).
 function wfEsc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
 
+// Word-wrap de una etiqueta en <=maxLines líneas de ~maxChars — nació en
+// tab-workflow.js (de ahí el prefijo "wf") pero lo usan también otras
+// pestañas (p.ej. el detalle de Foundation Layer en tab-maltg.js), así
+// que vive aquí para que esté disponible en cualquier página sin tener
+// que cargar tab-workflow.js entero.
+function wfWrap(text, maxChars, maxLines){
+  const words = String(text||'').split(/\s+/).filter(Boolean);
+  const lines=[]; let cur='';
+  for(const w of words){
+    if((cur+' '+w).trim().length<=maxChars){ cur=(cur+' '+w).trim(); }
+    else { if(cur) lines.push(cur); cur=w; }
+    if(lines.length>=maxLines) break;
+  }
+  if(cur && lines.length<maxLines) lines.push(cur);
+  if(lines.length===maxLines && (words.join(' ').length> lines.join(' ').length))
+    lines[maxLines-1]= lines[maxLines-1].replace(/.{0,1}$/,'…');
+  return lines.length?lines:[''];
+}
+
 // Colores por capa de gobernanza (ontología MALTG) — usados por Ontología y Simulación 3D.
 const LAYER_COLOR = {
   core: '#00e5ff', togaf: '#00e5ff', cobit: '#ffc947',

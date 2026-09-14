@@ -109,7 +109,7 @@
       "type": "togaf",
       "cluster": "Foundation",
       "r": 9,
-      "score": "51"
+      "score": "69"
     },
     {
       "id": "Migration_Planning",
@@ -117,7 +117,7 @@
       "type": "togaf",
       "cluster": "Foundation",
       "r": 9,
-      "score": "55"
+      "score": "67"
     },
     {
       "id": "Implementation_Governance",
@@ -125,7 +125,7 @@
       "type": "togaf",
       "cluster": "Foundation",
       "r": 9,
-      "score": "55"
+      "score": "28"
     },
     {
       "id": "Architecture_Change_Management",
@@ -861,7 +861,7 @@
       "type": "strategic",
       "cluster": "Strategic",
       "r": 9,
-      "score": "31"
+      "score": "1"
     },
     {
       "id": "Portfolio",
@@ -869,7 +869,7 @@
       "type": "strategic",
       "cluster": "Strategic",
       "r": 9,
-      "score": "23"
+      "score": "2"
     },
     {
       "id": "Risk",
@@ -877,7 +877,7 @@
       "type": "strategic",
       "cluster": "Strategic",
       "r": 9,
-      "score": "40"
+      "score": "1"
     },
     {
       "id": "Metrics",
@@ -885,7 +885,7 @@
       "type": "strategic",
       "cluster": "Strategic",
       "r": 9,
-      "score": "47"
+      "score": "1"
     },
     {
       "id": "Roadmap",
@@ -893,7 +893,7 @@
       "type": "strategic",
       "cluster": "Strategic",
       "r": 9,
-      "score": "54"
+      "score": "13"
     },
     {
       "id": "Investment_Governance",
@@ -901,7 +901,7 @@
       "type": "strategic",
       "cluster": "Strategic",
       "r": 9,
-      "score": "49"
+      "score": "13"
     },
     {
       "id": "Value_Realization",
@@ -909,7 +909,7 @@
       "type": "strategic",
       "cluster": "Strategic",
       "r": 9,
-      "score": "45"
+      "score": "14"
     },
     {
       "id": "Stakeholder_Mgmt",
@@ -917,7 +917,7 @@
       "type": "strategic",
       "cluster": "Strategic",
       "r": 9,
-      "score": "45"
+      "score": "14"
     },
     {
       "id": "Strategic_KPIs",
@@ -965,7 +965,7 @@
       "type": "legaltech",
       "cluster": "Governance",
       "r": 9,
-      "score": "57"
+      "score": "35"
     },
     {
       "id": "Audit",
@@ -973,7 +973,7 @@
       "type": "legaltech",
       "cluster": "Governance",
       "r": 9,
-      "score": "59"
+      "score": "36"
     },
     {
       "id": "Contract_Lifecycle_Management",
@@ -981,7 +981,7 @@
       "type": "legaltech",
       "cluster": "Governance",
       "r": 9,
-      "score": "82"
+      "score": "32"
     },
     {
       "id": "eDiscovery_Pipeline",
@@ -989,7 +989,7 @@
       "type": "legaltech",
       "cluster": "Governance",
       "r": 9,
-      "score": "35"
+      "score": "23"
     },
     {
       "id": "Legal_DLT_Notarization",
@@ -997,7 +997,7 @@
       "type": "legaltech",
       "cluster": "Governance",
       "r": 9,
-      "score": "34"
+      "score": "22"
     },
     {
       "id": "Regulatory_Compliance_Engine",
@@ -1005,7 +1005,7 @@
       "type": "legaltech",
       "cluster": "Governance",
       "r": 9,
-      "score": "45"
+      "score": "26"
     },
     {
       "id": "eIDAS_Compliance",

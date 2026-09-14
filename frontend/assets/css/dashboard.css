@@ -1099,9 +1099,11 @@ footer {
 .lcard:active           { transform: scale(0.98) !important; }
 .sc-card:active         { transform: scale(0.97) !important; }
 
-/* Cursor enhancements */
+/* Cursor enhancements — sólo lo realmente clicable (botones, selects) usa
+   mano; los contenedores (.kpi, .lcard, .sc-card, .panel) no se clican
+   ellos mismos, así que quedan en cursor por defecto dentro de <main>. */
 .kpi, .lcard, .sc-card, .panel, .vis-ctrl-btn { cursor: pointer; }
-main .kpi, main .lcard, main .sc-card { cursor: default; }
+main .kpi, main .lcard, main .sc-card, main .panel { cursor: default; }
 
 /* ── 20. REDUCED MOTION (SKILL.md §1 accessibility) ──────────── */
 @media (prefers-reduced-motion: reduce) {
@@ -1262,16 +1264,18 @@ select option:hover {
 
 /* ══════════════════════════════════════════════════════════════
    CARD KPI — estilo "UI UX Pro Max · Design Intelligence"
-   (referencia: tarjetas oscuras con icono, número en degradado y
-   etiqueta; sobre fondo blanco resaltan como feature-cards)
+   (icono, número en el acento propio de cada KPI y etiqueta; usa el
+   mismo fondo/borde/sombra "glass" que el resto de paneles de la app
+   — var(--panel-bg)/--glass-bdr/--glass-shadow — en vez de un color
+   fijo, para que se homogenice con claro y oscuro y no se vea negro.)
 ══════════════════════════════════════════════════════════════ */
 .kpi-row { gap: 1rem !important; }
 
 .kpi {
-  background: linear-gradient(158deg, #1e2536 0%, #12161f 100%) !important;
-  border: 1px solid rgba(255,255,255,0.07) !important;
+  background: var(--panel-bg) !important;
+  border: 1px solid var(--glass-bdr) !important;
   border-radius: 16px !important;
-  box-shadow: 0 8px 24px rgba(8,14,30,0.22) !important;
+  box-shadow: var(--glass-shadow) !important;
   padding: 1.3rem 1rem 1.15rem !important;
   display: flex !important;
   flex-direction: column !important;
@@ -1280,45 +1284,49 @@ select option:hover {
   gap: .5rem !important;
   text-align: center !important;
   min-height: 132px;
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
+  backdrop-filter: var(--blur-sm) !important;
+  -webkit-backdrop-filter: var(--blur-sm) !important;
   transition: transform .22s ease, border-color .22s ease, box-shadow .22s ease !important;
 }
 /* quita la línea superior holográfica del tema anterior */
 .kpi::before { display: none !important; }
-/* halo ambiental suave en una esquina, como en la imagen */
+/* halo ambiental suave en una esquina, como en la imagen — en el acento
+   propio de cada KPI (--ac, definido inline por tarjeta), cae en --cyan
+   si esa tarjeta no trae uno. */
 .kpi::after {
   content: '';
   position: absolute; right: -35px; bottom: -35px; top: auto; left: auto;
   width: 130px; height: 130px; border-radius: 50%;
-  background: radial-gradient(circle, #5b9dff 0%, transparent 70%);
+  background: radial-gradient(circle, var(--ac, var(--cyan)) 0%, transparent 70%);
   opacity: .10 !important; filter: blur(10px); pointer-events: none;
 }
 .kpi:hover {
   transform: translateY(-3px) !important;
-  border-color: rgba(120,160,255,0.30) !important;
-  box-shadow: 0 12px 30px rgba(8,14,30,0.38) !important;
+  border-color: color-mix(in srgb, var(--ac, var(--cyan)) 45%, transparent) !important;
+  box-shadow: var(--shadow) !important;
 }
 .kpi:hover::after { opacity: .16 !important; }
 
-/* icono superior (SVG con stroke = currentColor) */
+/* icono superior (SVG con stroke = currentColor) — mismo acento por KPI */
 .kpi-icon {
   order: 1;
   display: inline-flex; align-items: center; justify-content: center;
   width: 40px; height: 40px; margin-bottom: .15rem;
   border-radius: 11px;
-  color: #5b9dff;
-  background: rgba(91,157,255,0.10);
-  border: 1px solid rgba(91,157,255,0.18);
+  color: var(--ac, var(--cyan));
+  background: color-mix(in srgb, var(--ac, var(--cyan)) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--ac, var(--cyan)) 22%, transparent);
 }
 .kpi-icon svg { width: 22px; height: 22px; stroke: currentColor; fill: none;
   stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
-/* Número grande de cada KPI — texto plano en el color de acento del tema,
-   sin caja de fondo. (Antes era un degradado recortado al texto vía
-   background-clip:text; una regla más específica en nocturne.css
-   reescribía `background` con el atajo, lo que sin querer reseteaba
-   background-clip a su valor por defecto y pintaba el degradado como una
-   caja sólida detrás del número en vez de sólo dentro de sus trazos.) */
+/* Número grande de cada KPI — texto plano en el acento propio de la
+   tarjeta (--ac: cyan/gold/violet/green/rose/orange, ya asignado inline
+   por KPI), sin caja de fondo. Cae en --cyan si la tarjeta no trae --ac.
+   (Antes era un degradado recortado al texto vía background-clip:text;
+   una regla más específica en nocturne.css reescribía `background` con
+   el atajo, lo que sin querer reseteaba background-clip a su valor por
+   defecto y pintaba el degradado como una caja sólida detrás del número
+   en vez de sólo dentro de sus trazos.) */
 .kpi .kpi-value {
   order: 2;
   font-family: var(--font-display) !important;
@@ -1327,7 +1335,7 @@ select option:hover {
   letter-spacing: -0.02em !important;
   line-height: 1 !important;
   background: transparent !important;
-  color: var(--cyan) !important;
+  color: var(--ac, var(--cyan)) !important;
   filter: none !important;
 }/* etiqueta debajo,
 gris,
@@ -1338,7 +1346,7 @@ tipo título (sin mayúsculas forzadas) */
   font-weight: 500 !important;
   letter-spacing: .01em !important;
   text-transform: none !important;
-  color: #93a0b8 !important;
+  color: var(--t2) !important;
 }
 /* subtítulo opcional (delta): pequeño y muy discreto */
-.kpi .kpi-delta { order: 4; font-size: .54rem !important; color: #66748f !important; opacity: .85; }
+.kpi .kpi-delta { order: 4; font-size: .54rem !important; color: var(--t3) !important; opacity: .85; }

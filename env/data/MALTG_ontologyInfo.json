@@ -104,7 +104,7 @@
       "label": "Opportunities & Solutions",
       "type": "togaf",
       "cluster": "Foundation",
-      "score": "51",
+      "score": "69",
       "regulation": "TOGAF 10",
       "description": "Fase E — oportunidades y soluciones. Como marco base de gobernanza, aporta las reglas y controles que el gemelo digital cognitivo aplica para auditar contratos, términos y actuaciones, dando soporte normativo y trazabilidad a las decisiones."
     },
@@ -112,7 +112,7 @@
       "label": "Migration Planning",
       "type": "togaf",
       "cluster": "Foundation",
-      "score": "55",
+      "score": "67",
       "regulation": "TOGAF 10",
       "description": "Fase F — planificación de la migración. Como marco base de gobernanza, aporta las reglas y controles que el gemelo digital cognitivo aplica para auditar contratos, términos y actuaciones, dando soporte normativo y trazabilidad a las decisiones."
     },
@@ -120,7 +120,7 @@
       "label": "Implementation Governance",
       "type": "togaf",
       "cluster": "Foundation",
-      "score": "55",
+      "score": "28",
       "regulation": "TOGAF 10",
       "description": "Fase G — gobernanza de la implementación. Como marco base de gobernanza, aporta las reglas y controles que el gemelo digital cognitivo aplica para auditar contratos, términos y actuaciones, dando soporte normativo y trazabilidad a las decisiones."
     },
@@ -856,7 +856,7 @@
       "label": "Planning",
       "type": "strategic",
       "cluster": "Strategic",
-      "score": "31",
+      "score": "1",
       "regulation": "",
       "description": "Planeación estratégica. Alinea la gobernanza LegalTech con los objetivos institucionales y provee métricas de soporte y desempeño sobre contratos y procesos."
     },
@@ -864,7 +864,7 @@
       "label": "Portfolio",
       "type": "strategic",
       "cluster": "Strategic",
-      "score": "23",
+      "score": "2",
       "regulation": "",
       "description": "Gestión de portafolio. Alinea la gobernanza LegalTech con los objetivos institucionales y provee métricas de soporte y desempeño sobre contratos y procesos."
     },
@@ -872,7 +872,7 @@
       "label": "Risk Management",
       "type": "strategic",
       "cluster": "Strategic",
-      "score": "40",
+      "score": "1",
       "regulation": "",
       "description": "Gestión de riesgos: identifica y controla los riesgos jurídicos, operativos y de cumplimiento sobre contratos y procesos, alimentando el dictamen del gemelo cognitivo."
     },
@@ -880,7 +880,7 @@
       "label": "Metrics & KPIs",
       "type": "strategic",
       "cluster": "Strategic",
-      "score": "47",
+      "score": "1",
       "regulation": "",
       "description": "Métricas e indicadores clave. Alinea la gobernanza LegalTech con los objetivos institucionales y provee métricas de soporte y desempeño sobre contratos y procesos."
     },
@@ -888,7 +888,7 @@
       "label": "Roadmap",
       "type": "strategic",
       "cluster": "Strategic",
-      "score": "54",
+      "score": "13",
       "regulation": "",
       "description": "Hoja de ruta tecnológica. Alinea la gobernanza LegalTech con los objetivos institucionales y provee métricas de soporte y desempeño sobre contratos y procesos."
     },
@@ -896,7 +896,7 @@
       "label": "Investment Governance",
       "type": "strategic",
       "cluster": "Strategic",
-      "score": "49",
+      "score": "13",
       "regulation": "",
       "description": "Gobernanza de inversiones. Alinea la gobernanza LegalTech con los objetivos institucionales y provee métricas de soporte y desempeño sobre contratos y procesos."
     },
@@ -904,7 +904,7 @@
       "label": "Value Realization",
       "type": "strategic",
       "cluster": "Strategic",
-      "score": "45",
+      "score": "14",
       "regulation": "",
       "description": "Realización de valor. Alinea la gobernanza LegalTech con los objetivos institucionales y provee métricas de soporte y desempeño sobre contratos y procesos."
     },
@@ -912,7 +912,7 @@
       "label": "Stakeholder Management",
       "type": "strategic",
       "cluster": "Strategic",
-      "score": "45",
+      "score": "14",
       "regulation": "",
       "description": "Gestión de partes interesadas. Alinea la gobernanza LegalTech con los objetivos institucionales y provee métricas de soporte y desempeño sobre contratos y procesos."
     },
@@ -960,7 +960,7 @@
       "label": "Regulation",
       "type": "legaltech",
       "cluster": "Governance",
-      "score": "57",
+      "score": "35",
       "regulation": "GDPR / eIDAS / NIS2",
       "description": "Cumplimiento regulatorio. Garantiza el cumplimiento legal y ético del uso de contratos y datos, con auditoría y trazabilidad de extremo a extremo."
     },
@@ -968,7 +968,7 @@
       "label": "Audit",
       "type": "legaltech",
       "cluster": "Governance",
-      "score": "59",
+      "score": "36",
       "regulation": "GDPR / eIDAS / NIS2",
       "description": "Auditoría y trazabilidad. Garantiza el cumplimiento legal y ético del uso de contratos y datos, con auditoría y trazabilidad de extremo a extremo."
     },
@@ -976,7 +976,7 @@
       "label": "Contract Lifecycle Management",
       "type": "legaltech",
       "cluster": "Governance",
-      "score": "82",
+      "score": "32",
       "regulation": "GDPR / eIDAS / NIS2",
       "description": "Gestión del ciclo de vida del contrato (creación, negociación, firma, ejecución, renovación). Es el eje del uso de contratos: cada etapa queda trazada y auditada como objeto del gemelo digital."
     },
@@ -984,7 +984,7 @@
       "label": "eDiscovery Pipeline",
       "type": "legaltech",
       "cluster": "Governance",
-      "score": "35",
+      "score": "23",
       "regulation": "GDPR / eIDAS / NIS2",
       "description": "Descubrimiento electrónico de evidencia: localiza, preserva y traza documentos relevantes, dando soporte probatorio dentro del gemelo digital."
     },
@@ -992,7 +992,7 @@
       "label": "Legal DLT Notarization",
       "type": "legaltech",
       "cluster": "Governance",
-      "score": "34",
+      "score": "22",
       "regulation": "GDPR / eIDAS / NIS2",
       "description": "Notarización jurídica sobre DLT: ancla en blockchain el sello temporal e íntegro de documentos y contratos, dando trazabilidad y valor probatorio."
     },
@@ -1000,7 +1000,7 @@
       "label": "Regulatory Compliance Engine",
       "type": "legaltech",
       "cluster": "Governance",
-      "score": "45",
+      "score": "26",
       "regulation": "GDPR / eIDAS / NIS2",
       "description": "Motor de cumplimiento regulatorio: evalúa automáticamente contratos y procesos contra GDPR, eIDAS y NIS2, dando soporte de cumplimiento trazable."
     },

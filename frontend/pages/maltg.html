@@ -47,25 +47,16 @@ window.addEventListener('DOMContentLoaded',()=>{ if(!window.vis){ const s=docume
 <main>
 <div class="section active" id="sec-maltg">
   <div class="stitle">MALTG — Arquitectura Multidimensional <span id="maltg-name" style="color:var(--cyan)"></span></div>
-  <!-- KPI ROW (trasladado del ex-tab Overview) -->
-  <div class="kpi-row">
-    <div class="kpi" style="--ac:var(--cyan)"><div class="kpi-label">Madurez MALTG</div><div class="kpi-value" id="k-maltg">—</div><div class="kpi-delta up" id="k-maltg-d">Cargando…</div></div>
-    <div class="kpi" style="--ac:var(--gold)"><div class="kpi-label">Nodos Ontología</div><div class="kpi-value" id="k-nodes">—</div><div class="kpi-delta up" id="k-nodes-d">—</div></div>
-    <div class="kpi" style="--ac:var(--violet)"><div class="kpi-label">Score MALTG_onto</div><div class="kpi-value" id="k-onto">—</div><div class="kpi-delta up">↑ Ontología OWL</div></div>
-    <div class="kpi" style="--ac:var(--green)"><div class="kpi-label">Score DT_arch</div><div class="kpi-value" id="k-dt">—</div><div class="kpi-delta neutral">→ Gemelo Digital</div></div>
-    <div class="kpi" style="--ac:var(--rose)"><div class="kpi-label">GAP Global</div><div class="kpi-value" id="k-gap">—</div><div class="kpi-delta down" id="k-gap-d">—</div></div>
-    <div class="kpi" style="--ac:var(--orange)"><div class="kpi-label">Servicios DT</div><div class="kpi-value" id="k-svcs">—</div><div class="kpi-delta up" id="k-svcs-d">—</div></div>
-  </div>
 
   <div class="panel">
     <div class="ph">
-      <div class="ptitle" id="maltg-ptitle">Multidimensional Architecture for LegalTech Governance</div>
+      <div class="ptitle" id="maltg-ptitle">Multidimensional Architecture Model for LegalTech Governance</div>
       <div style="display:flex;align-items:center;gap:.5rem;margin-left:auto">
         <button class="vis-ctrl-btn" id="maltg-back" style="display:none" onclick="maltgShow('main')">← Volver</button>
-        <span class="pbadge" id="maltg-badge">JSON-LD</span>
       </div>
     </div>
     <div class="src-bar">
+      <span class="pbadge" id="maltg-badge">JSON-LD</span>
       <span>Fuente:</span><span class="src-file" style="color:var(--gold)">/data/MALTG_architecture.json</span>
       <span class="vsep">·</span><span>Hash:</span><span class="src-ts" id="maltg-hash">—</span>
       <span class="vsep">·</span><span id="maltg-hint" style="color:var(--cyan);font-size:.58rem">Lupa en “Foundation Layer” = detalle · icono ▦ de cada capa = árbol de configuración</span>
@@ -112,6 +103,17 @@ window.addEventListener('DOMContentLoaded',()=>{ if(!window.vis){ const s=docume
         </div>
       </div>
     </div>
+  </div>
+
+  <!-- KPI ROW (trasladado del ex-tab Overview) — al final de la página,
+       debajo del diagrama de arquitectura y del árbol de configuración. -->
+  <div class="kpi-row">
+    <div class="kpi" style="--ac:var(--cyan)"><div class="kpi-label">Madurez MALTG</div><div class="kpi-value" id="k-maltg">—</div><div class="kpi-delta up" id="k-maltg-d">Cargando…</div></div>
+    <div class="kpi" style="--ac:var(--gold)"><div class="kpi-label">Nodos Ontología</div><div class="kpi-value" id="k-nodes">—</div><div class="kpi-delta up" id="k-nodes-d">—</div></div>
+    <div class="kpi" style="--ac:var(--violet)"><div class="kpi-label">Score MALTG_onto</div><div class="kpi-value" id="k-onto">—</div><div class="kpi-delta up">↑ Ontología OWL</div></div>
+    <div class="kpi" style="--ac:var(--green)"><div class="kpi-label">Score DT_arch</div><div class="kpi-value" id="k-dt">—</div><div class="kpi-delta neutral">→ Gemelo Digital</div></div>
+    <div class="kpi" style="--ac:var(--rose)"><div class="kpi-label">GAP Global</div><div class="kpi-value" id="k-gap">—</div><div class="kpi-delta down" id="k-gap-d">—</div></div>
+    <div class="kpi" style="--ac:var(--orange)"><div class="kpi-label">Servicios DT</div><div class="kpi-value" id="k-svcs">—</div><div class="kpi-delta up" id="k-svcs-d">—</div></div>
   </div>
 </div>
 </main>

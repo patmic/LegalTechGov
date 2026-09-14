@@ -248,14 +248,9 @@ function maltgShowConfig(normId, aspectId){
   }
 }
 
-// ── Main figure — leyendas a la IZQUIERDA + icono de árbol por capa ──
-const MT_ICON = (st)=>`
-  <rect x="-4" y="-4" width="38" height="38" fill="transparent"/>
-  <rect x="10.5" y="1.5" width="9" height="7" rx="1.8" fill="none" stroke="${st}" stroke-width="2.1"/>
-  <rect x="1.5" y="18" width="9" height="7" rx="1.8" fill="none" stroke="${st}" stroke-width="2.1"/>
-  <rect x="19.5" y="18" width="9" height="7" rx="1.8" fill="none" stroke="${st}" stroke-width="2.1"/>
-  <path d="M15 8.5 v4.5 M6 18 v-3 h18 v3" fill="none" stroke="${st}" stroke-width="1.9"/>`;
-
+// ── Main figure — leyendas a la IZQUIERDA; toda la caja de cada capa es
+// clicable (abre el árbol de configuración) — antes era solo un icono
+// aparte en la esquina, ya retirado.
 function maltgRenderMain(data){
   setTxt('maltg-ptitle', data.title || 'Multidimensional Architecture');
   const layers=data.layers||[];
@@ -270,11 +265,7 @@ function maltgRenderMain(data){
       <text x="${cx}" y="${top+50}" text-anchor="middle" font-family="'Space Grotesk',sans-serif" font-size="13" font-weight="700" fill="${MALTG_TX}">${wfEsc(comps)}</text>
       <text x="${cx}" y="${top+82}" text-anchor="middle" font-family="'Outfit',sans-serif" font-size="12.5" font-style="italic" fill="${MALTG_SUB}">${wfEsc(l.description||'')}</text>
       <text x="${BX-40}" y="${top+31}" text-anchor="end" font-family="'Space Grotesk',sans-serif" font-size="12.5" font-weight="700" letter-spacing="1" fill="${MALTG_RTX}">${wfEsc((l.role||'').toUpperCase())}</text>
-      <circle cx="${BX-24}" cy="${top+26}" r="8" fill="${l.roleColor||'#888'}"/>
-      <g class="maltg-tree-ico" data-layer="${wfEsc(l.name||'')}" transform="translate(${BX+BW-42},${top+6})" style="cursor:pointer">
-        ${MT_ICON(l.stroke||'#556')}
-        <title>Configurar componentes de ${wfEsc(l.name||'')}</title>
-      </g>`;
+      <circle cx="${BX-24}" cy="${top+26}" r="8" fill="${l.roleColor||'#888'}"/>`;
     if(drill){
       inner += `<g id="maltg-foundation" transform="translate(${BX+12},${top+15})" style="cursor:pointer" opacity="0.9">
         <rect x="-3" y="-3" width="31" height="31" rx="7" fill="rgba(255,255,255,.55)" stroke="${l.stroke||'#888'}" stroke-width="1"/>
@@ -283,7 +274,10 @@ function maltgRenderMain(data){
         <title>Ver detalle de ${wfEsc(l.name||'')}</title>
       </g>`;
     }
-    boxes += `<g>${inner}</g>`;
+    // Toda la caja de la capa es clicable (antes solo el icono ▦ de la
+    // esquina). El clic en el icono de lupa de Foundation Layer (arriba)
+    // sigue funcionando solo: hace stopPropagation antes de llegar aquí.
+    boxes += `<g class="maltg-layer" data-layer="${wfEsc(l.name||'')}" style="cursor:pointer">${inner}<title>Configurar componentes de ${wfEsc(l.name||'')}</title></g>`;
   });
 
   // cross-cutting concerns — columna IZQUIERDA (bajo el rol de la capa 2)
@@ -311,10 +305,12 @@ function maltgRenderMain(data){
     leg += `<circle cx="32" cy="${y-4}" r="7" fill="${m.color}"/><text x="48" y="${y}" font-family="'Outfit',sans-serif" font-size="12.5" fill="#374151">${wfEsc(m.level)}</text>`;
   });
 
-  maltgPaint(640, 740, boxes+cross+council+leg, 0.92);
+  // Escala reducida ~15% (0.92 → 0.78) para que el diagrama completo
+  // quepa sin necesitar scroll dentro de #maltg-canvas-wrap.
+  maltgPaint(640, 740, boxes+cross+council+leg, 0.78);
   const fg=document.querySelector('#maltg-foundation');
   if(fg) fg.addEventListener('click',(e)=>{ e.stopPropagation(); maltgShow('foundation'); });
-  document.querySelectorAll('#maltg-svg .maltg-tree-ico').forEach(g=>
+  document.querySelectorAll('#maltg-svg .maltg-layer').forEach(g=>
     g.addEventListener('click', ()=>maltgOpenTree(g.getAttribute('data-layer'))));
 }
 

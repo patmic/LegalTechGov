@@ -171,10 +171,24 @@
   -webkit-background-clip: text;
   background-clip: text;
 }
+/* Título de sección/módulo (.stitle, vive en el header en las 13 páginas
+   del dashboard): negro/gris muy oscuro sólido en tema claro, no el
+   degradado azul-violeta con background-clip:text de dashboard.css
+   (ese !important en color obliga a repetirlo aquí con !important). */
 [data-theme="light"] .stitle {
-  background: linear-gradient(90deg, var(--q-cyan) 0%, var(--q-violet) 60%, rgba(58,77,112,0.4) 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
+  background: none !important;
+  -webkit-background-clip: initial !important;
+  background-clip: initial !important;
+  color: var(--t1) !important;
+}
+/* El "nombre en vivo" que cada tab-*.js escribe dentro del título trae su
+   propio color inline (style="color:var(--cyan)"), así que no hereda el
+   negro de arriba — hay que apuntarle directo. Son los únicos dos spans
+   de este tipo que son parte del título en sí (no un badge/chip como
+   #cogep-validez-chip o #ts-live-badge, que sí conservan su acento). */
+[data-theme="light"] .stitle #maltg-name,
+[data-theme="light"] .stitle #wf-proc-name {
+  color: var(--t1) !important;
 }
 
 [data-theme="light"] .sc-card-val { filter: none; }

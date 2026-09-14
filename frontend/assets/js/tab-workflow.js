@@ -11,20 +11,9 @@ let wfState = { scale:1, tx:0, ty:0, data:null, drag:null, salud:null, ledger:nu
 
 
 
-// word-wrap a label into <=maxLines lines of ~maxChars
-function wfWrap(text, maxChars, maxLines){
-  const words = String(text||'').split(/\s+/).filter(Boolean);
-  const lines=[]; let cur='';
-  for(const w of words){
-    if((cur+' '+w).trim().length<=maxChars){ cur=(cur+' '+w).trim(); }
-    else { if(cur) lines.push(cur); cur=w; }
-    if(lines.length>=maxLines) break;
-  }
-  if(cur && lines.length<maxLines) lines.push(cur);
-  if(lines.length===maxLines && (words.join(' ').length> lines.join(' ').length))
-    lines[maxLines-1]= lines[maxLines-1].replace(/.{0,1}$/,'…');
-  return lines.length?lines:[''];
-}
+// wfWrap (word-wrap a label into <=maxLines lines of ~maxChars) se movió a
+// core.js: lo usan también otras pestañas (Foundation Layer en tab-maltg.js)
+// que no cargan este archivo.
 
 // point on box boundary toward an external point (cx2,cy2)
 function wfBorder(n, x2, y2){
