@@ -268,9 +268,9 @@ function maltgRenderMain(data){
       <circle cx="${BX-24}" cy="${top+26}" r="8" fill="${l.roleColor||'#888'}"/>`;
     if(drill){
       inner += `<g id="maltg-foundation" transform="translate(${BX+12},${top+15})" style="cursor:pointer" opacity="0.9">
-        <rect x="-3" y="-3" width="31" height="31" rx="7" fill="rgba(255,255,255,.55)" stroke="${l.stroke||'#888'}" stroke-width="1"/>
-        <circle cx="10" cy="10" r="7.5" fill="none" stroke="${l.stroke||'#888'}" stroke-width="2"/>
-        <line x1="16" y1="16" x2="22.5" y2="22.5" stroke="${l.stroke||'#888'}" stroke-width="2.4" stroke-linecap="round"/>
+        <rect x="-3" y="-3" width="31" height="31" rx="7" fill="transparent"/>
+        <circle cx="10" cy="10" r="7.5" fill="none" stroke="#000" stroke-width="2"/>
+        <line x1="16" y1="16" x2="22.5" y2="22.5" stroke="#000" stroke-width="2.4" stroke-linecap="round"/>
         <title>Ver detalle de ${wfEsc(l.name||'')}</title>
       </g>`;
     }
@@ -280,10 +280,11 @@ function maltgRenderMain(data){
     boxes += `<g class="maltg-layer" data-layer="${wfEsc(l.name||'')}" style="cursor:pointer">${inner}<title>Configurar componentes de ${wfEsc(l.name||'')}</title></g>`;
   });
 
-  // cross-cutting concerns — columna IZQUIERDA (bajo el rol de la capa 2)
+  // cross-cutting concerns — columna IZQUIERDA, un nivel más abajo (bajo
+  // el rol de la capa 3, "Operational Layer") que antes (capa 2).
   let cross='';
   (data.crossCutting||[]).forEach((c,i)=>{
-    cross += `<text x="10" y="${188+i*17}" font-family="'Outfit',sans-serif" font-size="11.5" fill="#374151">• ${wfEsc(c)}</text>`;
+    cross += `<text x="10" y="${188+118+i*17}" font-family="'Outfit',sans-serif" font-size="11.5" fill="#374151">• ${wfEsc(c)}</text>`;
   });
 
   // governance council (caja punteada, bajo las capas)
