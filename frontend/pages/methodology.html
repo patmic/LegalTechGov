@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+<script>
+  /* Tema aplicado ANTES de pintar (core.js llega con defer, demasiado
+     tarde para evitar el parpadeo). Misma clave que index.html. */
+  try {
+    document.documentElement.setAttribute('data-theme',
+      localStorage.getItem('maltg-theme') === 'light' ? 'light' : 'dark');
+  } catch (e) {}
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#030711">
+<meta name="color-scheme" content="dark light">
+<title>MALTG Architecture Validator — Metodología</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/standalone/umd/vis-network.min.js" defer></script>
+<script>/* fallback: si vis-network 9 no carga desde el CDN, usar vis 4.21 */
+window.addEventListener('DOMContentLoaded',()=>{ if(!window.vis){ const s=document.createElement('script');
+  s.src='https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js'; document.head.appendChild(s); } });</script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Nova+Mono&family=Outfit:wght@200;300;400;500;600;700;800;900&family=JetBrains+Mono:wght@300;400;600&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+<!-- Estructura primero, luego las dos pieles de tema. El orden importa:
+     dashboard.css (forma) → nocturne.css (oscuro) → aurora.css (claro). -->
+<link rel="stylesheet" href="../assets/css/dashboard.css">
+<link rel="stylesheet" href="../assets/css/nocturne.css">
+<link rel="stylesheet" href="../assets/css/aurora.css">
+<!-- Runtime compartido (header/nav, tema, animación de arranque) + lógica propia de esta página -->
+<script src="../assets/js/core.js" defer></script>
+<script src="../assets/js/tab-methodology.js" defer></script>
+</head>
+<body data-page="methodology">
+
+<!-- LOADING OVERLAY — misma animación de arranque que el resto del dashboard -->
+<div id="overlay" class="show">
+  <div class="ov-spinner"></div>
+  <div class="ov-msg">Sincronizando ecosistema MALTG</div>
+  <div class="ov-steps" id="ov-steps"></div>
+</div>
+
+<!-- HEADER (inyectado por core.js desde assets/partials/header.html) -->
+<div id="app-header"></div>
+
+<main>
+<div class="section active" id="sec-methodology">
+  <div class="stitle">Metodología Formal — MALTG = ⟨Ω, Δ, Γ, Ψ, δ⟩</div>
+
+  <!-- Formal model notation card -->
+  <div class="panel" style="margin-bottom:1.3rem">
+    <div class="ph">
+      <div class="ptitle">Modelo Formal — Tupla MALTG</div>
+      <div style="display:flex;gap:.45rem">
+        <span class="pbadge">OWL 2 · W3C</span>
+        <span class="pbadge d">Fuente: /api/methodology</span>
+      </div>
+    </div>
+    <div class="src-bar">
+      <span>Fuente:</span><span class="src-file">/api/methodology</span>
+      <span class="vsep">·</span><span style="color:var(--t3)">Cargado:</span>
+      <span class="src-ts" id="meth-ts">—</span>
+    </div>
+    <div class="pbody" style="padding:1rem 1.3rem">
+      <div id="formal-model-cards" style="display:grid;grid-template-columns:repeat(5,1fr);gap:.8rem;margin-bottom:1.2rem">
+        <div style="font-size:.62rem;color:var(--t3);padding:.5rem">Cargando modelo formal…</div>
+      </div>
+      <div style="background:var(--bg3);border:1px solid var(--bdr);border-radius:6px;padding:.9rem 1.2rem">
+        <div style="font-size:.58rem;color:var(--t3);letter-spacing:.12em;text-transform:uppercase;margin-bottom:.5rem">Notación canónica</div>
+        <div id="formal-notation" style="font-family:'JetBrains Mono',monospace;font-size:.82rem;color:var(--cyan);letter-spacing:.08em">
+          MALTG = ⟨Ω, Δ, Γ, Ψ, δ⟩
+        </div>
+        <div style="margin-top:.6rem;display:grid;grid-template-columns:repeat(2,1fr);gap:.5rem" id="formal-formulas"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5-phase pipeline -->
+  <div class="panel" style="margin-bottom:1.3rem">
+    <div class="ph">
+      <div class="ptitle">Pipeline de Validación — 5 Fases</div>
+      <span class="pbadge">ORE → DTSM → HCS → LDCC → MDGA</span>
+    </div>
+    <div class="pbody" style="padding:1rem 1.3rem">
+      <svg id="pipeline-svg" width="100%" height="200" viewBox="0 0 920 200" style="display:block;overflow:visible"></svg>
+      <div id="phase-detail-cards" style="display:grid;grid-template-columns:repeat(5,1fr);gap:.8rem;margin-top:1rem">
+        <div style="font-size:.62rem;color:var(--t3);padding:.5rem">Cargando fases…</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Validation properties + LegalTech highlight -->
+  <div class="two-col">
+    <div class="panel">
+      <div class="ph"><div class="ptitle">Propiedades Formales del Método</div><span class="pbadge">Verificables</span></div>
+      <div class="pbody" style="padding:1rem 1.3rem">
+        <div id="val-properties" style="display:flex;flex-direction:column;gap:.7rem">
+          <div style="font-size:.62rem;color:var(--t3)">Cargando propiedades…</div>
+        </div>
+      </div>
+    </div>
+    <div class="panel" style="--ac:var(--legaltech,#60a5fa)">
+      <div class="ph" style="border-bottom:2px solid rgba(96,165,250,.3)">
+        <div class="ptitle" style="color:#60a5fa">LegalTech Dimension — Fase P4</div>
+        <span class="pbadge" style="background:rgba(96,165,250,.1);color:#60a5fa;border-color:rgba(96,165,250,.3)">LDCC</span>
+      </div>
+      <div class="pbody" style="padding:1rem 1.3rem">
+        <div id="legaltech-highlight">
+          <div style="font-size:.62rem;color:var(--t3)">Cargando datos LegalTech…</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</main>
+
+</body>
+</html>

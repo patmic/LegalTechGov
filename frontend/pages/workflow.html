@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+<script>
+  /* Tema aplicado ANTES de pintar (core.js llega con defer, demasiado
+     tarde para evitar el parpadeo). Misma clave que index.html. */
+  try {
+    document.documentElement.setAttribute('data-theme',
+      localStorage.getItem('maltg-theme') === 'light' ? 'light' : 'dark');
+  } catch (e) {}
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#030711">
+<meta name="color-scheme" content="dark light">
+<title>MALTG Architecture Validator — Workflow · Flujo Procesal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/standalone/umd/vis-network.min.js" defer></script>
+<script>/* fallback: si vis-network 9 no carga desde el CDN, usar vis 4.21 */
+window.addEventListener('DOMContentLoaded',()=>{ if(!window.vis){ const s=document.createElement('script');
+  s.src='https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js'; document.head.appendChild(s); } });</script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Nova+Mono&family=Outfit:wght@200;300;400;500;600;700;800;900&family=JetBrains+Mono:wght@300;400;600&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+<!-- Estructura primero, luego las dos pieles de tema. El orden importa:
+     dashboard.css (forma) → nocturne.css (oscuro) → aurora.css (claro). -->
+<link rel="stylesheet" href="../assets/css/dashboard.css">
+<link rel="stylesheet" href="../assets/css/nocturne.css">
+<link rel="stylesheet" href="../assets/css/aurora.css">
+<style>
+/* ── Animaciones flujo procesal (tab 06) + COGEP ─────────────────── */
+@keyframes wfDashMove { to { stroke-dashoffset: -48; } }
+@keyframes wfPulseRing { 0%{stroke-opacity:.85;transform:scale(1)} 70%{stroke-opacity:0;transform:scale(1.6)} 100%{stroke-opacity:0;transform:scale(1.6)} }
+.wf-anim-edge { stroke-dasharray: 16 8; animation: wfDashMove 1.1s linear infinite; }
+.wf-pulse-ring { transform-box: fill-box; transform-origin: center; animation: wfPulseRing 1.6s ease-out infinite; pointer-events: none; }
+.wf-token { filter: drop-shadow(0 0 8px rgba(0,229,255,.9)); pointer-events: none; }
+.salud-chip { display:flex; align-items:center; gap:.55rem; padding:.45rem .6rem; border-radius:8px; border:1px solid var(--bdr); background:var(--card-bg); cursor:pointer; }
+.salud-chip:hover { border-color: var(--bdr2); }
+.salud-dot { width:10px; height:10px; border-radius:50%; flex-shrink:0; }
+
+/* ── Chat flotante COGEP ── */
+.wf-chat { position:fixed; right:22px; bottom:22px; width:min(380px, calc(100vw - 44px)); z-index:120;
+  background:var(--bg1); border:1px solid var(--bdr2); border-radius:14px; box-shadow:0 12px 40px rgba(0,0,0,.45);
+  display:flex; flex-direction:column; overflow:hidden; }
+.wf-chat-head { display:flex; align-items:center; gap:.55rem; padding:.6rem .75rem; border-bottom:1px solid var(--bdr);
+  background:linear-gradient(90deg, rgba(96,165,250,.12), rgba(168,85,247,.10)); cursor:default; }
+.wf-chat-ico { background:transparent; border:1px solid var(--bdr); border-radius:6px; color:var(--t2);
+  width:24px; height:24px; cursor:pointer; font-size:.7rem; line-height:1; }
+.wf-chat-ico:hover { color:var(--t1); border-color:var(--bdr2); }
+.wf-chat-msgs { height:300px; overflow-y:auto; padding:.7rem; display:flex; flex-direction:column; gap:.5rem; }
+.wf-chat-bub { max-width:88%; padding:.5rem .65rem; border-radius:10px; font-size:.64rem; line-height:1.5; white-space:pre-wrap; word-break:break-word; }
+.wf-chat-bub.user { align-self:flex-end; background:rgba(0,229,255,.14); border:1px solid rgba(0,229,255,.35); color:var(--t1); border-bottom-right-radius:3px; }
+.wf-chat-bub.bot  { align-self:flex-start; background:var(--card-bg); border:1px solid var(--bdr); color:var(--t1); border-bottom-left-radius:3px; }
+.wf-chat-bub.bot b{ color:#60a5fa; }
+.wf-chat-chips { display:flex; flex-wrap:wrap; gap:.35rem; padding:.3rem .7rem .45rem; }
+.wf-chat-chip { font-size:.56rem; padding:.22rem .55rem; border-radius:999px; border:1px solid rgba(96,165,250,.4);
+  color:#60a5fa; background:rgba(96,165,250,.08); cursor:pointer; }
+.wf-chat-chip:hover { background:rgba(96,165,250,.18); }
+.wf-chat-inputrow { display:flex; gap:.45rem; padding:.55rem .7rem; border-top:1px solid var(--bdr); }
+.wf-chat-inputrow input { flex:1; background:var(--card-bg); color:var(--t1); border:1px solid var(--bdr2);
+  border-radius:8px; padding:.45rem .6rem; font-size:.64rem; font-family:var(--font-mono); outline:none; }
+.wf-chat.minimized .wf-chat-body { display:none; }
+.wf-chat.minimized { width:250px; }
+@keyframes wfChatIn { from { transform:translateY(14px); opacity:0 } to { transform:none; opacity:1 } }
+.wf-chat { animation: wfChatIn .25s ease-out; }
+</style>
+<!-- Runtime compartido (header/nav, tema, animación de arranque) + lógica propia de esta página -->
+<script src="../assets/js/core.js" defer></script>
+<script src="../assets/js/tab-workflow.js" defer></script>
+</head>
+<body data-page="workflow">
+
+<!-- LOADING OVERLAY — misma animación de arranque que el resto del dashboard -->
+<div id="overlay" class="show">
+  <div class="ov-spinner"></div>
+  <div class="ov-msg">Sincronizando ecosistema MALTG</div>
+  <div class="ov-steps" id="ov-steps"></div>
+</div>
+
+<!-- HEADER (inyectado por core.js desde assets/partials/header.html) -->
+<div id="app-header"></div>
+
+<main>
+<div class="section active" id="sec-workflow">
+  <div class="stitle">WORKFLOW — Flujo Procesal <span id="wf-proc-name" style="color:var(--cyan)"></span></div>
+
+  <div class="panel">
+    <div class="ph">
+      <div class="ptitle">Diagrama de Flujo Procesal — BPMN</div>
+      <div style="display:flex;align-items:center;gap:.5rem;margin-left:auto;flex-wrap:wrap">
+        <label for="wf-file" style="font-size:.58rem;color:var(--t3);text-transform:uppercase;letter-spacing:.1em">Archivo JSON</label>
+        <select id="wf-file" class="app-select" onchange="wfLoadFile(this.value)" style="min-width:190px">
+          <option value="">Cargando…</option>
+        </select>
+        <label for="wf-proc" id="wf-proc-lbl" style="display:none;font-size:.58rem;color:var(--t3);text-transform:uppercase;letter-spacing:.1em">Proceso</label>
+        <select id="wf-proc" class="app-select" onchange="wfLoadProcess(this.value)"
+          style="display:none;min-width:190px;max-width:260px"></select>
+        <span class="pbadge" id="wf-badge">SUMARIO</span>
+      </div>
+    </div>
+    <div class="src-bar">
+      <span>Fuente:</span><span class="src-file" style="color:var(--gold)" id="wf-srcfile">/data/141_SUMARIO.json</span>
+      <span class="vsep">·</span><span>Hash:</span><span class="src-ts" id="wf-hash">—</span>
+    </div>
+    <div class="pbody">
+      <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:.8rem;align-items:center">
+        <button class="vis-ctrl-btn" onclick="wfZoom(1.25)">＋ Zoom</button>
+        <button class="vis-ctrl-btn" onclick="wfZoom(0.8)">－ Zoom</button>
+        <button class="vis-ctrl-btn" onclick="wfFit()">⤢ Ajustar</button>
+        <button class="vis-ctrl-btn active" id="wf-lanes-btn" onclick="wfToggle('lanes')">▦ Etapas</button>
+        <button class="vis-ctrl-btn active" id="wf-labels-btn" onclick="wfToggle('labels')">⏱ Tiempos</button>
+        <button class="vis-ctrl-btn active" id="wf-notes-btn" onclick="wfToggle('notes')">✎ Notas</button>
+        <button class="vis-ctrl-btn" id="wf-play-btn" onclick="wfPlay()" title="Animar el recorrido cronológico de la causa">▶ Recorrido</button>
+        <button class="vis-ctrl-btn" id="wf-chat-btn" onclick="wfChatToggle()" title="Chat IA sobre la causa seleccionada (ontología COGEP)">💬 Chat COGEP</button>
+        <div style="display:flex;align-items:center;gap:.45rem;margin-left:auto;flex:1;min-width:280px;justify-content:flex-end">
+          <label for="wf-causa" style="font-size:.58rem;color:var(--t3);text-transform:uppercase;letter-spacing:.1em;white-space:nowrap">Causa / Expediente</label>
+          <select id="wf-causa" class="app-select" onchange="wfLoadCausa(this.value)" style="flex:1;max-width:420px">
+            <option value="">— Resaltar recorrido de una causa —</option>
+          </select>
+        </div>
+      </div>
+      <div style="font-size:.58rem;color:var(--t3);margin:-.4rem 0 .7rem;display:flex;align-items:center;gap:.6rem">
+        <span>Arrastra para mover · rueda para zoom</span>
+        <span id="wf-causa-info" style="color:var(--cyan);font-weight:600"></span>
+      </div>
+      <div id="wf-canvas-wrap" style="position:relative;width:100%;height:640px;border:1px solid var(--bdr);border-radius:8px;overflow:hidden;background:var(--card-bg);cursor:grab">
+        <svg id="wf-svg" style="width:100%;height:100%;display:block"></svg>
+        <div id="wf-tip" style="position:absolute;display:none;pointer-events:none;max-width:280px;padding:.5rem .65rem;background:var(--bg1);border:1px solid var(--bdr2);border-radius:6px;font-size:.62rem;color:var(--t1);box-shadow:var(--shadow);z-index:5;line-height:1.4"></div>
+        <div id="wf-empty" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:.66rem;color:var(--t3)">Pulsa "Recargar Datos" para leer el archivo…</div>
+
+        <!-- Ventana de detalle de actividad (causa) -->
+        <div id="wf-modal" style="position:absolute;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,0.45);z-index:20" onclick="if(event.target===this)wfCloseActivity()">
+          <div style="width:min(560px,92%);max-height:88%;overflow:auto;background:var(--bg1);border:1px solid var(--bdr2);border-radius:12px;box-shadow:var(--shadow)">
+            <div style="display:flex;align-items:flex-start;gap:.6rem;padding:.9rem 1rem;border-bottom:1px solid var(--bdr);position:sticky;top:0;background:var(--bg1)">
+              <div style="flex:1">
+                <div id="wf-modal-title" style="font-family:var(--font-display);font-weight:700;font-size:.95rem;color:var(--t1)">Actividad</div>
+                <div id="wf-modal-sub" style="font-size:.62rem;color:var(--t2);margin-top:.15rem"></div>
+              </div>
+              <button onclick="wfCloseActivity()" class="vis-ctrl-btn" style="flex-shrink:0">✕</button>
+            </div>
+            <div id="wf-modal-body" style="padding:.9rem 1rem"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Franja inferior: información del proceso (texto) + leyenda -->
+      <div style="display:flex;flex-wrap:wrap;align-items:center;gap:.6rem 1.4rem;margin-top:.8rem;padding-top:.7rem;border-top:1px solid var(--bdr)">
+        <div id="wf-stats" style="display:flex;flex-wrap:wrap;gap:1.3rem;font-size:.62rem;color:var(--t2)">
+          <span><b id="wf-k-act" style="color:var(--cyan);font-family:var(--font-display);font-size:.95rem">—</b> Actividades</span>
+          <span><b id="wf-k-flow" style="color:var(--gold);font-family:var(--font-display);font-size:.95rem">—</b> Flujos</span>
+          <span><b id="wf-k-stage" style="color:var(--violet);font-family:var(--font-display);font-size:.95rem">—</b> Etapas</span>
+          <span><b id="wf-k-ev" style="color:var(--green);font-family:var(--font-display);font-size:.95rem">—</b> Eventos</span>
+        </div>
+        <div id="wf-legend" style="display:flex;gap:1.1rem;flex-wrap:wrap;margin-left:auto;font-size:.58rem;color:var(--t2)"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SALUD DEL JUICIO — dashboard del razonador COGEP ─────────── -->
+  <div class="panel" id="wf-salud-panel" style="display:none;margin-top:1rem">
+    <div class="ph">
+      <div class="ptitle">🩺 Salud del Juicio — Dictamen IA (Razonador COGEP)</div>
+      <span class="pbadge" id="wf-salud-badge">—</span>
+    </div>
+    <div class="pbody">
+      <div style="display:flex;gap:1.4rem;flex-wrap:wrap;align-items:flex-start">
+        <div style="flex:0 0 150px;text-align:center">
+          <svg id="wf-salud-ring" width="130" height="130" viewBox="0 0 130 130"></svg>
+          <div id="wf-salud-proc" style="font-size:.6rem;color:var(--t3);margin-top:.3rem"></div>
+        </div>
+        <div style="flex:1;min-width:300px">
+          <div id="wf-salud-resumen" style="font-size:.72rem;color:var(--t1);line-height:1.55;padding:.6rem .8rem;border:1px solid var(--bdr);border-radius:8px;background:var(--card-bg)"></div>
+          <div id="wf-salud-reglas" style="margin-top:.7rem;display:flex;flex-direction:column;gap:.45rem"></div>
+        </div>
+      </div>
+
+      <!-- Análisis IA del documento de una actuación: errores jurídicos -->
+      <div style="margin-top:1rem;padding-top:.8rem;border-top:1px dashed var(--bdr)">
+        <div style="font-size:.62rem;color:var(--t2);margin-bottom:.4rem;text-transform:uppercase;letter-spacing:.08em">
+          ⚖ Análisis IA de una actuación — seleccione la actividad y suba el documento del juzgador (PDF/TXT)
+        </div>
+        <div style="display:flex;gap:.6rem;align-items:center;flex-wrap:wrap">
+          <select id="wf-acto-sel" class="app-select" style="min-width:230px">
+            <option value="">— Detectar acto automáticamente —</option>
+          </select>
+          <input type="file" id="wf-pdf-input" accept=".pdf,.txt" style="font-size:.62rem;color:var(--t2)">
+          <button class="vis-ctrl-btn" onclick="wfAnalizarActuacion()">🤖 Analizar con IA COGEP</button>
+          <span id="wf-pdf-status" style="font-size:.62rem;color:var(--t3)"></span>
+        </div>
+        <div id="wf-pdf-result" style="display:none;margin-top:.6rem;font-size:.68rem;line-height:1.55;padding:.6rem .8rem;border-radius:8px;border:1px solid var(--bdr)"></div>
+        <div id="wf-hallazgos" style="display:none;margin-top:.6rem;flex-direction:column;gap:.45rem"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── MATERIALIZACIÓN AI · BLOCKCHAIN · OPEN DATA ──────────────── -->
+  <div id="wf-tech-strip" style="display:none;margin-top:1rem;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:1rem">
+    <div class="panel">
+      <div class="ph"><div class="ptitle">🤖 AI — Razonador Jurídico</div><span class="pbadge" style="color:#a855f7">simbólico · XAI</span></div>
+      <div class="pbody" id="wf-tech-ai" style="font-size:.66rem;color:var(--t2);line-height:1.5"></div>
+    </div>
+    <div class="panel">
+      <div class="ph"><div class="ptitle">⛓ Blockchain — Ledger de Integridad</div><span class="pbadge" style="color:#10e98c">SHA-256</span></div>
+      <div class="pbody">
+        <div id="wf-tech-bc" style="font-size:.62rem;color:var(--t2)"></div>
+        <div style="display:flex;gap:.5rem;margin-top:.6rem;flex-wrap:wrap">
+          <button class="vis-ctrl-btn" onclick="bcVerify()">✔ Verificar cadena</button>
+          <button class="vis-ctrl-btn" onclick="bcTamper()">⚠ Simular alteración</button>
+        </div>
+        <div id="wf-bc-status" style="font-size:.62rem;margin-top:.45rem;color:var(--t3)"></div>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="ph"><div class="ptitle">🌐 Open Data — Justicia Abierta</div><span class="pbadge" style="color:#ff9a3c">JSON-LD · DCAT</span></div>
+      <div class="pbody">
+        <div id="wf-tech-od" style="font-size:.62rem;color:var(--t2);line-height:1.5"></div>
+        <div style="display:flex;gap:.5rem;margin-top:.6rem;flex-wrap:wrap">
+          <button class="vis-ctrl-btn" onclick="odOpen('jsonld')">⤓ JSON-LD</button>
+          <button class="vis-ctrl-btn" onclick="odOpen('csv')">⤓ CSV</button>
+        </div>
+        <pre id="wf-od-preview" style="margin-top:.55rem;max-height:130px;overflow:auto;font-size:.55rem;line-height:1.4;color:var(--t2);background:var(--card-bg);border:1px solid var(--bdr);border-radius:6px;padding:.5rem"></pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── CHAT FLOTANTE COGEP IA ───────────────────────────────────── -->
+  <div id="wf-chat" class="wf-chat" style="display:none">
+    <div class="wf-chat-head" onclick="if(wfChat.min)wfChatMin()">
+      <span style="font-size:1rem">⚖</span>
+      <div style="flex:1;min-width:0">
+        <div style="font-family:var(--font-display);font-weight:700;font-size:.74rem;color:var(--t1)">Asistente COGEP · IA</div>
+        <div id="wf-chat-causa" style="font-size:.55rem;color:var(--t3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">— sin causa seleccionada —</div>
+      </div>
+      <button class="wf-chat-ico" onclick="event.stopPropagation();wfChatMin()" title="Minimizar / restaurar" id="wf-chat-minbtn">—</button>
+      <button class="wf-chat-ico" onclick="event.stopPropagation();wfChatHide()" title="Ocultar">✕</button>
+    </div>
+    <div class="wf-chat-body" id="wf-chat-body">
+      <div id="wf-chat-msgs" class="wf-chat-msgs"></div>
+      <div id="wf-chat-chips" class="wf-chat-chips"></div>
+      <div class="wf-chat-inputrow">
+        <input id="wf-chat-input" type="text" placeholder="Pregunta sobre la causa… (Enter para enviar)"
+               onkeydown="if(event.key==='Enter')wfChatSend()">
+        <button class="vis-ctrl-btn" onclick="wfChatSend()" style="flex-shrink:0">➤</button>
+      </div>
+    </div>
+  </div>
+</div>
+</main>
+
+</body>
+</html>

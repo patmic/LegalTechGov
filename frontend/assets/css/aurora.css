@@ -1,0 +1,218 @@
+/* ═══════════════════════════════════════════════════════════════════
+   AURORA — TEMA CLARO de toda la aplicación
+   ───────────────────────────────────────────────────────────────────
+   Contraparte clara de assets/css/nocturne.css. Redefine exactamente
+   los mismos tokens que el tema oscuro, bajo :root[data-theme="light"],
+   y añade los ajustes de componente que sólo aplican en claro.
+
+   Debe cargarse SIEMPRE DESPUÉS de nocturne.css y de la hoja de
+   estructura (dashboard.css o inicio.css): así el tema claro gana por
+   orden de cascada sin necesitar !important extra.
+
+   Estética: "Corporate Clean" — blanco y gris frío, acento azul
+   corporativo, bordes sutiles y sombras suaves (nada de glow neón, que
+   sólo funciona sobre fondo oscuro).
+   ═══════════════════════════════════════════════════════════════════ */
+
+:root[data-theme="light"] {
+  color-scheme: light;
+
+  /* ── A · Paleta base (contraparte de Nocturne) ────────────────── */
+  --color-bg: #f7f8fc;
+  --color-surface: #ffffff;
+  --color-text: #1a1c28;
+  --color-accent: #5f52b5;
+  --color-accent-2: #6f66b8;
+  --color-divider: color-mix(in srgb, #1a1c28 14%, transparent);
+
+  /* Rampas invertidas respecto al oscuro: cada número conserva su ROL
+     (900 = filete casi invisible, 300 = texto legible), no su
+     luminosidad — por eso el componente no necesita cambiar. */
+  --color-neutral-100: #1a1c28;
+  --color-neutral-200: #24273a;
+  --color-neutral-300: #3a3f52;
+  --color-neutral-400: #4e5468;
+  --color-neutral-500: #6b7183;
+  --color-neutral-600: #8b90a1;
+  --color-neutral-700: #b9bdc9;
+  --color-neutral-800: #d7dae3;
+  --color-neutral-900: #e6e8ef;
+
+  --color-accent-100: #2b2741;
+  --color-accent-200: #423a6a;
+  --color-accent-300: #4c3fa8;
+  --color-accent-400: #5f52b5;
+  --color-accent-500: #7466c9;
+  --color-accent-600: #8d82d6;
+  --color-accent-700: #a79ee2;
+  --color-accent-800: #ded9f7;
+  --color-accent-900: #f0eefb;
+
+  --color-accent-2-100: #2b293a;
+  --color-accent-2-200: #423e5d;
+  --color-accent-2-300: #4f4a8c;
+  --color-accent-2-400: #625c9e;
+  --color-accent-2-500: #7972a9;
+  --color-accent-2-600: #9690c9;
+  --color-accent-2-700: #b0abd9;
+  --color-accent-2-800: #e2e0f2;
+  --color-accent-2-900: #f2f1fa;
+
+  --color-section: #e8ebff;
+  --color-section-glow: #d5daff;
+  --color-section-ghost: #c2c8f5;
+
+  --nc-shadow-sm: 0 0 0 1px #d7dae3;
+  --nc-shadow-md: 0 0 0 1px #c9cdd9, 0 6px 18px rgba(20,30,70,0.10);
+  --nc-shadow-lg: 0 0 0 1px #b9bdc9, 0 16px 40px rgba(20,30,70,0.16);
+
+  /* ── B · Superficies del dashboard ────────────────────────────── */
+  --bg0: #ffffff;
+  --bg1: rgba(245,248,255,0.92);
+  --bg2: rgba(235,240,252,0.88);
+  --bg3: rgba(224,230,246,0.85);
+  --bg4: rgba(210,218,240,0.80);
+
+  --t1: #0d1526;
+  --t2: #3a4d70;
+  --t3: #7a8db0;
+
+  --bdr:  #e2e8f0;
+  --bdr2: rgba(0,60,180,0.15);
+
+  --hdr-bg:    rgba(255,255,255,0.94);
+  --panel-bg:  #ffffff;
+  --card-bg:   #f8fafc;
+  --glass-bg:  rgba(255,255,255,0.82);
+  --glass-bdr: #e2e8f0;
+
+  --shadow:       0 4px 24px rgba(0,40,120,0.12), 0 1px 4px rgba(0,40,120,0.08);
+  --shadow-sm:    0 2px 12px rgba(0,40,120,0.10);
+  --glass-shadow: 0 4px 24px rgba(0,40,120,0.10);
+
+  --grid-line: rgba(0,80,180,0.04);
+
+  /* Selectores nativos — opacos, el popup del sistema no admite alfa */
+  --select-bg:       #ffffff;
+  --select-bg-hover: #f5f8ff;
+  --select-fg:       #0d1526;
+  --select-bdr:      rgba(0,60,180,0.15);
+  --select-caret:    #3a4d70;
+  --select-ring:     rgba(37,99,235,0.15);
+  --select-pop:      #ffffff;
+  --select-pop-sel:  #e4ecff;
+
+  /* ── C · Acentos semánticos, oscurecidos para leerse sobre blanco ── */
+  --cyan:  #2563eb; --gold: #b45309; --violet: #7c3aed;
+  --green: #059669; --rose: #e11d48; --orange: #c2410c;
+  --pink:  #db2777; --teal: #0d9488; --indigo: #4f46e5;
+
+  --gcyan:   0 0 12px rgba(0,100,220,.18);
+  --ggold:   0 0 12px rgba(180,120,0,.18);
+  --grose:   0 0 12px rgba(200,40,60,.15);
+  --gviolet: 0 0 12px rgba(100,60,200,.18);
+  --bglow:   rgba(0,100,220,0.12);
+
+  --orb1: radial-gradient(ellipse 800px 600px at 20% 20%, rgba(0,120,255,0.05) 0%, transparent 70%);
+  --orb2: radial-gradient(ellipse 600px 800px at 80% 80%, rgba(120,60,240,0.04) 0%, transparent 70%);
+  --orb3: radial-gradient(ellipse 500px 400px at 50% 50%, rgba(255,180,0,0.03) 0%, transparent 70%);
+
+  /* ── D · Sistema AI-native ────────────────────────────────────── */
+  --q-cyan:   #2563eb;
+  --q-violet: #4f46e5;
+  --q-green:  #059669;
+  --q-amber:  #d97706;
+  --q-rose:   #e11d48;
+  --q-indigo: #4338ca;
+  --q-teal:   #0d9488;
+
+  --glow-cyan:   0 0 8px rgba(0,120,200,.25), 0 0 24px rgba(0,120,200,.08);
+  --glow-violet: 0 0 8px rgba(124,58,237,.2),  0 0 24px rgba(124,58,237,.06);
+  --glow-green:  0 0 8px rgba(5,150,105,.2);
+  --glow-rose:   0 0 8px rgba(225,29,72,.2);
+
+  --qglass-1: rgba(0,0,0,0.015);
+  --qglass-2: rgba(0,0,0,0.03);
+  --qglass-3: rgba(0,0,0,0.05);
+  --qglass-bdr: rgba(0,60,180,0.1);
+  --qglass-bdr-lit: rgba(0,120,220,0.25);
+
+  --elev-0: none;
+  --elev-1: 0 1px 4px rgba(0,40,120,.08), 0 0 0 1px rgba(0,60,180,.06);
+  --elev-2: 0 4px 16px rgba(0,40,120,.1),  0 0 0 1px rgba(0,60,180,.07);
+  --elev-3: 0 8px 32px rgba(0,40,120,.12), 0 0 0 1px rgba(0,60,180,.08);
+  --elev-4: 0 16px 64px rgba(0,40,120,.16), 0 0 0 1px rgba(0,60,180,.09);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   AJUSTES DE COMPONENTE — sólo tema claro
+   (antes dispersos dentro de dashboard.css; se agrupan aquí para que
+    todo lo que define el modo claro viva en un solo archivo)
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* Fondo: sin starfield ni scanlines — sólo funcionan sobre negro. */
+[data-theme="light"] body { background: #ffffff !important; }
+[data-theme="light"] body::before { display: none; }
+[data-theme="light"] body::after  { display: none; }
+
+[data-theme="light"] header {
+  background: rgba(255,255,255,0.94) !important;
+  box-shadow: 0 1px 0 rgba(0,120,220,0.08), 0 4px 24px rgba(0,40,120,0.08) !important;
+}
+[data-theme="light"] footer { background: rgba(240,244,255,0.75) !important; }
+
+[data-theme="light"] .panel {
+  background: rgba(255,255,255,0.72) !important;
+  box-shadow: var(--elev-2) !important;
+}
+[data-theme="light"] .ph { background: rgba(0,0,0,0.025) !important; }
+[data-theme="light"] .ptitle {
+  background: linear-gradient(90deg, #0d1526, #3a4d70);
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+[data-theme="light"] .stitle {
+  background: linear-gradient(90deg, var(--q-cyan) 0%, var(--q-violet) 60%, rgba(58,77,112,0.4) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+
+[data-theme="light"] .sc-card-val { filter: none; }
+[data-theme="light"] .src-file { text-shadow: none; }
+
+[data-theme="light"] .src-bar   { background: rgba(0,0,0,.02) }
+[data-theme="light"] .clist li  { background: rgba(0,0,0,.03) }
+[data-theme="light"] .leg-row   { background: rgba(0,0,0,.02) }
+[data-theme="light"] .mbar-wrap { background: rgba(0,0,0,0.08) }
+[data-theme="light"] #overlay   { background: rgba(220,228,248,.82) }
+[data-theme="light"] #onto-vis  { background: rgba(240,244,255,0.3) !important; }
+
+[data-theme="light"] #ntt,
+[data-theme="light"] #dtt,
+[data-theme="light"] #otip {
+  background: rgba(248,250,255,.95);
+  border-color: var(--glass-bdr);
+  box-shadow: 0 4px 20px rgba(0,40,120,.12);
+}
+
+/* Controles de vis-network (páginas Ontología y Simulación 3D) */
+[data-theme="light"] .vis-ctrl-btn {
+  background: rgba(0,0,0,0.04);
+  border-color: var(--glass-bdr);
+  color: var(--t2);
+}
+[data-theme="light"] .vis-ctrl-btn:hover {
+  background: rgba(0,100,220,0.06);
+  border-color: rgba(0,100,220,0.25);
+  color: #0060cc;
+}
+[data-theme="light"] .vis-ctrl-select {
+  background: rgba(255,255,255,0.7);
+  color: var(--t1);
+}
+[data-theme="light"] div.vis-tooltip {
+  background: rgba(248,250,255,0.96) !important;
+  border-color: rgba(0,80,200,0.2) !important;
+  color: var(--t1) !important;
+  box-shadow: 0 4px 20px rgba(0,40,120,0.12) !important;
+}

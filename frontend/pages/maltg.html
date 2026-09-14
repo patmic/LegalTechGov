@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+<script>
+  /* Tema aplicado ANTES de pintar (core.js llega con defer, demasiado
+     tarde para evitar el parpadeo). Misma clave que index.html. */
+  try {
+    document.documentElement.setAttribute('data-theme',
+      localStorage.getItem('maltg-theme') === 'light' ? 'light' : 'dark');
+  } catch (e) {}
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#030711">
+<meta name="color-scheme" content="dark light">
+<title>MALTG Architecture Validator — MALTG · Arquitectura</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/standalone/umd/vis-network.min.js" defer></script>
+<script>/* fallback: si vis-network 9 no carga desde el CDN, usar vis 4.21 */
+window.addEventListener('DOMContentLoaded',()=>{ if(!window.vis){ const s=document.createElement('script');
+  s.src='https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js'; document.head.appendChild(s); } });</script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Nova+Mono&family=Outfit:wght@200;300;400;500;600;700;800;900&family=JetBrains+Mono:wght@300;400;600&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+<!-- Estructura primero, luego las dos pieles de tema. El orden importa:
+     dashboard.css (forma) → nocturne.css (oscuro) → aurora.css (claro). -->
+<link rel="stylesheet" href="../assets/css/dashboard.css">
+<link rel="stylesheet" href="../assets/css/nocturne.css">
+<link rel="stylesheet" href="../assets/css/aurora.css">
+<!-- Runtime compartido (header/nav, tema, animación de arranque) + lógica propia de esta página -->
+<script src="../assets/js/core.js" defer></script>
+<script src="../assets/js/tab-maltg.js" defer></script>
+</head>
+<body data-page="maltg">
+
+<!-- LOADING OVERLAY — misma animación de arranque que el resto del dashboard -->
+<div id="overlay" class="show">
+  <div class="ov-spinner"></div>
+  <div class="ov-msg">Sincronizando ecosistema MALTG</div>
+  <div class="ov-steps" id="ov-steps"></div>
+</div>
+
+<!-- HEADER (inyectado por core.js desde assets/partials/header.html) -->
+<div id="app-header"></div>
+
+<main>
+<div class="section active" id="sec-maltg">
+  <div class="stitle">MALTG — Arquitectura Multidimensional <span id="maltg-name" style="color:var(--cyan)"></span></div>
+  <!-- KPI ROW (trasladado del ex-tab Overview) -->
+  <div class="kpi-row">
+    <div class="kpi" style="--ac:var(--cyan)"><div class="kpi-label">Madurez MALTG</div><div class="kpi-value" id="k-maltg">—</div><div class="kpi-delta up" id="k-maltg-d">Cargando…</div></div>
+    <div class="kpi" style="--ac:var(--gold)"><div class="kpi-label">Nodos Ontología</div><div class="kpi-value" id="k-nodes">—</div><div class="kpi-delta up" id="k-nodes-d">—</div></div>
+    <div class="kpi" style="--ac:var(--violet)"><div class="kpi-label">Score MALTG_onto</div><div class="kpi-value" id="k-onto">—</div><div class="kpi-delta up">↑ Ontología OWL</div></div>
+    <div class="kpi" style="--ac:var(--green)"><div class="kpi-label">Score DT_arch</div><div class="kpi-value" id="k-dt">—</div><div class="kpi-delta neutral">→ Gemelo Digital</div></div>
+    <div class="kpi" style="--ac:var(--rose)"><div class="kpi-label">GAP Global</div><div class="kpi-value" id="k-gap">—</div><div class="kpi-delta down" id="k-gap-d">—</div></div>
+    <div class="kpi" style="--ac:var(--orange)"><div class="kpi-label">Servicios DT</div><div class="kpi-value" id="k-svcs">—</div><div class="kpi-delta up" id="k-svcs-d">—</div></div>
+  </div>
+
+  <div class="panel">
+    <div class="ph">
+      <div class="ptitle" id="maltg-ptitle">Multidimensional Architecture for LegalTech Governance</div>
+      <div style="display:flex;align-items:center;gap:.5rem;margin-left:auto">
+        <button class="vis-ctrl-btn" id="maltg-back" style="display:none" onclick="maltgShow('main')">← Volver</button>
+        <span class="pbadge" id="maltg-badge">JSON-LD</span>
+      </div>
+    </div>
+    <div class="src-bar">
+      <span>Fuente:</span><span class="src-file" style="color:var(--gold)">/data/MALTG_architecture.json</span>
+      <span class="vsep">·</span><span>Hash:</span><span class="src-ts" id="maltg-hash">—</span>
+      <span class="vsep">·</span><span id="maltg-hint" style="color:var(--cyan);font-size:.58rem">Lupa en “Foundation Layer” = detalle · icono ▦ de cada capa = árbol de configuración</span>
+    </div>
+    <div class="pbody">
+      <style>
+      /* ── árbol de configuración (tab 01) ── */
+      #maltg-side .mt-head{display:flex;align-items:center;gap:.55rem;padding:.6rem .75rem;border-bottom:1px solid var(--bdr)}
+      .mt-ldot{width:12px;height:12px;border-radius:3px;flex-shrink:0}
+      .mt-ltitle{font-family:var(--font-accent,'Syne'),sans-serif;font-weight:800;font-size:.8rem;letter-spacing:.05em;text-transform:uppercase}
+      .mt-lbadge{margin-left:auto;font-size:.56rem;color:var(--t3);font-family:var(--font-mono)}
+      .mt-tree{padding:.5rem .55rem;display:flex;flex-direction:column;gap:.15rem;max-height:360px;overflow:auto}
+      .mt-branch summary{display:flex;align-items:center;gap:.5rem;list-style:none;cursor:pointer;padding:.42rem .55rem;border-radius:8px;transition:background .15s}
+      .mt-branch summary::-webkit-details-marker{display:none}
+      .mt-branch summary:hover{background:rgba(127,127,160,.12)}
+      .mt-chev{width:24px;height:24px;display:inline-flex;align-items:center;justify-content:center;
+        border-radius:50%;background:rgba(127,127,160,.16);border:1px solid var(--bdr);
+        font-size:.9rem;color:var(--t1);transition:transform .18s,background .15s;flex-shrink:0}
+      .mt-branch summary:hover .mt-chev{background:rgba(0,229,255,.18)}
+      .mt-branch[open]>summary .mt-chev{transform:rotate(90deg)}
+      .mt-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+      .mt-dot.sm{width:7px;height:7px}
+      .mt-name{font-size:.7rem;color:var(--t1);font-weight:600}
+      .mt-count{margin-left:auto;font-size:.56rem;color:var(--t3);background:rgba(127,127,160,.14);border:1px solid var(--bdr);border-radius:20px;padding:.05rem .45rem}
+      .mt-leaf{display:flex;align-items:center;gap:.5rem;padding:.3rem .55rem .3rem 1.7rem;border-radius:7px;cursor:pointer;border-left:2px solid transparent;transition:background .15s}
+      .mt-leaf:hover{background:rgba(127,127,160,.10)}
+      .mt-leaf .mt-name{font-weight:400;color:var(--t2);font-size:.66rem}
+      .mt-leaf.sel{background:rgba(0,229,255,.10);border-left:2px solid var(--cyan,#00e5ff)}
+      .mt-leaf .mt-score{margin-left:auto;font-family:var(--font-mono);font-size:.6rem}
+      .mt-hl{outline:1px solid var(--cyan,#00e5ff);border-radius:6px}
+      </style>
+      <div style="display:flex;gap:1rem;align-items:flex-start;flex-wrap:wrap">
+        <div id="maltg-canvas-wrap" style="position:relative;flex:1.2;min-width:500px;min-height:560px;border:1px solid var(--bdr);border-radius:8px;overflow:auto;background:var(--card-bg)">
+          <svg id="maltg-svg" style="width:100%;display:block"></svg>
+          <div id="maltg-empty" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:.66rem;color:var(--t3)">Pulsa "Recargar Datos" para leer MALTG_architecture.json…</div>
+        </div>
+        <div id="maltg-side" style="flex:1;min-width:380px;display:flex;flex-direction:column;gap:1rem">
+          <div id="maltg-tree-card" style="border:1px solid var(--bdr);border-radius:12px;background:var(--card-bg);overflow:hidden">
+            <div style="padding:.9rem;color:var(--t3);font-size:.66rem;font-family:var(--font-mono)">
+              ▦ Haz clic en el icono de árbol de una capa (borde derecho de cada caja) para desplegar sus componentes y configurar sus parámetros.
+            </div>
+          </div>
+          <div id="maltg-config"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</main>
+
+</body>
+</html>

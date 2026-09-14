@@ -1,0 +1,40 @@
+<!-- Header compartido por las 13 páginas del dashboard.
+     Lo inyecta core.js en el <div id="app-header"> de cada página.
+
+     Sólo el ícono (ya no enlaza a ningún lado: "Home" vive en el menú),
+     el título del módulo actual y el botón de rayas (☰). Ese botón
+     despliega Home + tema + los 13 módulos + el punto de estado — todo
+     lo que antes eran controles sueltos del header ahora vive dentro
+     del panel — lo arma initNavMenu() en core.js. core.js también
+     rellena el título del módulo a partir de <body data-page="…">. -->
+<header>
+  <div class="logo" title="MALTG">
+    <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+      <polygon points="18,2 34,10 34,26 18,34 2,26 2,10" fill="none" stroke="currentColor" stroke-width="1.5" opacity=".7"/>
+      <polygon points="18,8 28,13 28,23 18,28 8,23 8,13" fill="none" stroke="currentColor" stroke-width="1" opacity=".3"/>
+      <circle cx="18" cy="18" r="4" fill="currentColor" opacity=".9"/>
+      <line x1="18" y1="2" x2="18" y2="8" stroke="currentColor" stroke-width="1"/>
+      <line x1="18" y1="28" x2="18" y2="34" stroke="currentColor" stroke-width="1"/>
+      <line x1="2" y1="10" x2="8" y2="13" stroke="currentColor" stroke-width="1"/>
+      <line x1="28" y1="23" x2="34" y2="26" stroke="currentColor" stroke-width="1"/>
+      <line x1="2" y1="26" x2="8" y2="23" stroke="currentColor" stroke-width="1"/>
+      <line x1="28" y1="13" x2="34" y2="10" stroke="currentColor" stroke-width="1"/>
+    </svg>
+  </div>
+
+  <!-- Módulo actual (lo rellena core.js desde NAV_PAGES + body[data-page]) -->
+  <div class="hdr-page">
+    <span class="hdr-page-num" id="hdr-page-num"></span>
+    <span class="hdr-page-title" id="hdr-page-title"></span>
+  </div>
+
+  <div class="hdr-right">
+    <!-- MENÚ — arma todo el panel (Home, tema, punto de estado, módulos) core.js: initNavMenu() -->
+    <div class="nav-menu-wrap">
+      <button class="menu-btn" id="menu-btn" title="Menú" aria-label="Abrir menú" aria-haspopup="true" aria-expanded="false">
+        <span class="menu-bars"><span></span><span></span><span></span></span>
+      </button>
+      <div class="nav-menu" id="nav-menu" role="menu" aria-hidden="true"></div>
+    </div>
+  </div>
+</header>

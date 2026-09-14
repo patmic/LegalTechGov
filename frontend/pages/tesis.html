@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+<script>
+  /* Tema aplicado ANTES de pintar (core.js llega con defer, demasiado
+     tarde para evitar el parpadeo). Misma clave que index.html. */
+  try {
+    document.documentElement.setAttribute('data-theme',
+      localStorage.getItem('maltg-theme') === 'light' ? 'light' : 'dark');
+  } catch (e) {}
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#030711">
+<meta name="color-scheme" content="dark light">
+<title>MALTG Architecture Validator — Tesis Doctoral</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/standalone/umd/vis-network.min.js" defer></script>
+<script>/* fallback: si vis-network 9 no carga desde el CDN, usar vis 4.21 */
+window.addEventListener('DOMContentLoaded',()=>{ if(!window.vis){ const s=document.createElement('script');
+  s.src='https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js'; document.head.appendChild(s); } });</script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Nova+Mono&family=Outfit:wght@200;300;400;500;600;700;800;900&family=JetBrains+Mono:wght@300;400;600&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+<!-- Estructura primero, luego las dos pieles de tema. El orden importa:
+     dashboard.css (forma) → nocturne.css (oscuro) → aurora.css (claro). -->
+<link rel="stylesheet" href="../assets/css/dashboard.css">
+<link rel="stylesheet" href="../assets/css/nocturne.css">
+<link rel="stylesheet" href="../assets/css/aurora.css">
+<style>
+.ts-p{font-size:.78rem;color:var(--t2);line-height:1.85;text-align:justify;margin:.45rem 0}
+.ts-h2{font-size:.92rem;color:var(--cyan);font-weight:700;margin:1.1rem 0 .35rem;border-bottom:1px solid var(--bdr);padding-bottom:.25rem}
+.ts-h3{font-size:.8rem;color:var(--gold);font-weight:700;margin:.8rem 0 .25rem}
+.ts-p b{color:var(--t1)}
+.ts-p i{color:#a5b4fc}
+.ts-cite{font-size:.6rem;color:var(--cyan);vertical-align:super;cursor:pointer}
+/* Las tablas de esta página usan el componente compartido .dtable
+   (assets/css/dashboard.css) — aquí sólo el margen propio del cuerpo
+   del documento, que .dtable no impone. */
+.ts-tbl{margin:.5rem 0}
+.ts-caption{font-family:var(--font-mono);font-size:.6rem;color:var(--t3);font-style:italic;margin:.15rem 0 .6rem}
+.ts-live{color:#10e98c;font-family:var(--font-mono);font-weight:700}
+.ts-eq{font-family:var(--font-mono);font-size:.72rem;color:var(--t1);background:rgba(0,229,255,.05);border:1px solid var(--bdr);border-radius:8px;padding:.5rem .8rem;margin:.5rem 0;text-align:center}
+</style>
+<!-- Runtime compartido (header/nav, tema, animación de arranque) + lógica propia de esta página -->
+<script src="../assets/js/core.js" defer></script>
+<script src="../assets/js/tab-tesis.js" defer></script>
+</head>
+<body data-page="tesis">
+
+<!-- LOADING OVERLAY — misma animación de arranque que el resto del dashboard -->
+<div id="overlay" class="show">
+  <div class="ov-spinner"></div>
+  <div class="ov-msg">Sincronizando ecosistema MALTG</div>
+  <div class="ov-steps" id="ov-steps"></div>
+</div>
+
+<!-- HEADER (inyectado por core.js desde assets/partials/header.html) -->
+<div id="app-header"></div>
+
+<main>
+<div class="section active" id="sec-tesis">
+  <div class="stitle">Tesis Doctoral — Modelo de Gobernanza Legaltech Adaptativa basada en IA para Flujos Procesales Jurídicos
+    <span class="pbadge g" id="ts-live-badge" style="margin-left:.6rem">⟳ métricas en vivo desde la app</span>
+  </div>
+
+  <div style="display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:1rem">
+    <button class="vis-ctrl-btn" onclick="adGoto('ts-cap0')">Resumen</button>
+    <button class="vis-ctrl-btn" onclick="adGoto('ts-cap1')">1 · Introducción</button>
+    <button class="vis-ctrl-btn" onclick="adGoto('ts-cap2')">2 · Estado del Arte</button>
+    <button class="vis-ctrl-btn" onclick="adGoto('ts-cap3')">3 · Metodología (DSR)</button>
+    <button class="vis-ctrl-btn" onclick="adGoto('ts-cap4')">4 · Propuesta y Resultados</button>
+    <button class="vis-ctrl-btn" onclick="adGoto('ts-cap5')">5 · Conclusiones</button>
+    <button class="vis-ctrl-btn" onclick="adGoto('ts-bib')">Bibliografía</button>
+  </div>
+
+  <!-- ── PRELIMINARES ── -->
+  <div class="panel" id="ts-cap0" style="margin-bottom:1rem;--ac:var(--gold)">
+    <div class="ph"><div class="ptitle">Resumen / Abstract</div><span class="pbadge d">formato UPS · book 12pt</span></div>
+    <div style="padding:.8rem 1.2rem">
+      <div class="ts-h2">Resumen</div>
+      <p class="ts-p">La administración de justicia ecuatoriana dispone, con el Código Orgánico General de Procesos (COGEP), de términos procesales taxativos cuyo incumplimiento es jurídicamente sancionable; sin embargo, la gobernanza tecnológica del ecosistema judicial carece de mecanismos que midan ese cumplimiento de forma continua y retroalimenten la toma de decisiones. Esta tesis diseña, construye y evalúa —bajo la metodología <i>Design Science Research</i> (DSR)— un <b>Modelo de Gobernanza Legaltech Adaptativa basada en Inteligencia Artificial para Flujos Procesales jurídicos</b> (MALTG). El artefacto central articula: (i) una ontología multicapa de gobernanza (TOGAF, COBIT, ITIL, NIST, dominio Legaltech) formalizada en OWL; (ii) un <i>structural digital model</i> del ecosistema tecnológico del Consejo de la Judicatura construido mediante análisis documental sistemático con evidencia SHA-256; (iii) una <i>cognitive digital shadow</i> que razona simbólicamente sobre expedientes reales del sistema e-SATJE aplicando las reglas de término del COGEP; y (iv) un ciclo adaptativo <i>MAPE-K</i> (<i>Monitor–Analyze–Plan–Execute over Knowledge</i>) que recalibra los indicadores de gobernanza desde la realidad procesal, gestiona el cambio normativo con aplicación temporal de la norma y emplea las ontologías como <i>guardrails</i> anti-alucinación de la IA. La evaluación sobre <span class="ts-live" data-ts="causas">47</span> causas reales combina métricas de desempeño del razonador (<i>precision, recall, F1, confusion matrix</i>, κ de Cohen), medición empírica del cumplimiento procesal (índice global <span class="ts-live" data-ts="indice">—</span>/100), detección de <i>process drift</i> dilatorio, ponderación experta (<i>AHP</i>/Delphi con análisis de sensibilidad) y verificación ontológica (<i>competency questions</i>, consistencia estructural, alineación LKIF-Core). Los resultados muestran que la brecha entre la madurez tecnológica declarada y el desempeño procesal medido es cuantificable, trazable y sensible a la adaptación normativa, y que un razonador simbólico acotado por ontologías produce dictámenes explicables con validez medible. La contribución principal es un artefacto DSR reproducible que convierte la gobernanza legaltech de un ejercicio declarativo en un sistema de medición adaptativo con trazabilidad criptográfica.</p>
+      <p class="ts-p"><b>Palabras clave:</b> gobernanza adaptativa, <i>legaltech</i>, <i>design science research</i>, <i>digital twin</i>, ontologías legales, razonamiento simbólico, <i>process drift</i>, COGEP.</p>
+      <div class="ts-h2">Abstract</div>
+      <p class="ts-p" style="font-style:italic">Ecuador's procedural code (COGEP) establishes mandatory procedural terms whose breach is legally sanctionable, yet the technological governance of the judicial ecosystem lacks mechanisms to continuously measure compliance and feed decision-making. Following the Design Science Research (DSR) methodology, this thesis designs, builds and evaluates an <b>Adaptive Legaltech Governance Model based on Artificial Intelligence for judicial procedural flows</b> (MALTG). The artifact articulates a multilayer governance ontology (OWL), a structural digital model of the Judiciary Council's technological ecosystem built from hash-verified documentary evidence, a cognitive digital shadow that symbolically reasons over real e-SATJE case files, and a MAPE-K adaptive loop that recalibrates governance indicators from procedural reality, manages regulatory change with temporal application of norms, and uses ontologies as anti-hallucination guardrails. Evaluation over 47 real cases combines reasoner performance metrics (precision, recall, F1, Cohen's κ), empirical compliance measurement, dilatory process-drift detection, expert weighting (AHP/Delphi with sensitivity analysis) and ontology verification (competency questions, LKIF-Core alignment). Results show the gap between declared technological maturity and measured procedural performance is quantifiable, traceable and responsive to normative adaptation. The main contribution is a reproducible DSR artifact that turns legaltech governance from a declarative exercise into an adaptive measurement system with cryptographic traceability.</p>
+    </div>
+  </div>
+
+  <!-- ── CAPÍTULO 1 ── -->
+  <div class="panel" id="ts-cap1" style="margin-bottom:1rem;--ac:var(--cyan)">
+    <div class="ph"><div class="ptitle">Capítulo 1 · Introducción</div><span class="pbadge d">§1.1–§1.6</span></div>
+    <div style="padding:.8rem 1.2rem">
+      <p class="ts-p">La transformación digital de la justicia ha producido sistemas de expediente electrónico —en Ecuador, el e-SATJE del Consejo de la Judicatura— que registran cada actuación procesal con fecha, tipo y responsable. Esa telemetría procesal, sin embargo, se usa casi exclusivamente para consulta: no alimenta la gobernanza tecnológica de la institución ni permite verificar de forma continua el cumplimiento de los términos que el COGEP impone bajo sanción (Art. 93). Al mismo tiempo, los marcos de gobernanza de TI (TOGAF, COBIT, ITIL, NIST CSF) se evalúan mediante autodeclaraciones de madurez, desacopladas del desempeño real del proceso judicial que dichas tecnologías deben servir. Esta tesis aborda ese doble desacoplamiento con un artefacto que une ambos mundos mediante un ciclo adaptativo gobernado por ontologías.</p>
+      <div class="ts-h2">1.1 Planteamiento del problema</div>
+      <p class="ts-p">El problema se descompone en cuatro déficits observables: <b>(D1)</b> los modelos de gobernanza legaltech son estáticos: sus indicadores se declaran, no se miden, y no reaccionan ante cambios en los datos, la norma o el contexto <span class="ts-cite">[7]</span>; <b>(D2)</b> la variabilidad del contexto fáctico —las actuaciones reales de los jueces— y la <i>process drift</i> dilatoria (providencias repetidas, alternancias, estancamientos) no se detectan sistemáticamente <span class="ts-cite">[10,11]</span>; <b>(D3)</b> la aplicación de IA al dominio jurídico enfrenta el riesgo de alucinación: un sistema que "inventa" actos o plazos es inadmisible en un dominio donde cada afirmación exige fundamento normativo <span class="ts-cite">[16,17]</span>; y <b>(D4)</b> el cambio normativo y jurisprudencial altera las reglas de cómputo, pero los sistemas no versionan el conocimiento jurídico ni aplican la norma vigente a la fecha de cada acto.</p>
+      <div class="ts-h2">1.2 Preguntas de investigación e hipótesis</div>
+      <table class="dtable ts-tbl"><thead><tr><th>ID</th><th>Pregunta de investigación</th><th>Hipótesis asociada</th></tr></thead><tbody>
+        <tr><td><b>RQ1</b></td><td>¿Puede un modelo de gobernanza legaltech recalibrar sus indicadores desde la medición empírica del cumplimiento procesal, en lugar de valores declarados?</td><td><b>H1:</b> Un ciclo MAPE-K que consuma expedientes reales produce indicadores de gobernanza que difieren significativamente de los declarados y son trazables a evidencia verificable.</td></tr>
+        <tr><td><b>RQ2</b></td><td>¿Puede un razonador simbólico acotado por una ontología procesal emitir dictámenes de cumplimiento de términos con validez medible y sin alucinaciones?</td><td><b>H2:</b> El mapeo providencia→acto alcanza un F1 macro susceptible de medición contra <i>gold standard</i>, y toda salida fuera del vocabulario ontológico es rechazada (frontera), no inventada.</td></tr>
+        <tr><td><b>RQ3</b></td><td>¿Es posible detectar patrones de dilación procesal (<i>process drift</i>) y variabilidad fáctica desde las trazas del expediente electrónico, con criterio normativo primario?</td><td><b>H3:</b> Los detectores de <i>loops</i>, alternancia, estancamiento legal y retroceso de etapa identifican causas atípicas cuyo ranking es estable ante perturbaciones ±20% de los pesos.</td></tr>
+        <tr><td><b>RQ4</b></td><td>¿Puede la adaptación (datos, calendario, norma, supuestos del experto) mantenerse trazable y reproducible?</td><td><b>H4:</b> Metadatos de contexto (hashes de KB, calendario, configuración) y una bitácora <i>hash-chained</i> permiten reproducir cualquier resultado histórico.</td></tr>
+      </tbody></table>
+      <div class="ts-caption">Tabla 1.1 — Preguntas de investigación e hipótesis.</div>
+      <div class="ts-h2">1.3 Objetivos de la investigación</div>
+      <div class="ts-h3">1.3.1 Objetivo general</div>
+      <p class="ts-p">Diseñar, construir y evaluar, mediante <i>Design Science Research</i>, un modelo de gobernanza legaltech adaptativa basada en inteligencia artificial que mida el cumplimiento de los flujos procesales del COGEP sobre expedientes reales y recalibre continuamente los indicadores de gobernanza tecnológica del ecosistema judicial, con garantías de explicabilidad, no-alucinación y trazabilidad.</p>
+      <div class="ts-h3">1.3.2 Objetivos específicos</div>
+      <p class="ts-p"><b>OE1.</b> Formalizar una ontología multicapa de gobernanza legaltech (MALTG) y una ontología procesal COGEP (Procedimiento→Etapa→Acto→Término→Sujeto) verificables con estándares de ingeniería ontológica <span class="ts-cite">[12,13]</span>. <b>OE2.</b> Construir un <i>structural digital model</i> del ecosistema tecnológico del Consejo de la Judicatura desde fuentes oficiales, con protocolo documental reproducible y evidencia con hash criptográfico. <b>OE3.</b> Implementar una <i>cognitive digital shadow</i>: razonador simbólico determinista que aplique las reglas de término del COGEP sobre las trazas del e-SATJE, con calendario judicial configurable (Arts. 73 y 77). <b>OE4.</b> Diseñar el ciclo adaptativo MAPE-K: índice empírico global, detectores de variabilidad (IVF) y deriva (IDP), gestión del cambio normativo con aplicación temporal, y panel de supuestos con límites mín–máx fijados por el usuario-experto. <b>OE5.</b> Evaluar el artefacto con <i>gold standard</i> anotado por experto jurídico (F1, κ), ponderación experta (AHP/Delphi, CR, Spearman) y análisis de sensibilidad.</p>
+      <div class="ts-h2">1.4 Contribuciones de la tesis</div>
+      <p class="ts-p">Siguiendo la clasificación de contribuciones DSR de Gregor y Hevner <span class="ts-cite">[3]</span>: <b>(C1)</b> <i>artefacto de nivel 2</i> — el sistema MALTG operativo (12 módulos, API de 60+ <i>endpoints</i>, contenedor Docker) que instancia el modelo; <b>(C2)</b> <i>teoría de diseño incipiente (nivel 3)</i> — el patrón "gobernanza adaptativa gobernada por ontologías": MAPE-K donde el <i>Knowledge</i> es una ontología legal que actúa simultáneamente como vocabulario de medición y como <i>guardrail</i> de la IA; <b>(C3)</b> instrumentos de medición reutilizables — IVF, IDP, índice empírico procesal, protocolo de evidencia SHA-256 y bitácora <i>hash-chained</i>; <b>(C4)</b> el primer <i>dataset</i> estructurado de cumplimiento de términos COGEP sobre causas públicas del e-SATJE, con diseño muestral declarado.</p>
+      <div class="ts-h2">1.5 Publicaciones previas y lineamientos de la tesis</div>
+      <p class="ts-p">La tesis culmina una trayectoria arbitrada del autor que estableció sus lineamientos de forma incremental: <b>P1</b> — <i>LegalTech Governance in Ecuador: A Systematic Review</i> (IEEE) <span class="ts-cite">[23]</span>: SLR con enfoque M3S (2008–2025) que documenta empíricamente la ausencia de un modelo integral — justifica D1–D4 y las brechas B1–B5; <b>P2</b> — <i>Architecture for LegalTech Governance: A Holistic Multidimensional Framework</i> (COLIM 2026) <span class="ts-cite">[24]</span>: la arquitectura multidimensional que MALTG instancia como ontología y radar; <b>P3</b> — <i>From Silos to Synergy: A Foundation Layer Architecture</i> (IEEE) <span class="ts-cite">[25]</span>: la capa de fundamentos que integra los marcos aislados, base del SDT; <b>P4</b> — <i>Verifiable Semantic Governance and Algorithmic Transparency (MALTG)</i> (IEEE ETCM 2026) <span class="ts-cite">[26]</span>: ontología OWL/RDF (54 clases, ~500 tripletas), <i>Bimodal Audit Method</i> y GTI=80.89 (TOGAF 91.7, LegalTech 69.1); <b>P5</b> — <i>Structural Digital Twin-Driven Conformance Assessment</i> (<i>Information</i>, MDPI) <span class="ts-cite">[27]</span>: SDT JSON-LD + <i>hierarchical coverage function</i> (origen de Ψ) + métrica de brecha, prueba de concepto reproducible. La progresión problema→arquitectura→formalización→medición deja a esta tesis el eslabón restante: la <b>adaptatividad con garantías</b> — de la <i>conformance assessment</i> puntual (P5) a la gobernanza adaptativa continua. Las contribuciones teóricas del artefacto (constructos IVF/IDP/I<sub>emp</sub>/frontera ontológica/contexto de adaptación; principios PD1–PD5; proposiciones y mutabilidad) se explicitan como teoría de diseño según Gregor &amp; Jones <span class="ts-cite">[28]</span> en el Cap. 4.</p>
+      <div class="ts-h2">1.6 Alcance y limitaciones</div>
+      <p class="ts-p">El alcance cubre procedimientos civiles COGEP (sumario, monitorio, ordinario, ejecución, apelación) sobre causas públicas del portal SATJE (2022–2024). El artefacto es una <i>digital shadow</i>: no retroalimenta al sistema judicial real (condición que definiría un <i>digital twin</i> pleno <span class="ts-cite">[5]</span>, declarada como trabajo futuro). La muestra (N=<span class="ts-live" data-ts="causas">47</span>) es intencional estratificada: habilita generalización analítica del método, no inferencia estadística poblacional. El razonador es simbólico-léxico; su validez depende del <i>gold standard</i> anotado y se reporta con transparencia (chip de validez visible en toda la interfaz).</p>
+      <div class="ts-h2">1.7 Estructura del documento</div>
+      <p class="ts-p">El Capítulo 2 revisa el estado del arte en gobernanza adaptativa, gemelos digitales, ontologías legales, <i>process mining</i> e IA jurídica, e identifica las brechas. El Capítulo 3 formaliza el diseño metodológico DSR: ciclos, actividades, datos, variables, métricas y garantías de reproducibilidad. El Capítulo 4 describe el artefacto y reporta la experimentación completa con sus resultados. El Capítulo 5 concluye, responde las preguntas de investigación y traza el trabajo futuro.</p>
+    </div>
+  </div>
+
+  <!-- ── CAPÍTULO 2 ── -->
+  <div class="panel" id="ts-cap2" style="margin-bottom:1rem;--ac:var(--violet)">
+    <div class="ph"><div class="ptitle">Capítulo 2 · Estado del Arte</div><span class="pbadge d">§2.1–§2.5</span></div>
+    <div style="padding:.8rem 1.2rem">
+      <div class="ts-h2">2.1 Fundamentos conceptuales y teóricos</div>
+      <p class="ts-p"><b>Gobernanza adaptativa.</b> Janssen y van der Voort <span class="ts-cite">[7]</span> caracterizan la <i>adaptive governance</i> como la capacidad institucional de responder a entornos cambiantes manteniendo estabilidad y rendición de cuentas; en gobierno digital, ello exige que los indicadores se recalculen desde datos operativos y que cada adaptación quede trazada. El referente computacional es la <i>autonomic computing</i> de Kephart y Chess <span class="ts-cite">[4]</span>, cuyo patrón <b>MAPE-K</b> (Monitor–Analyze–Plan–Execute sobre una base de <i>Knowledge</i>) estructura sistemas que se autorregulan; esta tesis lo traslada a la gobernanza legaltech haciendo del <i>Knowledge</i> una ontología jurídica.</p>
+      <p class="ts-p"><b>Gemelos digitales.</b> La taxonomía de Kritzinger et al. <span class="ts-cite">[5]</span> distingue <i>digital model</i> (sin flujo automático de datos), <i>digital shadow</i> (flujo unidireccional real→digital) y <i>digital twin</i> (bidireccional); Tao et al. <span class="ts-cite">[21]</span> consolidan el estado del arte industrial, y Zheng et al. <span class="ts-cite">[6]</span> introducen el <i>cognitive digital twin</i> como aquel que incorpora capacidades de razonamiento. La literatura es predominantemente manufacturera; su aplicación a ecosistemas judiciales carece de precedentes sistemáticos, y el rigor taxonómico (no sobre-reclamar "twin" donde hay "shadow") es una exigencia metodológica que esta tesis adopta explícitamente.</p>
+      <p class="ts-p"><b>Ontologías legales y estándares.</b> La ingeniería ontológica jurídica dispone de LKIF-Core como ontología de conceptos legales básicos y de LegalRuleML para reglas normativas; Casanovas et al. <span class="ts-cite">[14]</span> sintetizan la agenda del <i>Semantic Web</i> jurídico. Las metodologías NeOn <span class="ts-cite">[13]</span> y las <i>competency questions</i> definen el estándar de construcción y evaluación, complementadas por detectores de <i>pitfalls</i> como OOPS! <span class="ts-cite">[12]</span>.</p>
+      <p class="ts-p"><b>Process mining y drift.</b> van der Aalst <span class="ts-cite">[10]</span> establece el análisis de procesos desde <i>event logs</i>; Bose et al. <span class="ts-cite">[11]</span> formalizan la detección de <i>concept drift</i> en procesos. El expediente judicial electrónico es un <i>event log</i> natural (actividad, <i>timestamp</i>, recurso), pero su explotación para detectar dilación con criterio normativo —no meramente estadístico— permanece inexplorada.</p>
+      <p class="ts-p"><b>IA jurídica y guardrails.</b> Treinta años de <i>AI &amp; Law</i> <span class="ts-cite">[15,17]</span> consolidaron el razonamiento basado en reglas y casos, explicable por construcción. La irrupción de modelos generativos reactivó el problema de la alucinación; la corriente neurosimbólica <span class="ts-cite">[16]</span> propone acotar la inferencia con conocimiento estructurado. La noción de <i>restricción de frontera ontológica</i> —el sistema solo clasifica dentro de un vocabulario cerrado y deriva a humano lo que no encaja— operacionaliza ese principio en el dominio procesal.</p>
+      <div class="ts-h2">2.2 Enfoques, modelos y técnicas existentes</div>
+      <p class="ts-p">Se distinguen cuatro familias: (i) <b>marcos de gobernanza TI</b> (TOGAF/ADM, COBIT/EDM-APO-BAI-DSS-MEA, ITIL, NIST CSF) — prescriptivos, evaluados por <i>assessment</i> declarativo; (ii) <b>modelos de madurez de justicia digital</b> (CEPEJ, OCDE) — índices compuestos sin telemetría procesal; (iii) <b>sistemas de <i>court analytics</i></b> — métricas de congestión y duración, sin fundamento normativo por regla; y (iv) <b>razonadores jurídicos</b> — alta explicabilidad pero desconectados de la gobernanza institucional. Ninguna familia integra medición procesal normativa + gobernanza tecnológica + adaptación trazable en un solo artefacto.</p>
+      <div class="ts-h2">2.3 Métricas, criterios de evaluación y escenarios experimentales</div>
+      <p class="ts-p">La literatura evalúa clasificadores jurídicos con <i>precision/recall/F1</i> y acuerdo inter-anotador (κ de Cohen <span class="ts-cite">[9]</span>); ponderaciones multicriterio con AHP y su razón de consistencia CR&lt;0.10 <span class="ts-cite">[8]</span>; concordancia de jueces con ρ de Spearman <span class="ts-cite">[20]</span> e interpretación de κ según Landis y Koch <span class="ts-cite">[19]</span>; y robustez con análisis de sensibilidad <span class="ts-cite">[22]</span>. Los escenarios experimentales típicos usan <i>datasets</i> anotados pequeños (decenas a centenas de instancias) con declaración explícita del muestreo — patrón que esta tesis replica sobre causas reales ecuatorianas.</p>
+      <div class="ts-h2">2.4 Análisis crítico y brechas de investigación</div>
+      <table class="dtable ts-tbl"><thead><tr><th>Brecha</th><th>Descripción</th><th>Cómo la aborda esta tesis</th></tr></thead><tbody>
+        <tr><td><b>B1</b></td><td>Gobernanza legaltech declarativa, sin cierre empírico</td><td>Ciclo MAPE-K: índice empírico procesal recalibra el radar de madurez (peso configurable)</td></tr>
+        <tr><td><b>B2</b></td><td>Gemelos digitales sin precedente judicial ni rigor taxonómico</td><td><i>Structural digital model</i> + <i>cognitive digital shadow</i> clasificados según [5,6]</td></tr>
+        <tr><td><b>B3</b></td><td>Drift procesal detectado solo estadísticamente</td><td>Detectores con criterio normativo primario (término COGEP) y umbral referencial subsidiario</td></tr>
+        <tr><td><b>B4</b></td><td>IA jurídica sin garantías operativas anti-alucinación</td><td>Ontología como <i>guardrail</i>: frontera de vocabulario + cadena acto→regla→artículo verificada</td></tr>
+        <tr><td><b>B5</b></td><td>Cambio normativo no versionado en sistemas de cumplimiento</td><td>KB versionada con <i>historial</i> y aplicación temporal de la regla vigente a la fecha del acto</td></tr>
+      </tbody></table>
+      <div class="ts-caption">Tabla 2.1 — Brechas de investigación y respuesta del artefacto.</div>
+      <div class="ts-h2">2.5 Síntesis y posicionamiento de la tesis</div>
+      <p class="ts-p">La tesis se posiciona en la intersección de cuatro literaturas que no dialogan entre sí (gobernanza adaptativa, gemelos digitales, ontologías legales y <i>process mining</i> judicial) y propone que su integración —bajo DSR y con el patrón MAPE-K ontológicamente gobernado— constituye una clase de artefacto nueva: el <b>modelo de gobernanza legaltech adaptativa</b>, cuya utilidad, rigor y evaluabilidad se demuestran en los capítulos siguientes.</p>
+    </div>
+  </div>
+
+  <!-- ── CAPÍTULO 3 ── -->
+  <div class="panel" id="ts-cap3" style="margin-bottom:1rem;--ac:#10e98c">
+    <div class="ph"><div class="ptitle">Capítulo 3 · Metodología y diseño de la investigación (Design Science Research)</div><span class="pbadge d">§3.1–§3.7</span></div>
+    <div style="padding:.8rem 1.2rem">
+      <div class="ts-h2">3.1 Enfoque metodológico</div>
+      <p class="ts-p">Se adopta <b>Design Science Research</b> por la naturaleza del problema: la respuesta a las RQ no es una teoría descriptiva sino un artefacto cuya utilidad debe demostrarse <span class="ts-cite">[1]</span>. El diseño sigue los tres ciclos de Hevner: el <b>ciclo de relevancia</b> ancla el artefacto en el entorno real (COGEP, e-SATJE, Consejo de la Judicatura, causas públicas); el <b>ciclo de rigor</b> lo fundamenta en las bases de conocimiento del Capítulo 2 (MAPE-K, taxonomía de gemelos, AHP, métricas de clasificación); y el <b>ciclo de diseño</b> itera construcción y evaluación. Complementariamente, la organización de actividades sigue la DSRM de Peffers et al. <span class="ts-cite">[2]</span> y la evaluación en contexto se apoya en principios de <i>Action Design Research</i> <span class="ts-cite">[18]</span>, dado que el artefacto se refinó en interacción continua con datos reales.</p>
+      <table class="dtable ts-tbl"><thead><tr><th>Actividad DSRM [2]</th><th>Instanciación en esta tesis</th><th>Evidencia trazable</th></tr></thead><tbody>
+        <tr><td>1. Identificación del problema</td><td>Déficits D1–D4 (§1.1); análisis de fallos conceptuales documentado</td><td>PLAN_CORRECCION_FALLOS.md · bitácora</td></tr>
+        <tr><td>2. Objetivos de la solución</td><td>OE1–OE5 con criterios de aceptación cuantitativos (§3.6)</td><td>Tabla 3.3</td></tr>
+        <tr><td>3. Diseño y desarrollo</td><td>Artefactos A1–A6 (§3.2) en 3 iteraciones de diseño</td><td>Código versionado + bitácora hash-chained</td></tr>
+        <tr><td>4. Demostración</td><td>Operación sobre 47 causas reales; sesión simulada reproducible (semilla 42)</td><td>Tabs 04–10 de la aplicación</td></tr>
+        <tr><td>5. Evaluación</td><td>Gold standard (F1, κ), AHP/Delphi (CR, Spearman), sensibilidad ±10/20%, CQs</td><td>eval_report.json · pesos_ahp.json</td></tr>
+        <tr><td>6. Comunicación</td><td>Esta tesis + la propia aplicación como demostrador interactivo</td><td>Tab Tesis (este documento)</td></tr>
+      </tbody></table>
+      <div class="ts-caption">Tabla 3.1 — Mapeo de las seis actividades DSRM al proyecto.</div>
+      <div class="ts-h2">3.2 Diseño general de la investigación</div>
+      <p class="ts-p">El artefacto se descompone en seis componentes de diseño: <b>A1</b> — ontología MALTG multicapa (OWL/JSON-LD; capas TOGAF, COBIT, ITIL, NIST, tecnologías emergentes y dominio Legaltech; 10 dimensiones de validación); <b>A2</b> — <i>structural digital model</i> SDT_CJ del ecosistema del Consejo de la Judicatura (JSON-LD con capas, servicios, conexiones y fuentes); <b>A3</b> — ontología procesal COGEP (7 procedimientos, 16 actos, 11 reglas de término, 4 sujetos) con exportación OWL; <b>A4</b> — razonador simbólico determinista (<i>cognitive digital shadow</i>) con calendario judicial configurable; <b>A5</b> — capa adaptativa MAPE-K (índice empírico, IVF, IDP, ranking configurable, alertas, cambio normativo con aplicación temporal, supuestos mín–máx); <b>A6</b> — instrumentos de validación experta (anotación <i>gold</i>, AHP, Delphi dimensional, doble evaluación con rúbrica, registro de verificación externa). La iteración de diseño siguió tres ciclos: (i) validador estático MALTG↔SDT; (ii) cierre del ciclo adaptativo; (iii) instrumentación de validez.</p>
+      <div class="ts-h2">3.3 Datos, materiales y recursos</div>
+      <p class="ts-p"><b>Corpus procesal:</b> <span class="ts-live" data-ts="causas">47</span> causas públicas del portal SATJE (2022–2024), en formato JSON con cabecera e historial de actuaciones (<i>NombreProvidencia, TipoProvidencia, FechaProvidencia, IdJudicatura, IdGrafoFlujoEstructura</i>), estratificadas por procedimiento y provincia (12 provincias). <b>Corpus documental:</b> 15 corridas de captura de evidencia sobre fuentes oficiales (*.funcionjudicial.gob.ec) con <i>manifest</i> SHA-256 por <i>snapshot</i>. <b>Conocimiento normativo:</b> COGEP consolidado; KB versionada con vigencias. <b>Flujos canónicos:</b> diagramas BPMN del e-SATJE (flujos 132–288). <b>Infraestructura:</b> FastAPI/Python 3.12 dockerizado, frontend HTML/JS, sin dependencias de servicios externos de IA (la inferencia es local y determinista).</p>
+      <div class="ts-h2">3.4 Variables, factores y escenarios de estudio</div>
+      <table class="dtable ts-tbl"><thead><tr><th>Variable</th><th>Definición operacional</th><th>Rango</th></tr></thead><tbody>
+        <tr><td>Salud procesal</td><td>Media de puntos por término evaluado (CUMPLE=100, ALERTA=60, INCUMPLE=0) por causa</td><td>0–100</td></tr>
+        <tr><td>Índice empírico global</td><td>actos en plazo / actos evaluables, corpus completo</td><td>0–100</td></tr>
+        <tr><td>IVF</td><td>100·(actos no canónicos + faltantes)/(canónicos + no canónicos)</td><td>0–100</td></tr>
+        <tr><td>IDP</td><td>Σ puntos por hallazgo de drift (loop, ping-pong, estancamiento legal/referencial, retroceso), acotada</td><td>0–100</td></tr>
+        <tr><td>Riesgo</td><td>w₁·(100−salud) + w₂·IVF + w₃·IDP, pesos del usuario-experto normalizados</td><td>0–100</td></tr>
+        <tr><td>Ψ(d)</td><td>w_root·𝟙[raíz∈R] + w_subs·|sub∩R|/|sub| — cobertura de dimensión en el SDT</td><td>0–1</td></tr>
+        <tr><td>F1 macro</td><td>Media armónica precision/recall por clase de acto, promediada</td><td>0–1</td></tr>
+        <tr><td>κ, ρ, CR</td><td>Cohen inter-anotador; Spearman inter-evaluador; consistencia AHP</td><td>—</td></tr>
+      </tbody></table>
+      <div class="ts-caption">Tabla 3.2 — Variables del estudio. Los factores manipulables (14 supuestos con límites mín–máx) se declaran en el panel de Supuestos y quedan hasheados en cada resultado.</div>
+      <p class="ts-p">Los <b>escenarios experimentales</b> son cinco: <b>E1</b> medición empírica <i>baseline</i> del corpus; <b>E2</b> perturbación de supuestos (pesos, umbrales, calendario) y observación de la propagación; <b>E3</b> cambio normativo simulado con re-evaluación de impacto; <b>E4</b> validación del razonador contra <i>gold standard</i>; <b>E5</b> ponderación experta y análisis de sensibilidad.</p>
+      <div class="ts-h2">3.5 Métodos y técnicas empleadas</div>
+      <p class="ts-p">(a) <b>Análisis documental sistemático</b> con protocolo de cuatro fases (identificación→captura con SHA-256→verificación→codificación contra rúbrica) para construir el SDT; (b) <b>razonamiento simbólico basado en reglas</b>: <i>matching</i> léxico providencia→acto sobre vocabulario cerrado, cómputo de días hábiles (Arts. 73/77 COGEP, calendario configurable) y veredicto por regla con factor configurable; (c) <b>detección de <i>process drift</i></b> con criterio normativo primario y umbral referencial subsidiario <span class="ts-cite">[10,11]</span>; (d) <b>AHP</b> por comparación de pares con verificación CR <span class="ts-cite">[8]</span> y <b>Delphi/Likert</b> con mediana normalizada para pesos dimensionales; (e) <b>evaluación de clasificador</b> contra <i>gold standard</i> anotado con guía de una página y doble anotación parcial (κ <span class="ts-cite">[9]</span>); (f) <b>verificación ontológica</b>: chequeos estructurales C1–C7, <i>competency questions</i> ejecutables, exportación OWL y alineación LKIF-Core/LegalRuleML <span class="ts-cite">[12,13,14]</span>; (g) <b>análisis de sensibilidad</b> por perturbación ±10/20% con verificación de estabilidad del score global y del <i>top-1</i> del ranking.</p>
+      <div class="ts-h2">3.6 Métricas y criterios de evaluación</div>
+      <table class="dtable ts-tbl"><thead><tr><th>Dimensión evaluada</th><th>Métrica</th><th>Criterio de aceptación</th></tr></thead><tbody>
+        <tr><td>Validez del mapeo IA</td><td>F1 macro vs gold standard</td><td>F1 ≥ 0.85 (umbral configurable) para uso como indicador agregado</td></tr>
+        <tr><td>Objetividad de la tarea</td><td>κ de Cohen entre 2 anotadores</td><td>κ ≥ 0.70 (acuerdo sustancial)</td></tr>
+        <tr><td>Consistencia experta</td><td>CR de AHP</td><td>CR &lt; 0.10 por experto</td></tr>
+        <tr><td>Concordancia de evaluadores</td><td>ρ de Spearman (rúbrica dimensional)</td><td>ρ ≥ 0.70 entre pares</td></tr>
+        <tr><td>Robustez del modelo</td><td>Δ score global ante ±10% en pesos</td><td>Δ &lt; 5 puntos y top-1 del ranking invariante ante ±20%</td></tr>
+        <tr><td>Adecuación ontológica</td><td>CQs respondidas; checks C1–C6</td><td>100% CQs; 0 fallos críticos</td></tr>
+        <tr><td>No-alucinación</td><td>Salidas fuera de frontera</td><td>0 respuestas inventadas: todo lo no clasificable se deriva a humano</td></tr>
+      </tbody></table>
+      <div class="ts-caption">Tabla 3.3 — Métricas y criterios de aceptación del artefacto.</div>
+      <div class="ts-h2">3.7 Consideraciones éticas y de reproducibilidad</div>
+      <p class="ts-p"><b>Ética:</b> se usan exclusivamente causas de consulta pública del portal SATJE; los indicadores por <i>login</i> se rotulan "patrón de tramitación" y nunca "conducta del funcionario", con <i>disclaimer</i> fijo en toda salida ("indicador de apoyo — no constituye asesoría jurídica ni prejuzga la conducta procesal"); el sistema rechaza clasificar fuera de su vocabulario en lugar de aventurar respuestas. <b>Reproducibilidad:</b> (i) toda fuente documental está congelada con SHA-256; (ii) cada resultado porta <i>contexto_adaptacion</i> (hashes de KB, calendario, configuración y versión del razonador); (iii) la bitácora <i>append-only</i> encadenada por hash registra toda decisión metodológica y cambio de supuestos; (iv) la sesión simulada usa semilla fija (42) y sus datos quedan marcados SIMULADO, separados de los reales; (v) el artefacto completo es un contenedor Docker autocontenido y los datos son archivos JSON versionables.</p>
+    </div>
+  </div>
+
+  <!-- ── CAPÍTULO 4 ── -->
+  <div class="panel" id="ts-cap4" style="margin-bottom:1rem;--ac:#ff9a3c">
+    <div class="ph"><div class="ptitle">Capítulo 4 · Propuesta y resultados experimentales</div>
+      <span class="pbadge g">las cifras marcadas en verde se leen en vivo de la aplicación</span></div>
+    <div style="padding:.8rem 1.2rem">
+      <div class="ts-h2">4.1 Descripción general de la propuesta</div>
+      <p class="ts-p">MALTG es un sistema de gobernanza que opera como ciclo MAPE-K sobre dos ontologías. En la fase <b>Monitor</b>, el sistema observa dos flujos: el corpus de expedientes del e-SATJE (telemetría procesal) y el ecosistema documental del Consejo de la Judicatura (capturas verificables). En <b>Analyze</b>, el razonador simbólico aplica las reglas de término del COGEP a cada causa y los detectores calculan IVF e IDP. En <b>Plan</b>, se agregan el índice empírico global, el ranking de riesgo por procedimiento y las alertas de seguridad cognitiva. En <b>Execute</b>, el radar de validación de las 10 dimensiones de gobernanza se recalibra mezclando el score declarado con el empírico según el peso configurado, y toda la cadena queda asentada en la bitácora. El <b>Knowledge</b> —las ontologías MALTG y COGEP— cumple doble función: vocabulario de medición y frontera de lo que la IA puede afirmar.</p>
+      <div class="ts-eq">Ψ(d) = w_root·𝟙[root_d ∈ R] + w_subs·(|sub_d ∩ R| / |sub_d|) &nbsp;&nbsp;·&nbsp;&nbsp; riesgo(c) = w₁·(100−salud_c) + w₂·IVF_c + w₃·IDP_c &nbsp;&nbsp;·&nbsp;&nbsp; score_LT = (1−λ)·declarado + λ·índice_empírico</div>
+      <div class="ts-caption">Ecuaciones centrales: cobertura de dimensión, riesgo por causa y cierre adaptativo del radar (λ = peso empírico configurable).</div>
+      <div class="ts-h2">4.2 Componentes y funcionamiento del modelo</div>
+      <table class="dtable ts-tbl"><thead><tr><th>Componente (tab)</th><th>Función</th><th>Salida verificable</th></tr></thead><tbody>
+        <tr><td>Methodology / MALTG / Ontology</td><td>Modelo formal ⟨Ω,Δ,Γ,Ψ,δ⟩ y ontología multicapa</td><td>MALTG_ontology.owl + grafo D3</td></tr>
+        <tr><td>SDS (04) + GET-SDS (05)</td><td>Structural digital model del CJ + radar de 10 dimensiones</td><td>SDT_CJ.json (JSON-LD) + validación Ψ</td></tr>
+        <tr><td>Workflow (06)</td><td>Flujos BPMN canónicos + trayectoria real de cada causa</td><td>Grafo procesal con alertas por nodo</td></tr>
+        <tr><td>COGEP·IA (07)</td><td>Cognitive digital shadow: razonador + chat + análisis de PDF + verificación ontológica</td><td>Dictámenes con cadena acto→regla→artículo</td></tr>
+        <tr><td>Bitácora (08)</td><td>Evidencia SHA-256 y registro hash-chained</td><td>manifests + cadena verificable</td></tr>
+        <tr><td>Adaptativo (09)</td><td>MAPE-K: supuestos mín–máx, calendario, ranking, alertas, cambio normativo, muestra</td><td>salud-global + contexto_adaptacion</td></tr>
+        <tr><td>Validación Experta (10)</td><td>Gold standard, AHP, Delphi dimensional, doble evaluación, verificación externa</td><td>eval_report + pesos_ahp + concordancias</td></tr>
+      </tbody></table>
+      <div class="ts-caption">Tabla 4.1 — Componentes del artefacto y su evidencia.</div>
+      <div class="ts-h2">4.3 Implementación y configuración experimental</div>
+      <p class="ts-p">Implementación: backend FastAPI (Python 3.12) con ~65 <i>endpoints</i>, frontend HTML/JS autocontenido, despliegue Docker Compose con <i>hot-reload</i> y <i>healthcheck</i>; persistencia en JSON/JSON-LD/OWL versionables. La configuración experimental se gobierna desde el <b>panel de supuestos</b>: 14 parámetros con límites mín–máx validados en servidor (pesos del ranking, λ empírico, w_root de Ψ, puntos y umbrales de drift, factor ALERTA→INCUMPLE, umbral F1), cada cambio con actor y hash en bitácora. El calendario judicial (55 feriados 2022–2026 + suspensiones del CJ) es editable y afecta el cómputo de todos los términos (Arts. 73/77). KB COGEP v<span class="ts-live" data-ts="kbv">—</span>.</p>
+      <div class="ts-h2">4.4 Resultados experimentales</div>
+      <div class="ts-h3">4.4.1 E1 — Medición empírica del cumplimiento procesal (baseline)</div>
+      <p class="ts-p">Sobre <span class="ts-live" data-ts="causas">—</span> causas (<span class="ts-live" data-ts="evaluables">—</span> términos evaluables), el <b>índice empírico global</b> es <span class="ts-live" data-ts="indice">—</span>/100 (actos en plazo <span class="ts-live" data-ts="enplazo">—</span>/<span class="ts-live" data-ts="evaluables2">—</span>), con salud media por causa de <span class="ts-live" data-ts="salud">—</span>/100. El desglose por procedimiento se muestra en la Tabla 4.2 (generada en vivo). Este resultado responde afirmativamente a <b>RQ1/H1</b>: el indicador empírico difiere sustancialmente del nivel declarado en las fuentes institucionales y recalibra la dimensión Legaltech del radar (score declarado 50.8 → mezclado según λ).</p>
+      <table class="dtable ts-tbl"><thead><tr><th>Procedimiento</th><th class="dt-num">N causas</th><th class="dt-num">Términos evaluados</th><th class="dt-num">En plazo</th><th class="dt-num">Incumplimientos</th><th class="dt-num dt-emphasis">Índice</th><th class="dt-num">Salud media</th></tr></thead>
+      <tbody id="ts-t-proc"><tr><td colspan="7" style="color:var(--t3)">cargando…</td></tr></tbody></table>
+      <div class="ts-caption">Tabla 4.2 — Cumplimiento por procedimiento (datos en vivo del corpus).</div>
+      <div class="ts-h3">4.4.2 E2 — Variabilidad, deriva y seguridad cognitiva</div>
+      <p class="ts-p">Los detectores M1/M2 identifican causas con IVF de hasta 87.5 e IDP saturado (100) por acumulación de <i>loops</i> y estancamientos; el sistema de alertas reporta <span class="ts-live" data-ts="alertas">—</span> alertas (<span class="ts-live" data-ts="criticas">—</span> críticas con artículo COGEP citado, <span class="ts-live" data-ts="altas">—</span> altas por patrón dilatorio, <span class="ts-live" data-ts="medias">—</span> medias por actuaciones fuera de la frontera ontológica). Cada alerta expone hecho observable, fundamento normativo y <i>disclaimer</i>, cumpliendo el requisito de seguridad cognitiva (<b>RQ3/H3</b>). Las actuaciones no clasificables se derivan a criterio humano: el conteo de "fuera de frontera" opera como métrica de no-alucinación (criterio Tabla 3.3, fila 7).</p>
+      <div class="ts-h3">4.4.3 E3 — Adaptación normativa</div>
+      <p class="ts-p">El escenario de reforma simulada (regla R_CALIF: término 5→3 días, vigencia 2024-01-01, fuente RO-TEST declarada como simulación) demostró la cadena completa: la KB versionó la regla (v1.0→v1.1), el razonador aplicó la norma vigente a la fecha de cada acto, y la re-evaluación de impacto identificó 1 de 3 causas evaluables cambiando de dictamen (CUMPLE→INCUMPLE, 5 días computados frente al nuevo término de 3). El delta se propagó a ranking, alertas y radar en la misma corrida, con asiento en bitácora (<b>RQ4/H4</b>).</p>
+      <div class="ts-h3">4.4.4 E4 — Validez del razonador (gold standard)</div>
+      <p class="ts-p">Estado actual: <span class="ts-live" data-ts="f1chip">sin validez medida</span>. La <b>sesión simulada</b> reproducible (semilla 42; 40 anotaciones + 15 de segundo anotador + 3 juicios AHP, todos marcados SIMULADO) demuestra el instrumento de punta a punta: F1 macro 0.621 sobre N=55 con κ=0.833 — un razonador <i>no apto</i> frente al umbral 0.85, con la <i>confusion matrix</i> señalando las clases a reforzar (escenario deliberadamente pedagógico: la anotación simulada discrepa ~15% del sistema). La sesión real con abogado anotador sustituirá estas cifras; el chip de validez de toda la interfaz se actualiza automáticamente y ninguna pantalla oculta el estado de validez vigente (<b>RQ2/H2</b> — instrumentación completa; medición definitiva pendiente de la sesión real).</p>
+      <div class="ts-h3">4.4.5 E5 — Ponderación experta y sensibilidad</div>
+      <p class="ts-p">El instrumento AHP (matriz 2×2 raíz/subconceptos, CR=0 por construcción; agregación por media entre expertos) y el panel Delphi dimensional (importancia 1–9, mediana normalizada) alimentan pesos con procedencia declarada; en la corrida de prueba, la ponderación dimensional desplazó el score global de 23.4 a 26.2, evidenciando que el radar responde a los juicios expertos. El análisis de sensibilidad (±10/±20% sobre w_root y sobre los pesos del ranking) reporta desviación máxima del score global &lt; 1 punto y <i>top-1</i> del ranking invariante — el criterio de robustez de la Tabla 3.3 se cumple con los pesos por defecto. La doble evaluación con rúbrica registró, en la corrida de instrumentación, ρ=0.718 entre evaluadores de prueba y ρ=0.88/0.84 frente al sistema (valores demostrativos; la sesión real los reemplaza).</p>
+      <div class="ts-h3">4.4.6 Verificación ontológica</div>
+      <p class="ts-p">La ontología COGEP exportada a OWL (16 <i>ActoProcesal</i>, 11 <i>TerminoProcesal</i>, 7 <i>Procedimiento</i>, 4 <i>SujetoProcesal</i>, 7 <i>object properties</i>) supera los chequeos estructurales C1–C6 (única advertencia C7: actos válidos fuera de etapas, justificados como transversales); las 10 <i>competency questions</i> se responden en su totalidad con su consulta SPARQL equivalente documentada; y la alineación declarativa con LKIF-Core/LegalRuleML (6 correspondencias, relación <i>closeMatch/subClassOf</i>) demuestra expresabilidad en los estándares del dominio <span class="ts-cite">[12,13,14]</span>. La verificación DL externa (HermiT/Protégé) y OOPS! se asientan mediante el registro del Punto 5 del tab Validación Experta.</p>
+      <div class="ts-h2">4.5 Análisis y discusión</div>
+      <p class="ts-p">Tres hallazgos estructuran la discusión. <b>Primero</b>, la brecha declarado-vs-medido: el ecosistema exhibe madurez documental media (score declarado ~50/100 en la dimensión Legaltech) mientras el cumplimiento procesal medido es sustancialmente menor (<span class="ts-live" data-ts="indice2">—</span>/100); un modelo estático jamás revelaría esta distancia, que es precisamente el objeto de la gobernanza adaptativa <span class="ts-cite">[7]</span>. <b>Segundo</b>, el criterio normativo primario en la detección de drift evita el falso positivo estadístico: un intervalo largo solo es "estancamiento" si viola un término del COGEP; lo demás se rotula referencial sin fundamento normativo — distinción inexistente en el <i>process mining</i> convencional <span class="ts-cite">[11]</span>. <b>Tercero</b>, el guardrail ontológico convierte la limitación del matching léxico en virtud metodológica: el sistema exhibe sus rechazos ("fuera de frontera") en lugar de ocultarlos, y su validez es una cifra pública (chip F1) en vez de una promesa.</p>
+      <div class="ts-h2">4.6 Amenazas a la validez</div>
+      <p class="ts-p"><b>Validez de constructo:</b> IVF/IDP son proxies de variabilidad y dilación; se mitigó anclando el estancamiento al término legal y declarando los umbrales como supuestos configurables. <b>Validez interna:</b> el cómputo de días hábiles depende del calendario configurado; feriados o suspensiones omitidos producen falsos INCUMPLE — mitigado con calendario editable y trazado. <b>Validez externa:</b> muestreo intencional (N=<span class="ts-live" data-ts="causas2">—</span>, 3 procedimientos dominantes): las conclusiones son analíticas, no poblacionales; la ampliación a N≥100 se declara como trabajo futuro. <b>Validez de conclusión:</b> las métricas de validez del razonador provienen, a la fecha de este texto, de la sesión simulada; el diseño obliga a reemplazarlas por la sesión real antes de cualquier afirmación definitiva — el propio artefacto lo señala con el banner de datos simulados.</p>
+    </div>
+  </div>
+
+  <!-- ── CAPÍTULO 5 ── -->
+  <div class="panel" id="ts-cap5" style="margin-bottom:1rem;--ac:var(--cyan)">
+    <div class="ph"><div class="ptitle">Capítulo 5 · Conclusiones y trabajo futuro</div><span class="pbadge d">§5.1–§5.4</span></div>
+    <div style="padding:.8rem 1.2rem">
+      <div class="ts-h2">5.1 Aportes y contribuciones de la tesis</div>
+      <p class="ts-p">La tesis demuestra que la gobernanza legaltech puede dejar de ser declarativa: <b>(RQ1)</b> el ciclo MAPE-K implementado recalibra el radar de 10 dimensiones desde la medición empírica de <span class="ts-live" data-ts="evaluables3">—</span> términos procesales reales, con cada recálculo trazado; <b>(RQ2)</b> el razonador simbólico produce dictámenes con cadena verificable acto→regla→artículo, frontera ontológica que elimina la alucinación por construcción, e instrumentación completa de validez (F1/κ) lista para la medición definitiva; <b>(RQ3)</b> los detectores de drift con criterio normativo identifican y priorizan causas atípicas con ranking robusto ante ±20% de perturbación; <b>(RQ4)</b> los metadatos de contexto y la bitácora hash-chained hacen reproducible cada resultado histórico. Las contribuciones C1–C4 (§1.4) quedan materializadas en un artefacto público, dockerizado y auto-documentado (tabs Guía y Tesis).</p>
+      <div class="ts-h2">5.2 Limitaciones del estudio</div>
+      <p class="ts-p">(i) La validez definitiva del razonador requiere la sesión real de anotación (el diseño la instrumenta pero no la sustituye); (ii) la muestra intencional limita la generalización estadística; (iii) el matching léxico no captura providencias semánticamente ambiguas —la matriz de confusión de la sesión simulada ya orienta su mejora—; (iv) la verificación DL se ejecuta con herramientas externas (registrada, no integrada); (v) el artefacto es una <i>shadow</i>: la retroalimentación al e-SATJE excede el alcance institucional de una tesis.</p>
+      <div class="ts-h2">5.3 Líneas de trabajo futuro</div>
+      <p class="ts-p"><b>(F1)</b> Cierre del lazo hacia <i>digital twin</i> pleno: notificación de alertas de término al sistema real (oficio electrónico), con las salvaguardas institucionales del caso <span class="ts-cite">[5,6]</span>. <b>(F2)</b> Ampliación muestral sistemática (N≥100 por descarga completa de unidades judiciales) habilitando estadística por estrato. <b>(F3)</b> Hibridación neurosimbólica: un LLM como extractor de candidatos bajo el mismo guardrail ontológico, evaluado contra el mismo gold standard <span class="ts-cite">[16]</span>. <b>(F4)</b> Formalización ejecutable de las reglas en LegalRuleML y razonamiento DL integrado. <b>(F5)</b> Extensión del AHP a la matriz completa 9×9 de dimensiones con panel multi-experto y agregación geométrica. <b>(F6)</b> Estudio longitudinal del índice empírico como serie temporal de la salud procesal institucional.</p>
+      <div class="ts-h2">5.4 Consideraciones finales</div>
+      <p class="ts-p">El resultado central es un cambio de categoría: del "modelo de madurez" que se responde con un cuestionario, al <b>sistema de medición adaptativo</b> que se responde con evidencia. En un dominio donde cada afirmación tiene consecuencias jurídicas, la combinación de ontologías como frontera, medición empírica como retroalimentación y trazabilidad criptográfica como memoria constituye, a juicio de esta investigación, el estándar mínimo exigible a la IA de gobernanza judicial.</p>
+    </div>
+  </div>
+
+  <!-- ── BIBLIOGRAFÍA ── -->
+  <div class="panel" id="ts-bib" style="--ac:var(--gold)">
+    <div class="ph"><div class="ptitle">Bibliografía</div><span class="pbadge d">revistas especializadas</span></div>
+    <div style="padding:.8rem 1.2rem;font-size:.7rem;color:var(--t2);line-height:1.9">
+      <div>[1] Hevner, A. R., March, S. T., Park, J., &amp; Ram, S. (2004). Design Science in Information Systems Research. <i>MIS Quarterly</i>, 28(1), 75–105.</div>
+      <div>[2] Peffers, K., Tuunanen, T., Rothenberger, M. A., &amp; Chatterjee, S. (2007). A Design Science Research Methodology for Information Systems Research. <i>Journal of Management Information Systems</i>, 24(3), 45–77.</div>
+      <div>[3] Gregor, S., &amp; Hevner, A. R. (2013). Positioning and Presenting Design Science Research for Maximum Impact. <i>MIS Quarterly</i>, 37(2), 337–355.</div>
+      <div>[4] Kephart, J. O., &amp; Chess, D. M. (2003). The Vision of Autonomic Computing. <i>Computer</i>, 36(1), 41–50.</div>
+      <div>[5] Kritzinger, W., Karner, M., Traar, G., Henjes, J., &amp; Sihn, W. (2018). Digital Twin in manufacturing: A categorical literature review and classification. <i>IFAC-PapersOnLine</i>, 51(11), 1016–1022.</div>
+      <div>[6] Zheng, X., Lu, J., &amp; Kiritsis, D. (2022). The emergence of cognitive digital twin: vision, challenges and opportunities. <i>International Journal of Production Research</i>, 60(24), 7610–7632.</div>
+      <div>[7] Janssen, M., &amp; van der Voort, H. (2016). Adaptive governance: Towards a stable, accountable and responsive government. <i>Government Information Quarterly</i>, 33(1), 1–5.</div>
+      <div>[8] Saaty, T. L. (1990). How to make a decision: The Analytic Hierarchy Process. <i>European Journal of Operational Research</i>, 48(1), 9–26.</div>
+      <div>[9] Cohen, J. (1960). A coefficient of agreement for nominal scales. <i>Educational and Psychological Measurement</i>, 20(1), 37–46.</div>
+      <div>[10] van der Aalst, W. M. P. (2012). Process mining: Overview and opportunities. <i>Communications of the ACM</i>, 55(8), 76–83.</div>
+      <div>[11] Bose, R. P. J. C., van der Aalst, W. M. P., Žliobaitė, I., &amp; Pechenizkiy, M. (2014). Dealing with concept drifts in process mining. <i>IEEE Transactions on Neural Networks and Learning Systems</i>, 25(1), 154–171.</div>
+      <div>[12] Poveda-Villalón, M., Gómez-Pérez, A., &amp; Suárez-Figueroa, M. C. (2014). OOPS! (OntOlogy Pitfall Scanner!): An on-line tool for ontology evaluation. <i>International Journal on Semantic Web and Information Systems</i>, 10(2), 7–34.</div>
+      <div>[13] Suárez-Figueroa, M. C., Gómez-Pérez, A., &amp; Fernández-López, M. (2015). The NeOn Methodology framework: A scenario-based methodology for ontology development. <i>Applied Ontology</i>, 10(2), 107–145.</div>
+      <div>[14] Casanovas, P., Palmirani, M., Peroni, S., van Engers, T., &amp; Vitali, F. (2016). Semantic Web for the Legal Domain: The next step. <i>Semantic Web</i>, 7(3), 213–227.</div>
+      <div>[15] Bench-Capon, T., et al. (2012). A history of AI and Law in 50 papers: 25 years of the international conference on AI and Law. <i>Artificial Intelligence and Law</i>, 20(3), 215–319.</div>
+      <div>[16] d'Avila Garcez, A., &amp; Lamb, L. C. (2023). Neurosymbolic AI: the 3rd wave. <i>Artificial Intelligence Review</i>, 56, 12387–12406.</div>
+      <div>[17] Governatori, G., Bench-Capon, T., Verheij, B., Araszkiewicz, M., Francesconi, E., &amp; Grabmair, M. (2022). Thirty years of Artificial Intelligence and Law: the first decade. <i>Artificial Intelligence and Law</i>, 30(4), 481–519.</div>
+      <div>[18] Sein, M. K., Henfridsson, O., Purao, S., Rossi, M., &amp; Lindgren, R. (2011). Action Design Research. <i>MIS Quarterly</i>, 35(1), 37–56.</div>
+      <div>[19] Landis, J. R., &amp; Koch, G. G. (1977). The measurement of observer agreement for categorical data. <i>Biometrics</i>, 33(1), 159–174.</div>
+      <div>[20] Spearman, C. (1904). The proof and measurement of association between two things. <i>The American Journal of Psychology</i>, 15(1), 72–101.</div>
+      <div>[21] Tao, F., Zhang, H., Liu, A., &amp; Nee, A. Y. C. (2019). Digital Twin in Industry: State-of-the-Art. <i>IEEE Transactions on Industrial Informatics</i>, 15(4), 2405–2415.</div>
+      <div>[22] Gama, J., Žliobaitė, I., Bifet, A., Pechenizkiy, M., &amp; Bouchachia, A. (2014). A survey on concept drift adaptation. <i>ACM Computing Surveys</i>, 46(4), 1–37.</div>
+      <div style="margin-top:.4rem;font-family:var(--font-mono);font-size:.6rem;color:var(--gold)">— Publicaciones previas del autor (fundamentos de la tesis) —</div>
+      <div>[23] Paccha-Angamarca, P. M., &amp; Sacoto-Cabrera, E. J. (2025). LegalTech Governance in Ecuador: A Systematic Review of the Digital Transformation of Justice. <i>Proc. IEEE</i>.</div>
+      <div>[24] Paccha-Angamarca, P. M., &amp; Sacoto-Cabrera, E. J. (2026). Architecture for LegalTech Governance: A Holistic Multidimensional Framework Integrating AI, Blockchain, Cybersecurity, Workflows and Enterprise Standards. <i>X Latin American Congress on Mechanical Engineering (COLIM)</i>.</div>
+      <div>[25] Paccha-Angamarca, P. M., Sacoto-Cabrera, E. J., &amp; Velepucha-Bonett, V. (2026). From Silos to Synergy: A Foundation Layer Architecture for LegalTech Governance. <i>Proc. IEEE</i> (in press).</div>
+      <div>[26] Paccha-Angamarca, P. M., Sacoto-Cabrera, E. J., &amp; Velepucha-Bonett, V. (2026). Verifiable Semantic Governance and Algorithmic Transparency: An Ontological Approach to MALTG. <i>Proc. IEEE ETCM</i>.</div>
+      <div>[27] Paccha-Angamarca, P. M., Sacoto-Cabrera, E. J., &amp; Velepucha-Bonett, V. (2026). Structural Digital Twin-Driven Conformance Assessment of a LegalTech Governance Ontology: A Reproducible Proof of Concept. <i>Information</i> (MDPI, en revisión).</div>
+      <div>[28] Gregor, S., &amp; Jones, D. (2007). The anatomy of a design theory. <i>Journal of the Association for Information Systems</i>, 8(5), 312–335.</div>
+      <div style="margin-top:.6rem;font-family:var(--font-mono);font-size:.58rem;color:var(--t3)">Nota editorial: estructura conforme al TOC de la plantilla doctoral UPS (tesis.tex); las entradas están listas para Bibliografia.bib en formato BibTeX. Los valores en verde se leen en vivo de la aplicación y deben congelarse (con su contexto_adaptacion) al momento del depósito del documento.</div>
+    </div>
+  </div>
+</div>
+</main>
+
+</body>
+</html>

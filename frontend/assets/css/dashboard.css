@@ -1,0 +1,1344 @@
+/* ════════════════════════════════════════════════════════
+   UI UX PRO MAX — DESIGN SYSTEM — Dashboard Intelligence
+   Style: Glassmorphism + Soft UI Evolution
+   Target: Enterprise Architecture Validator
+   ────────────────────────────────────────────────────────
+   ESTRUCTURA de las 13 páginas del dashboard: layout, componentes
+   y animaciones. NO define colores propios — todos los tokens de
+   color salen del tema activo:
+
+     assets/css/nocturne.css  → modo oscuro  (:root / [data-theme=dark])
+     assets/css/aurora.css    → modo claro   ([data-theme=light])
+
+   Orden de carga en cada página: nocturne.css → dashboard.css → aurora.css
+   Al añadir un componente, usar var(--token); si hace falta un color
+   nuevo, declararlo en AMBOS temas, nunca literal aquí.
+════════════════════════════════════════════════════════ */
+
+/* ── FONT SYSTEM ─────────────────────────────────────── */
+:root{
+  --font-display: 'Outfit', sans-serif;       /* headings, KPI values, titles */
+  --font-ui:      'Space Grotesk', sans-serif; /* nav, labels, UI text         */
+  --font-mono:    'Nova Mono', 'DM Mono', monospace;  /* code, hashes, data values */
+  --font-accent:  'Syne', sans-serif;          /* logo, section titles         */
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+
+/* ── BODY — transparent layered background ───────────── */
+body{
+  background: var(--bg0);
+  color: var(--t1);
+  font-family: var(--font-ui);
+  font-weight: 400;
+  min-height: 100vh;
+  overflow-x: hidden;
+  transition: background .4s, color .35s;
+}
+
+/* Layer 1 — ambient orbs (depth & atmosphere) */
+body::before{
+  content:''; position:fixed; inset:0; z-index:0; pointer-events:none;
+  background: var(--orb1), var(--orb2), var(--orb3);
+  transition: background .4s;
+}
+
+/* Layer 2 — subtle grid */
+body::after{
+  content:''; position:fixed; inset:0; z-index:0; pointer-events:none;
+  background-image:
+    linear-gradient(var(--grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+  background-size: 44px 44px;
+  mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 40%, transparent 100%);
+}
+
+/* ═══ HEADER — Glass ════════════════════════════════════ */
+header{
+  position:sticky;top:0;z-index:200;
+  background: var(--hdr-bg);
+  backdrop-filter: var(--blur);
+  -webkit-backdrop-filter: var(--blur);
+  border-bottom: 1px solid var(--glass-bdr);
+  padding:0 1.5rem;display:flex;align-items:center;
+  justify-content:space-between;height:62px;
+  transition: background .4s, border-color .35s;
+  box-shadow: 0 1px 0 rgba(255,255,255,0.04), var(--shadow-sm);
+}
+/* Ya no es un enlace (Home vive en el menú ☰) — sólo el ícono, que
+   pinta con currentColor y sigue al acento del tema. */
+.logo{display:flex;align-items:center;gap:.9rem;color:var(--cyan)}
+.hdr-right{display:flex;align-items:center;gap:1rem;font-size:.68rem;color:var(--t2); font-family: var(--font-ui);}
+/* .live-dot se usa aquí y también dentro del panel del menú (.nav-menu-live) */
+.live-dot{
+  width:7px;height:7px;border-radius:50%;
+  background:var(--green);box-shadow:0 0 7px var(--green);
+  animation:pdot 2s infinite;
+}
+@keyframes pdot{0%,100%{opacity:1}50%{opacity:.3}}
+.hdr-clock{color:var(--cyan);font-size:.73rem}
+.vsep{color:var(--bdr)}
+
+/* La animación de "girar" del spinner de arranque (#overlay .ov-spinner,
+   más abajo) sigue usando este keyframe aunque ya no exista un botón
+   de recargar en el header. */
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ═══ MENÚ (☰) — Home, tema, estado y atajo a los 13 módulos ═════
+   Botón de rayas + panel flotante (core.js: initNavMenu / header.html).
+   El panel usa colores FIJOS, no tokens de tema: es una superficie de
+   marca autocontenida (como la carátula del carrusel), pensada para
+   verse igual —y con contraste garantizado para el texto blanco— en
+   claro y en oscuro, en vez de heredar --t1/--t2 del tema activo.
+   Semitransparente (rgba + backdrop-filter): dejar entrever el
+   contenido detrás en vez de una superficie sólida. ══════════════ */
+.nav-menu-wrap{ position:relative; flex:0 0 auto; }
+
+.menu-btn{
+  width:36px;height:36px;border-radius:50%;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(155deg,#5d5294 0%,#796cbf 100%);
+  border:1px solid rgba(255,255,255,.18);
+  cursor:pointer;transition:transform .2s,box-shadow .2s;
+  box-shadow:0 2px 10px rgba(66,58,106,.35);
+}
+.menu-btn:hover{ box-shadow:0 4px 16px rgba(66,58,106,.55); transform:translateY(-1px); }
+.menu-btn.open{ background:linear-gradient(155deg,#796cbf 0%,#968ae0 100%); }
+
+.menu-bars{ width:16px; height:11px; position:relative; display:block; }
+.menu-bars span{
+  position:absolute; left:0; width:100%; height:2px; border-radius:2px;
+  background:#f3f5fe; transition:transform .25s ease, opacity .2s ease, top .25s ease;
+}
+.menu-bars span:nth-child(1){ top:0; }
+.menu-bars span:nth-child(2){ top:4.5px; }
+.menu-bars span:nth-child(3){ top:9px; }
+/* Abierto: las tres rayas se pliegan en una X. */
+.menu-btn.open .menu-bars span:nth-child(1){ top:4.5px; transform:rotate(45deg); }
+.menu-btn.open .menu-bars span:nth-child(2){ opacity:0; }
+.menu-btn.open .menu-bars span:nth-child(3){ top:4.5px; transform:rotate(-45deg); }
+
+.nav-menu{
+  position:absolute; top:calc(100% + 12px); right:0; z-index:300;
+  width:250px; max-height:min(72vh,540px); overflow-y:auto;
+  border-radius:18px; padding:.7rem;
+  background:linear-gradient(165deg,rgba(66,58,106,.78) 0%,rgba(93,82,148,.78) 45%,rgba(121,108,191,.78) 100%);
+  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+  box-shadow:0 18px 44px rgba(20,16,40,.45), 0 0 0 1px rgba(255,255,255,.1);
+  opacity:0; transform:translateY(-8px) scale(.97); pointer-events:none;
+  transition:opacity .18s ease, transform .18s ease;
+}
+.nav-menu.show{ opacity:1; transform:translateY(0) scale(1); pointer-events:auto; }
+
+.nav-menu-brand{
+  display:flex; align-items:center; justify-content:space-between;
+  font-family:var(--font-accent); font-weight:800; letter-spacing:.1em;
+  font-size:.82rem; color:#fff; padding:.35rem .6rem .65rem;
+}
+/* Punto de estado — vivía suelto en el header, ahora junto a la marca */
+.nav-menu-live{ display:flex; align-items:center; }
+
+/* Home + conmutador de tema: fila de íconos centrada arriba del todo */
+.nav-menu-top{ display:flex; align-items:center; justify-content:center; gap:.6rem; padding:.2rem 0 .6rem; }
+.nav-menu-icon-btn{
+  display:flex; align-items:center; justify-content:center;
+  width:38px; height:38px; border-radius:50%;
+  background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.14);
+  color:#f3f5fe; cursor:pointer; transition:background .15s ease, transform .15s ease;
+}
+.nav-menu-icon-btn:hover{ background:rgba(255,255,255,.2); transform:translateY(-1px); }
+.nav-menu-icon-btn svg{ width:18px; height:18px; }
+
+.nav-menu-list{ display:flex; flex-direction:column; gap:.22rem; }
+.nav-menu-item{
+  display:flex; align-items:center; gap:.55rem;
+  padding:.5rem .6rem; border-radius:12px;
+  background:rgba(255,255,255,.07); text-decoration:none;
+  color:#f3f5fe; font-family:var(--font-ui); font-size:.68rem; letter-spacing:.02em;
+  transition:background .15s ease, transform .15s ease;
+}
+.nav-menu-item:hover{ background:rgba(255,255,255,.16); transform:translateX(2px); }
+.nav-menu-item.active{ background:rgba(255,255,255,.24); font-weight:600; }
+.nav-menu-item-ico{ display:flex; flex:0 0 auto; opacity:.85; }
+.nav-menu-item-ico svg{ width:16px; height:16px; }
+.nav-menu-item.active .nav-menu-item-ico{ opacity:1; }
+.nav-menu-txt{ flex:1 1 auto; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.nav-menu-num{ font-family:var(--font-mono); font-size:.56rem; color:rgba(255,255,255,.5); flex:0 0 auto; }
+
+.nav-menu-divider{ height:1px; background:rgba(255,255,255,.16); margin:0 .2rem .5rem; }
+
+@media (max-width:900px){ .nav-menu{ width:220px; } }
+
+/* Título de la página en el header — ocupa el hueco que dejó el nav
+   y dice en qué módulo está el usuario (lo rellena core.js). */
+.hdr-page{
+  flex:1 1 auto;min-width:0;display:flex;align-items:baseline;gap:.6rem;
+  margin:0 1.2rem;overflow:hidden;
+}
+.hdr-page-num{
+  font-family:var(--font-mono);font-size:.62rem;color:var(--t3);
+  letter-spacing:.12em;flex:0 0 auto;
+}
+.hdr-page-title{
+  font-family:var(--font-ui);font-weight:500;
+  font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--t2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+
+/* El título de sección se MUEVE aquí desde <main> (lo hace core.js), así
+   que .stitle tiene que dejar de comportarse como encabezado de bloque:
+   sin margen, en una sola línea y sin el filete ::after, que es flex:1 y
+   se comería el resto del header. Conserva su degradado. */
+.hdr-page .stitle{
+  margin:0;
+  font-size:.72rem;
+  letter-spacing:.16em;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  display:block;
+  min-width:0;
+}
+.hdr-page .stitle::after{ display:none; }
+/* Los chips que algunos títulos llevan dentro (validez del razonador,
+   métricas en vivo) se encogen para no desplazar los controles. */
+.hdr-page .stitle .pbadge{
+  font-size:.52rem !important;
+  padding:.1rem .4rem;
+  vertical-align:middle;
+}
+@media (max-width:1200px){ .hdr-page .stitle .pbadge{ display:none } }
+@media (max-width:900px){ .hdr-page{display:none} }
+
+@media (max-width:1250px){ header{padding:0 .8rem} }
+
+/* ═══ STATUS BAR ════════════════════════════════════════ */
+.status-bar{
+  position:relative;z-index:40;
+  background: rgba(255,255,255,0.018);
+  backdrop-filter: var(--blur-sm);
+  -webkit-backdrop-filter: var(--blur-sm);
+  border-bottom:1px solid var(--glass-bdr);
+  padding:.4rem 1.5rem;display:flex;align-items:center;
+  gap:1.1rem;font-size:.6rem;color:var(--t3);overflow-x:auto;
+  transition:background .35s;
+  font-family: var(--font-mono);
+}
+.sb-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0}
+.sb-dot.ok{background:var(--green);box-shadow:0 0 5px var(--green)}
+.sb-dot.err{background:var(--rose);box-shadow:0 0 5px var(--rose)}
+
+/* ═══ MAIN ══════════════════════════════════════════════ */
+main{
+  position:relative;z-index:1;
+  padding:1.4rem 1.5rem 2rem;
+  max-width:1700px;margin:0 auto;
+}
+
+/* KPIs — Glass cards */
+.kpi-row{display:grid;grid-template-columns:repeat(6,1fr);gap:.9rem;margin-bottom:1.4rem}
+.kpi{
+  background: var(--panel-bg);
+  backdrop-filter: var(--blur-sm);
+  -webkit-backdrop-filter: var(--blur-sm);
+  border:1px solid var(--glass-bdr);
+  border-radius:12px;
+  padding:.85rem 1rem;position:relative;overflow:hidden;
+  transition:all .3s;
+  box-shadow: var(--glass-shadow);
+}
+.kpi::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:var(--ac,var(--cyan));box-shadow:0 0 10px var(--ac,var(--cyan));
+}
+.kpi::after{
+  content:'';position:absolute;inset:0;border-radius:12px;
+  background: linear-gradient(135deg,rgba(255,255,255,0.04) 0%,transparent 50%);
+  pointer-events:none;
+}
+.kpi:hover{
+  background: var(--bg4);
+  border-color:rgba(0,229,255,0.22);
+  transform:translateY(-3px);
+  box-shadow: var(--shadow), 0 0 30px rgba(0,229,255,0.05);
+}
+.kpi-label{
+  font-size:.57rem;letter-spacing:.15em;text-transform:uppercase;
+  color:var(--t2);margin-bottom:.4rem;
+  font-family: var(--font-ui); font-weight:500;
+}
+.kpi-value{
+  font-family: var(--font-display); font-size:1.6rem; font-weight:700;
+  color:var(--ac,var(--cyan));line-height:1;
+  letter-spacing:-0.02em;
+}
+.kpi-delta{font-size:.58rem;margin-top:.28rem;font-family:var(--font-ui);}
+.up{color:var(--green)}.neutral{color:var(--t2)}.down{color:var(--rose)}
+
+/* SECTIONS */
+.section{display:none}.section.active{display:block}
+.stitle{
+  font-family: var(--font-accent); font-size:.7rem;font-weight:700;
+  letter-spacing:.2em;text-transform:uppercase;color:var(--t2);
+  margin-bottom:1rem;display:flex;align-items:center;gap:.7rem;
+}
+.stitle::after{content:'';flex:1;height:1px;background:var(--glass-bdr)}
+
+/* PANELS — Glass */
+.panel{
+  background: var(--panel-bg);
+  backdrop-filter: var(--blur);
+  -webkit-backdrop-filter: var(--blur);
+  border:1px solid var(--glass-bdr);
+  border-radius:14px;
+  overflow:hidden;box-shadow:var(--glass-shadow);
+  transition:background .35s,border-color .35s;
+  animation:fup .35s ease;
+  position:relative;
+}
+.panel::before{
+  content:''; position:absolute; inset:0; border-radius:14px; pointer-events:none;
+  background: linear-gradient(135deg, rgba(255,255,255,0.04) 0%, transparent 40%);
+}
+@keyframes fup{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.ph{
+  padding:.85rem 1.3rem;border-bottom:1px solid var(--glass-bdr);
+  display:flex;align-items:center;justify-content:space-between;
+  background:rgba(255,255,255,0.025);
+}
+.ptitle{
+  font-family: var(--font-accent); font-size:.76rem;font-weight:700;
+  letter-spacing:.08em;text-transform:uppercase;
+}
+.pbadge{
+  font-size:.58rem;padding:.16rem .5rem;border-radius:100px;
+  background:rgba(0,229,255,.1);color:var(--cyan);
+  border:1px solid rgba(0,229,255,.25);letter-spacing:.08em;
+  font-family: var(--font-ui);
+}
+.pbadge.g{background:rgba(16,233,140,.1);color:var(--green);border-color:rgba(16,233,140,.25)}
+.pbadge.d{background:rgba(255,201,71,.1);color:var(--gold);border-color:rgba(255,201,71,.25)}
+.pbody{padding:1.3rem}
+
+/* source bar */
+.src-bar{
+  display:flex;align-items:center;gap:.9rem;padding:.38rem 1.3rem;
+  border-bottom:1px solid var(--glass-bdr);
+  background:rgba(255,255,255,0.015);font-size:.59rem;color:var(--t3);
+}
+.src-file{color:var(--cyan);font-family:var(--font-mono);}
+.src-ts{color:var(--t2);font-family:var(--font-mono);}
+
+/* TWO-COL */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:1.3rem}
+
+/* OVERVIEW */
+.ovr-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.3rem}
+.lcard{
+  background: var(--card-bg);
+  backdrop-filter: var(--blur-sm);
+  -webkit-backdrop-filter: var(--blur-sm);
+  border:1px solid var(--glass-bdr);border-radius:12px;
+  padding:1rem;position:relative;overflow:hidden;
+  transition:all .35s;
+  box-shadow: var(--shadow-sm);
+}
+.lcard::after{
+  content:'';position:absolute;right:-18px;top:-18px;
+  width:72px;height:72px;border-radius:50%;
+  background:var(--ac,var(--cyan));opacity:.05;pointer-events:none;
+  filter: blur(12px);
+}
+.lcard-title{
+  font-family: var(--font-accent); font-size:.7rem;font-weight:800;
+  letter-spacing:.15em;text-transform:uppercase;
+  color:var(--ac,var(--cyan));margin-bottom:.65rem;
+  display:flex;align-items:center;gap:.45rem;
+}
+.clist{list-style:none;display:flex;flex-direction:column;gap:.3rem}
+.clist li{
+  font-size:.6rem;color:var(--t2);padding:.28rem .52rem;
+  background:rgba(255,255,255,0.03);
+  backdrop-filter: blur(4px);
+  border-radius:4px;
+  border-left:2px solid var(--ac,var(--cyan));
+  display:flex;align-items:center;justify-content:space-between;
+  font-family: var(--font-ui);
+}
+.cscore{font-size:.57rem;color:var(--green);font-weight:600;font-family:var(--font-mono);}
+
+/* ONTOLOGY */
+/* onto-vis canvas — transparent glass */
+#onto-vis canvas{ background: transparent !important; }
+.leg-row{
+  display:flex;gap:1.2rem;flex-wrap:wrap;padding:.85rem 1.3rem;
+  border-top:1px solid var(--glass-bdr);background:rgba(255,255,255,0.02);
+}
+.leg-item{display:flex;align-items:center;gap:.38rem;font-size:.6rem;color:var(--t2);font-family:var(--font-ui);}
+.leg-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+
+/* DT */
+#dt-wrap{width:100%;overflow-x:auto;padding:.5rem;min-height:100px}
+
+/* ══ VALIDATION ══════════════════════════════════════════ */
+.val-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.3rem}
+
+.radar-canvas-wrap{position:relative;height:380px;width:100%}
+#radarChart{position:absolute;inset:0}
+
+.gap-canvas-wrap{position:relative;height:240px;width:100%}
+#gapChart{position:absolute;inset:0}
+
+/* metric bars */
+#metric-rows{display:flex;flex-direction:column;gap:.55rem}
+.mrow-label{display:flex;justify-content:space-between;margin-bottom:.25rem;font-family:var(--font-ui);}
+.mbar-wrap{flex:1;height:5px;background:rgba(255,255,255,0.06);border-radius:3px;overflow:hidden}
+.mbar{height:100%;border-radius:3px;transition:width 1.6s cubic-bezier(.16,1,.3,1);width:0%}
+
+/* gap table */
+#gap-table{display:flex;flex-direction:column;gap:.4rem;margin-top:1rem}
+.gap-row{
+  display:grid;grid-template-columns:1fr 52px 52px 52px 56px;
+  align-items:center;gap:.5rem;font-size:.61rem;
+  padding:.36rem .6rem;
+  background: rgba(255,255,255,0.025);
+  backdrop-filter: blur(6px);
+  border-radius:6px;border:1px solid var(--glass-bdr);
+  transition:all .25s;
+  font-family: var(--font-ui);
+}
+.gap-row:hover:not(.hdr){background:rgba(255,255,255,0.04);}
+.gap-row.hdr{background:transparent;border-color:transparent;
+  color:var(--t3);font-size:.55rem;letter-spacing:.1em;text-transform:uppercase}
+.gap-val{text-align:right;font-weight:600;font-family:var(--font-mono);}
+.gap-onto{color:var(--cyan)}.gap-dt{color:var(--gold)}
+.gap-cov{color:var(--green)}.gap-label{color:var(--t2)}
+
+/* score cards — glass */
+.score-cards{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.8rem;margin-top:.9rem}
+.sc-card{
+  background: var(--card-bg);
+  backdrop-filter: var(--blur-sm);
+  -webkit-backdrop-filter: var(--blur-sm);
+  border:1px solid var(--glass-bdr);border-radius:10px;padding:.75rem;
+  transition:all .35s;
+}
+.sc-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-sm);}
+.sc-card-label{
+  font-size:.56rem;color:var(--t2);letter-spacing:.1em;
+  text-transform:uppercase;margin-bottom:.35rem;
+  font-family:var(--font-ui); font-weight:500;
+}
+.sc-card-val{
+  font-family: var(--font-display); font-size:1.8rem;font-weight:700;
+  line-height:1; letter-spacing:-0.02em;
+}
+.sc-card-sub{font-size:.57rem;margin-top:.28rem;font-family:var(--font-ui);}
+
+/* top gaps */
+.top-gap-item{
+  display:flex;align-items:center;justify-content:space-between;
+  font-size:.61rem;padding:.3rem 0;border-bottom:1px solid var(--glass-bdr);
+  font-family:var(--font-ui);
+}
+.top-gap-item:last-child{border-bottom:none}
+
+/* LOADING OVERLAY — glass */
+#overlay{
+  position:fixed;inset:0;z-index:999;
+  background:rgba(3,7,17,.75);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  display:none;flex-direction:column;align-items:center;justify-content:center;gap:1.2rem;
+}
+#overlay.show{display:flex}
+.ov-spinner{
+  width:42px;height:42px;
+  border:2px solid rgba(255,255,255,0.1);
+  border-top-color:var(--cyan);border-radius:50%;
+  animation:spin .7s linear infinite;
+  box-shadow: 0 0 20px rgba(0,229,255,0.2);
+}
+.ov-msg{
+  font-family: var(--font-accent); font-size:.82rem;
+  letter-spacing:.15em;color:var(--cyan);text-transform:uppercase;
+}
+.ov-steps{display:flex;flex-direction:column;gap:.35rem}
+.ov-step{font-size:.63rem;color:var(--t3);display:flex;align-items:center;gap:.5rem;transition:color .3s;font-family:var(--font-ui);}
+.ov-step.done{color:var(--green)}.ov-step.active{color:var(--cyan)}
+.ov-step-dot{width:5px;height:5px;border-radius:50%;background:currentColor;flex-shrink:0}
+
+/* TOOLTIPS — glass */
+#ntt,#dtt,#otip{
+  position:fixed;border-radius:10px;padding:9px 13px;
+  font-size:.66rem;pointer-events:none;z-index:1000;display:none;
+  max-width:280px;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  font-family: var(--font-ui);
+}
+#ntt{
+  background:rgba(6,11,26,0.88);
+  border:1px solid rgba(0,229,255,.25);
+  box-shadow: var(--gcyan), 0 8px 32px rgba(0,0,0,.4);
+}
+#dtt{
+  background:rgba(6,11,26,0.88);
+  border:1px solid rgba(168,85,247,.25);
+  box-shadow: var(--gviolet), 0 8px 32px rgba(0,0,0,.4);
+}
+#otip{
+  background:rgba(6,11,26,0.90);
+  border:1px solid rgba(0,229,255,.28);
+  box-shadow: var(--gcyan), 0 8px 32px rgba(0,0,0,.4);
+}
+
+/* FOOTER — glass */
+footer{
+  position:relative;z-index:1;
+  border-top:1px solid var(--glass-bdr);
+  padding:.85rem 1.5rem;display:flex;align-items:center;
+  justify-content:space-between;font-size:.58rem;color:var(--t3);
+  background: var(--glass-bg);
+  backdrop-filter: var(--blur-sm);
+  -webkit-backdrop-filter: var(--blur-sm);
+  margin-top:2rem;transition:background .35s;
+  font-family: var(--font-ui);
+}
+.fbrand{font-family: var(--font-accent);color:var(--t2);letter-spacing:.08em}
+
+/* ERROR STATE */
+.err-msg{padding:2rem;text-align:center;color:var(--rose);font-size:.72rem;font-family:var(--font-ui);}
+
+/* ══ VIS-NETWORK CONTROLS ════════════════════════════════ */
+#onto-vis{
+  background: transparent !important;
+  border-radius: 0;
+}
+/* vis.js overrides — make canvas transparent */
+#onto-vis canvas{ background: transparent !important; }
+
+.vis-ctrl-btn{
+  display:inline-flex;align-items:center;gap:.38rem;
+  padding:.32rem .75rem;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid var(--glass-bdr);
+  border-radius: 6px;
+  color: var(--t2);
+  font-size:.62rem; font-family:var(--font-ui); letter-spacing:.06em;
+  cursor:pointer; transition:all .2s;
+  text-transform: uppercase;
+}
+.vis-ctrl-btn:hover{
+  background: rgba(0,229,255,0.08);
+  border-color: rgba(0,229,255,0.3);
+  color: var(--cyan);
+  box-shadow: 0 0 12px rgba(0,229,255,0.1);
+}
+.vis-ctrl-btn.active{
+  background: rgba(0,229,255,0.12);
+  border-color: var(--cyan);
+  color: var(--cyan);
+  box-shadow: 0 0 16px rgba(0,229,255,0.15);
+}
+
+.vis-ctrl-select{
+  padding:.34rem 1.7rem .34rem .7rem;
+  background-color: var(--select-bg);
+  background-image: linear-gradient(45deg, transparent 50%, var(--select-caret) 50%),
+                    linear-gradient(135deg, var(--select-caret) 50%, transparent 50%);
+  background-position: calc(100% - 13px) 53%, calc(100% - 8px) 53%;
+  background-size: 5px 5px, 5px 5px;
+  background-repeat: no-repeat;
+  border: 1px solid var(--select-bdr);
+  border-radius: 6px;
+  color: var(--select-fg);
+  font-size:.63rem; font-family:var(--font-ui); letter-spacing:.04em;
+  cursor:pointer; transition:border-color .2s, background-color .2s, color .2s;
+  outline:none;
+  -webkit-appearance:none;
+  appearance:none;
+}
+.vis-ctrl-select:hover{
+  background-color: var(--select-bg-hover);
+  border-color: var(--cyan);
+  color: var(--t1);
+}
+.vis-ctrl-select:focus{
+  border-color: var(--cyan);
+  box-shadow: 0 0 0 3px var(--select-ring);
+  color: var(--t1);
+}
+.vis-ctrl-select option{ background: var(--select-pop); color: var(--select-fg); }
+.vis-ctrl-select option:checked{ background: var(--select-pop-sel); color: var(--t1); }
+
+/* Stabilizing indicator */
+.vis-stabilizing{
+  display:none; align-items:center; gap:.4rem;
+  font-size:.6rem; color:var(--gold); font-family:var(--font-ui);
+  animation: vis-fade 1s ease infinite alternate;
+}
+.vis-stabilizing.show{ display:inline-flex; }
+.vis-stab-dot{
+  width:6px; height:6px; border-radius:50%;
+  background:var(--gold); box-shadow:0 0 6px var(--gold);
+  animation:pdot 1s infinite;
+}
+@keyframes vis-fade{ from{opacity:.5} to{opacity:1} }
+
+/* vis.js tooltip override */
+div.vis-tooltip{
+  background: rgba(6,11,26,0.92) !important;
+  border: 1px solid rgba(0,229,255,0.25) !important;
+  border-radius: 8px !important;
+  padding: 8px 12px !important;
+  font-family: var(--font-ui) !important;
+  font-size: .66rem !important;
+  color: var(--t1) !important;
+  backdrop-filter: blur(16px) !important;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.5), 0 0 20px rgba(0,229,255,0.08) !important;
+  max-width: 260px !important;
+  pointer-events: none !important;
+}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--glass-bdr);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:var(--bdr2);}
+
+@media(max-width:1100px){
+  .kpi-row{grid-template-columns:repeat(3,1fr)}
+  .two-col,.ovr-grid,.val-grid{grid-template-columns:1fr}
+  .score-cards{grid-template-columns:1fr 1fr}
+}
+
+/* ── TOKENS DE MOVIMIENTO Y ESPACIADO ───────────────────────────
+   (los tokens de COLOR de este bloque —q-*, glow-*, qglass-*,
+    elev-*— viven ahora en nocturne.css / aurora.css)          */
+:root {
+  /* Motion tokens (SKILL.md §7 — 150-300ms, spring physics) */
+  --motion-fast:   150ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  --motion-base:   250ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  --motion-slow:   400ms cubic-bezier(0.16, 1, 0.3, 1);
+  --motion-exit:   180ms cubic-bezier(0.4, 0, 1, 1);
+  /* Spacing scale (4pt system, SKILL.md §5) */
+  --sp-1: 4px; --sp-2: 8px; --sp-3: 12px; --sp-4: 16px;
+  --sp-5: 20px; --sp-6: 24px; --sp-8: 32px; --sp-10: 40px;
+}
+
+
+/* ── 1. DEEP SPACE BACKGROUND (AI-Native atmospherics) ─────────── */
+body {
+  background:
+    radial-gradient(ellipse 1200px 900px at 15% 10%, rgba(0,245,255,0.025) 0%, transparent 60%),
+    radial-gradient(ellipse 900px 700px at 85% 85%, rgba(176,96,255,0.03) 0%, transparent 60%),
+    radial-gradient(ellipse 600px 500px at 50% 50%, rgba(99,102,241,0.02) 0%, transparent 70%),
+    #030711 !important;
+  position: relative;
+}
+
+/* Starfield overlay (dark only) */
+body::before {
+  content: '';
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  background-image:
+    radial-gradient(1px 1px at 15% 25%, rgba(255,255,255,0.35) 0%, transparent 100%),
+    radial-gradient(1px 1px at 42% 67%, rgba(255,255,255,0.25) 0%, transparent 100%),
+    radial-gradient(1px 1px at 71% 14%, rgba(255,255,255,0.3) 0%, transparent 100%),
+    radial-gradient(1px 1px at 88% 45%, rgba(255,255,255,0.2) 0%, transparent 100%),
+    radial-gradient(1px 1px at 28% 88%, rgba(255,255,255,0.3) 0%, transparent 100%),
+    radial-gradient(1px 1px at 55% 38%, rgba(0,245,255,0.4) 0%, transparent 100%),
+    radial-gradient(1.5px 1.5px at 93% 72%, rgba(176,96,255,0.35) 0%, transparent 100%),
+    radial-gradient(1px 1px at 6% 58%, rgba(255,255,255,0.2) 0%, transparent 100%),
+    radial-gradient(1px 1px at 63% 91%, rgba(255,255,255,0.25) 0%, transparent 100%),
+    radial-gradient(1px 1px at 79% 33%, rgba(0,255,157,0.3) 0%, transparent 100%);
+}
+
+/* Scanline texture (dark only) */
+body::after {
+  background-image:
+    linear-gradient(var(--grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px),
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,245,255,0.005) 2px,
+      rgba(0,245,255,0.005) 4px
+    );
+  background-size: 44px 44px, 44px 44px, 100% 4px;
+  animation: scanline-drift 20s linear infinite;
+}
+@keyframes scanline-drift {
+  0%   { background-position: 0 0, 0 0, 0 0; }
+  100% { background-position: 0 0, 0 0, 0 -80px; }
+}
+
+/* ── 2. HEADER — Quantum Command Bar ───────────────────────────── */
+header {
+  background: rgba(3,7,17,0.65) !important;
+  backdrop-filter: blur(32px) saturate(200%) brightness(110%) !important;
+  -webkit-backdrop-filter: blur(32px) saturate(200%) brightness(110%) !important;
+  border-bottom: 1px solid var(--qglass-bdr) !important;
+  box-shadow:
+    0 1px 0 rgba(0,245,255,0.06),
+    0 8px 32px rgba(0,0,0,0.4),
+    inset 0 1px 0 rgba(255,255,255,0.04) !important;
+  transition: background var(--motion-slow), box-shadow var(--motion-slow) !important;
+}
+
+/* logo-shimmer: ya no la usa .logo-text (se quitó el wordmark "MALTG"
+   del header), pero .ov-msg —el texto del overlay de arranque— sigue
+   animándose con este mismo keyframe más abajo. */
+@keyframes logo-shimmer {
+  0%, 100% { background-position: 0% 50%; }
+  50%       { background-position: 100% 50%; }
+}
+
+/* ── 4. KPI CARDS — Holographic Data Tiles ────────────────────── */
+.kpi {
+  background: linear-gradient(
+    135deg,
+    rgba(255,255,255,0.035) 0%,
+    rgba(255,255,255,0.015) 100%
+  ) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  border: 1px solid var(--qglass-bdr) !important;
+  border-radius: 14px !important;
+  box-shadow: var(--elev-2) !important;
+  transition:
+    transform var(--motion-base),
+    box-shadow var(--motion-base),
+    border-color var(--motion-base) !important;
+  overflow: hidden;
+  position: relative;
+}
+/* Holographic top accent glow */
+.kpi::before {
+  content: '';
+  position: absolute; top: 0; left: -20%; right: -20%; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--ac, var(--q-cyan)) 50%, transparent);
+  box-shadow: 0 0 12px 2px var(--ac, var(--q-cyan));
+  opacity: 0.7;
+}
+/* Inner glow sphere */
+.kpi::after {
+  content: '';
+  position: absolute; right: -20px; top: -20px;
+  width: 80px; height: 80px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--ac, var(--q-cyan)) 0%, transparent 70%);
+  opacity: 0.07;
+  filter: blur(8px);
+  pointer-events: none;
+  transition: opacity var(--motion-base);
+}
+.kpi:hover {
+  transform: translateY(-4px) scale(1.005) !important;
+  border-color: var(--qglass-bdr-lit) !important;
+  box-shadow:
+    var(--elev-3),
+    0 0 20px rgba(0,245,255,0.06) !important;
+}
+.kpi:hover::after { opacity: 0.14; }
+
+/* KPI value */
+.kpi-value {
+  font-family: var(--font-display) !important;
+  font-size: 1.75rem !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.03em !important;
+  line-height: 1 !important;
+  background: transparent !important;
+  color: var(--ac, var(--cyan)) !important;
+}
+.kpi-label {
+  font-family: var(--font-ui) !important;
+  font-weight: 500 !important;
+  font-size: 0.58rem !important;
+  letter-spacing: 0.18em !important;
+  text-transform: uppercase !important;
+  color: rgba(122,141,176,0.8) !important;
+}
+
+/* ── 5. PANELS — Quantum Glass Containers ─────────────────────── */
+.panel {
+  background: linear-gradient(
+    135deg,
+    rgba(255,255,255,0.04) 0%,
+    rgba(255,255,255,0.015) 50%,
+    rgba(255,255,255,0.025) 100%
+  ) !important;
+  backdrop-filter: blur(24px) saturate(150%) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(150%) !important;
+  border: 1px solid var(--qglass-bdr) !important;
+  border-radius: 18px !important;
+  box-shadow: var(--elev-3) !important;
+  transition:
+    box-shadow var(--motion-slow),
+    border-color var(--motion-slow) !important;
+  animation: panel-enter var(--motion-slow) both !important;
+}
+@keyframes panel-enter {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0);    }
+}
+.panel::before {
+  content: '';
+  position: absolute; inset: 0; border-radius: 18px; pointer-events: none;
+  background: linear-gradient(
+    135deg,
+    rgba(255,255,255,0.06) 0%,
+    transparent 40%,
+    rgba(0,245,255,0.02) 100%
+  );
+}
+.panel:hover {
+  border-color: rgba(0,245,255,0.12) !important;
+  box-shadow: var(--elev-4), 0 0 40px rgba(0,245,255,0.04) !important;
+}
+.ph {
+  background: rgba(255,255,255,0.025) !important;
+  border-bottom: 1px solid rgba(255,255,255,0.06) !important;
+  backdrop-filter: blur(8px);
+}
+
+.ptitle {
+  font-family: var(--font-accent) !important;
+  letter-spacing: 0.1em !important;
+  background: linear-gradient(90deg, var(--t1), rgba(122,141,176,0.8));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── 6. CARDS — Bento Grid Evolution ─────────────────────────── */
+.lcard {
+  background: linear-gradient(
+    135deg,
+    rgba(255,255,255,0.04) 0%,
+    rgba(255,255,255,0.015) 100%
+  ) !important;
+  backdrop-filter: blur(16px) !important;
+  border: 1px solid var(--qglass-bdr) !important;
+  border-radius: 14px !important;
+  box-shadow: var(--elev-2) !important;
+  transition:
+    transform var(--motion-base),
+    border-color var(--motion-base),
+    box-shadow var(--motion-base) !important;
+}
+.lcard:hover {
+  transform: translateY(-4px) !important;
+  border-color: rgba(0,245,255,0.18) !important;
+  box-shadow: var(--elev-3), var(--glow-cyan) !important;
+}
+/* Accent corner glow */
+.lcard::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 1px; border-radius: 14px 14px 0 0;
+  background: linear-gradient(90deg, transparent, var(--ac, var(--q-cyan)) 50%, transparent);
+  opacity: 0.6;
+}
+.clist li {
+  background: var(--qglass-1) !important;
+  border: 1px solid var(--qglass-bdr) !important;
+  border-left: 2px solid var(--ac, var(--q-cyan)) !important;
+  border-radius: 6px !important;
+  transition: background var(--motion-fast), transform var(--motion-fast) !important;
+}
+.clist li:hover {
+  background: var(--qglass-2) !important;
+  transform: translateX(3px);
+}
+
+/* ── 7. SCORE CARDS — Holographic Metrics ────────────────────── */
+.sc-card {
+  background: linear-gradient(
+    135deg,
+    rgba(255,255,255,0.04) 0%,
+    rgba(255,255,255,0.01) 100%
+  ) !important;
+  backdrop-filter: blur(16px) !important;
+  border: 1px solid var(--qglass-bdr) !important;
+  border-radius: 12px !important;
+  box-shadow: var(--elev-2) !important;
+  transition: transform var(--motion-base), box-shadow var(--motion-base) !important;
+  position: relative; overflow: hidden;
+}
+.sc-card::before {
+  content: '';
+  position: absolute; inset: 0; border-radius: 12px;
+  background: linear-gradient(135deg, rgba(255,255,255,0.04) 0%, transparent 60%);
+  pointer-events: none;
+}
+.sc-card:hover {
+  transform: translateY(-4px) scale(1.01) !important;
+  box-shadow: var(--elev-3) !important;
+}
+.sc-card-val {
+  font-family: var(--font-display) !important;
+  font-size: 2rem !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.04em !important;
+  filter: drop-shadow(0 0 8px currentColor);
+}
+
+/* ── 8. STATUS BAR — Neural Data Feed ─────────────────────────── */
+.status-bar {
+  background: rgba(0,245,255,0.018) !important;
+  border-bottom: 1px solid rgba(0,245,255,0.07) !important;
+  font-family: var(--font-mono) !important;
+  font-size: 0.59rem !important;
+  letter-spacing: 0.04em !important;
+}
+.src-file {
+  color: var(--q-cyan) !important;
+  text-shadow: 0 0 10px rgba(0,245,255,0.4);
+}
+
+/* ── 9. GAP TABLE — Data Grid Intelligence ───────────────────── */
+.gap-row {
+  background: var(--qglass-1) !important;
+  border: 1px solid var(--qglass-bdr) !important;
+  border-radius: 8px !important;
+  transition:
+    background var(--motion-fast),
+    transform var(--motion-fast),
+    box-shadow var(--motion-fast) !important;
+}
+.gap-row:not(.hdr):hover {
+  background: var(--qglass-3) !important;
+  transform: translateX(3px) !important;
+  box-shadow: -2px 0 0 var(--q-cyan), var(--elev-1) !important;
+}
+
+/* ── 10. BUTTONS — Quantum CTAs ───────────────────────────────── */
+/* Vis-network controls upgrade */
+.vis-ctrl-btn {
+  background: rgba(0,245,255,0.04) !important;
+  border: 1px solid rgba(0,245,255,0.12) !important;
+  color: var(--t2) !important;
+  transition: all var(--motion-fast) !important;
+  font-family: var(--font-ui) !important;
+  font-weight: 500 !important;
+}
+.vis-ctrl-btn:hover {
+  background: rgba(0,245,255,0.1) !important;
+  border-color: rgba(0,245,255,0.35) !important;
+  color: var(--q-cyan) !important;
+  box-shadow: var(--glow-cyan) !important;
+  transform: translateY(-1px) !important;
+}
+.vis-ctrl-btn.active {
+  background: rgba(0,245,255,0.15) !important;
+  border-color: var(--q-cyan) !important;
+  color: var(--q-cyan) !important;
+  box-shadow: var(--glow-cyan) !important;
+}
+
+/* ── 11. BADGES — Quantum Pills ───────────────────────────────── */
+.pbadge {
+  font-family: var(--font-mono) !important;
+  font-size: 0.57rem !important;
+  letter-spacing: 0.12em !important;
+  border-radius: 100px !important;
+  padding: 0.18rem 0.6rem !important;
+  transition: box-shadow var(--motion-fast) !important;
+}
+.pbadge:hover {
+  box-shadow: 0 0 10px rgba(0,245,255,0.3) !important;
+}
+
+/* ── 12. SECTION TITLES — Neural Headers ─────────────────────── */
+.stitle {
+  font-family: var(--font-accent) !important;
+  font-size: 0.65rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.25em !important;
+  text-transform: uppercase !important;
+  color: transparent !important;
+  background: linear-gradient(90deg, var(--q-cyan) 0%, var(--q-violet) 60%, rgba(122,141,176,0.4) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+.stitle::after {
+  background: linear-gradient(90deg, var(--qglass-bdr-lit), transparent) !important;
+}
+
+/* ── 13. METRIC BARS — Neural Progress ───────────────────────── */
+.mbar-wrap {
+  background: rgba(255,255,255,0.05) !important;
+  border-radius: 4px !important;
+  overflow: hidden;
+  position: relative;
+}
+.mbar-wrap::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: repeating-linear-gradient(
+    90deg,
+    rgba(255,255,255,0.02) 0px,
+    rgba(255,255,255,0.02) 1px,
+    transparent 1px,
+    transparent 8px
+  );
+}
+.mbar {
+  border-radius: 4px !important;
+  box-shadow: 0 0 8px currentColor !important;
+  position: relative;
+}
+.mbar::after {
+  content: '';
+  position: absolute; top: 0; right: 0; bottom: 0; width: 4px;
+  background: rgba(255,255,255,0.4);
+  border-radius: 0 4px 4px 0;
+  filter: blur(1px);
+}
+
+/* ── 14. LIVE DOT — Animated Bio-metric ──────────────────────── */
+.live-dot {
+  box-shadow:
+    0 0 6px var(--q-green),
+    0 0 14px rgba(0,255,157,0.3),
+    0 0 28px rgba(0,255,157,0.1) !important;
+}
+@keyframes pdot {
+  0%, 100% { opacity: 1; box-shadow: 0 0 6px var(--q-green), 0 0 14px rgba(0,255,157,0.3); }
+  50%       { opacity: 0.3; box-shadow: 0 0 3px var(--q-green); }
+}
+
+/* ── 15. OVERLAY — Deep Space Loading ────────────────────────── */
+#overlay {
+  background: rgba(3,7,17,0.88) !important;
+  backdrop-filter: blur(32px) saturate(150%) !important;
+}
+.ov-spinner {
+  border-width: 2px !important;
+  border-color: rgba(0,245,255,0.1) !important;
+  border-top-color: var(--q-cyan) !important;
+  box-shadow: var(--glow-cyan) !important;
+  width: 48px !important; height: 48px !important;
+}
+.ov-msg {
+  font-family: var(--font-display) !important;
+  font-size: 0.9rem !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.2em !important;
+  background: linear-gradient(90deg, var(--q-cyan), var(--q-violet));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: logo-shimmer 2s ease infinite;
+  text-shadow: none !important;
+}
+.ov-step {
+  font-family: var(--font-mono) !important;
+  font-size: 0.62rem !important;
+}
+.ov-step.active { text-shadow: 0 0 12px rgba(0,245,255,0.5); }
+
+/* ── 16. SCROLLBAR — Quantum Rail ────────────────────────────── */
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, var(--q-cyan), var(--q-violet));
+  border-radius: 4px;
+  box-shadow: 0 0 6px rgba(0,245,255,0.3);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, var(--q-violet), var(--q-cyan));
+}
+
+/* ── 17. FOOTER — Neural Signature ───────────────────────────── */
+footer {
+  background: rgba(3,7,17,0.6) !important;
+  backdrop-filter: blur(16px) !important;
+  border-top: 1px solid rgba(0,245,255,0.07) !important;
+}
+.fbrand {
+  font-family: var(--font-accent) !important;
+  background: linear-gradient(90deg, var(--q-cyan), var(--q-violet));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: 0.12em !important;
+}
+
+/* ── 18. STAGGERED ENTRANCE ANIMATIONS ───────────────────────── */
+/* KPI cards — staggered by position */
+.kpi-row .kpi:nth-child(1) { animation: kpi-enter 0.5s var(--motion-slow) 0.05s both; }
+.kpi-row .kpi:nth-child(2) { animation: kpi-enter 0.5s var(--motion-slow) 0.10s both; }
+.kpi-row .kpi:nth-child(3) { animation: kpi-enter 0.5s var(--motion-slow) 0.15s both; }
+.kpi-row .kpi:nth-child(4) { animation: kpi-enter 0.5s var(--motion-slow) 0.20s both; }
+.kpi-row .kpi:nth-child(5) { animation: kpi-enter 0.5s var(--motion-slow) 0.25s both; }
+.kpi-row .kpi:nth-child(6) { animation: kpi-enter 0.5s var(--motion-slow) 0.30s both; }
+@keyframes kpi-enter {
+  from { opacity: 0; transform: translateY(20px) scale(0.96); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* Section panels */
+.section.active .panel {
+  animation: panel-enter 0.4s cubic-bezier(0.16,1,0.3,1) both !important;
+}
+.section.active .panel:nth-child(2) { animation-delay: 0.05s !important; }
+.section.active .panel:nth-child(3) { animation-delay: 0.10s !important; }
+
+/* Overview cards stagger */
+.ovr-grid .lcard:nth-child(1) { animation: kpi-enter 0.5s cubic-bezier(0.16,1,0.3,1) 0.05s both; }
+.ovr-grid .lcard:nth-child(2) { animation: kpi-enter 0.5s cubic-bezier(0.16,1,0.3,1) 0.10s both; }
+.ovr-grid .lcard:nth-child(3) { animation: kpi-enter 0.5s cubic-bezier(0.16,1,0.3,1) 0.15s both; }
+.ovr-grid .lcard:nth-child(4) { animation: kpi-enter 0.5s cubic-bezier(0.16,1,0.3,1) 0.20s both; }
+.ovr-grid .lcard:nth-child(5) { animation: kpi-enter 0.5s cubic-bezier(0.16,1,0.3,1) 0.25s both; }
+.ovr-grid .lcard:nth-child(6) { animation: kpi-enter 0.5s cubic-bezier(0.16,1,0.3,1) 0.30s both; }
+
+/* ── 19. MICRO INTERACTIONS ───────────────────────────────────── */
+/* Scale feedback on press (SKILL.md §7 scale-feedback) */
+.kpi:active             { transform: scale(0.98) translateY(0) !important; }
+.lcard:active           { transform: scale(0.98) !important; }
+.sc-card:active         { transform: scale(0.97) !important; }
+
+/* Cursor enhancements */
+.kpi, .lcard, .sc-card, .panel, .vis-ctrl-btn { cursor: pointer; }
+main .kpi, main .lcard, main .sc-card { cursor: default; }
+
+/* ── 20. REDUCED MOTION (SKILL.md §1 accessibility) ──────────── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+  body::after { animation: none !important; }
+}
+
+/* ── 22. VIS-NETWORK CANVAS — Quantum Graph ──────────────────── */
+#onto-vis {
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 50%, rgba(0,245,255,0.015) 0%, transparent 70%),
+    rgba(3,7,17,0.3) !important;
+  border-top: 1px solid var(--qglass-bdr);
+  border-bottom: 1px solid var(--qglass-bdr);
+}
+
+/* ── 23. LEGEND ROW — Quantum Tags ───────────────────────────── */
+.leg-row {
+  background: rgba(0,245,255,0.015) !important;
+  border-top: 1px solid rgba(0,245,255,0.07) !important;
+}
+.leg-item { font-family: var(--font-ui) !important; font-weight: 500 !important; }
+.leg-dot {
+  box-shadow: 0 0 5px currentColor;
+}
+
+/* ── 24. PBADGE VARIANTS ──────────────────────────────────────── */
+.pbadge {
+  backdrop-filter: blur(8px) !important;
+}
+
+/* ── 25. SOURCE BAR ───────────────────────────────────────────── */
+.src-bar {
+  background: rgba(0,245,255,0.018) !important;
+  border-bottom: 1px solid rgba(0,245,255,0.06) !important;
+}
+
+/* ── 26. SELECTION HIGHLIGHT ─────────────────────────────────── */
+::selection {
+  background: rgba(0,245,255,0.2);
+  color: white;
+}
+
+/* ── 27. SELECTORES / COMBOS — estilo global unificado ───────── */
+/* El desplegable nativo (la lista de <option>) lo pinta el sistema
+   operativo, no la página: sólo obedece a color-scheme y a colores
+   OPACOS. Por eso aquí todo sale de --select-* , que cada tema define
+   con valores sólidos — antes había un #ffffff fijo que en modo oscuro
+   dejaba texto claro sobre fondo blanco, ilegible. */
+select,
+.app-select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-color: var(--select-bg);
+  background-image: linear-gradient(45deg, transparent 50%, var(--select-caret) 50%),
+                    linear-gradient(135deg, var(--select-caret) 50%, transparent 50%);
+  background-position: calc(100% - 15px) 52%, calc(100% - 10px) 52%;
+  background-size: 5px 5px, 5px 5px;
+  background-repeat: no-repeat;
+  color: var(--select-fg);
+  border: 1px solid var(--select-bdr);
+  border-radius: 7px;
+  padding: .4rem 1.9rem .4rem .7rem;
+  font-family: var(--font-mono, monospace);
+  font-size: .68rem;
+  line-height: 1.2;
+  cursor: pointer;
+  transition: border-color .2s, box-shadow .2s, background-color .2s;
+  outline: none;
+}
+select:hover,
+.app-select:hover {
+  border-color: var(--cyan);
+  background-color: var(--select-bg-hover);
+  color: var(--t1);
+}
+select:focus,
+.app-select:focus {
+  border-color: var(--cyan);
+  box-shadow: 0 0 0 3px var(--select-ring);
+}
+select option,
+.app-select option {
+  background: var(--select-pop);      /* opaco: el popup no admite alfa */
+  color: var(--select-fg);
+}
+select option:checked,
+select option:hover {
+  background: var(--select-pop-sel);
+  color: var(--t1);
+}
+
+/* ── 28. DTABLE — grid/tabla compartida (leaderboard) ─────────────
+   Un solo componente de tabla para toda la app. Antes cada tab-*.js
+   escribía su propio <table style="..."> inline: bordes, tipografía
+   y espaciado divergían de una pestaña a otra. Ahora hay un idioma
+   visual único (fila compacta · columna primaria en dos líneas ·
+   columnas numéricas a la derecha · una columna de énfasis con franja
+   de fondo continua para el indicador principal), a partir de la
+   referencia de diseño de un ranking de comunidad:
+
+     NOMBRE + subtítulo         num  num  num  [ ÉNFASIS ]
+     dominio/meta
+
+   Uso:
+     <table class="dtable">
+       <thead><tr><th>…</th><th class="dt-num">…</th>
+                  <th class="dt-num dt-emphasis">Overall</th></tr></thead>
+       <tbody>
+         <tr>
+           <td class="dt-primary">
+             <span class="dt-primary-title"><b>Nombre</b> <i>from</i> País</span>
+             <span class="dt-primary-meta">dominio.com</span>
+           </td>
+           <td class="dt-num">7</td>
+           <td class="dt-num dt-emphasis">8.10</td>
+         </tr>
+       </tbody>
+     </table>
+   La columna .dt-emphasis es OPCIONAL — sólo la lleva la tabla que
+   tenga un indicador principal claro (score, riesgo, índice…); las
+   tablas puramente descriptivas no la usan.                         */
+.dtable{ width:100%; border-collapse:collapse; font-size:.7rem; }
+.dtable th, .dtable td{ padding:.4rem .65rem; text-align:left; vertical-align:middle; }
+.dtable thead th{
+  font-family:var(--font-mono); font-size:.58rem; font-weight:600;
+  letter-spacing:.06em; text-transform:uppercase; color:var(--t3);
+  border-bottom:1px solid var(--bdr2); white-space:nowrap;
+}
+/* Fila compacta: separador punteado, no hueco entre filas — el punto
+   de la petición era justamente NO espaciar filas, sólo separarlas. */
+.dtable tbody tr{ border-bottom:1px dashed var(--bdr); transition:background .15s; }
+.dtable tbody tr:last-child{ border-bottom:none; }
+.dtable tbody tr:hover{ background: color-mix(in srgb, var(--t1) 3%, transparent); }
+
+/* Columna primaria — nombre + subtítulo en dos líneas, sin crecer la fila */
+.dtable .dt-primary{ display:flex; flex-direction:column; gap:.1rem; line-height:1.35; }
+.dtable .dt-primary-title{ color:var(--t1); font-weight:600; }
+.dtable .dt-primary-title i{ color:var(--t3); font-weight:400; font-style:italic; }
+.dtable .dt-primary-meta{ color:var(--t3); font-size:.62rem; font-weight:400; }
+
+/* Columnas numéricas, alineadas a la derecha bajo su encabezado */
+.dtable .dt-num{ text-align:right; font-variant-numeric:tabular-nums; color:var(--t2); }
+
+/* Columna de énfasis — franja de fondo continua (cabecera + cuerpo),
+   como el "Overall" resaltado de la referencia. border-collapse hace
+   que los fondos de celdas contiguas se empalmen sin costuras. */
+.dtable th.dt-emphasis, .dtable td.dt-emphasis{
+  background: color-mix(in srgb, var(--t1) 6%, transparent);
+  font-weight:700; color:var(--t1);
+}
+.dtable thead th.dt-emphasis{ border-radius:8px 8px 0 0; }
+.dtable tbody tr:last-child td.dt-emphasis{ border-radius:0 0 8px 8px; }
+
+/* ══════════════════════════════════════════════════════════════
+   CARD KPI — estilo "UI UX Pro Max · Design Intelligence"
+   (referencia: tarjetas oscuras con icono, número en degradado y
+   etiqueta; sobre fondo blanco resaltan como feature-cards)
+══════════════════════════════════════════════════════════════ */
+.kpi-row { gap: 1rem !important; }
+
+.kpi {
+  background: linear-gradient(158deg, #1e2536 0%, #12161f 100%) !important;
+  border: 1px solid rgba(255,255,255,0.07) !important;
+  border-radius: 16px !important;
+  box-shadow: 0 8px 24px rgba(8,14,30,0.22) !important;
+  padding: 1.3rem 1rem 1.15rem !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: .5rem !important;
+  text-align: center !important;
+  min-height: 132px;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  transition: transform .22s ease, border-color .22s ease, box-shadow .22s ease !important;
+}
+/* quita la línea superior holográfica del tema anterior */
+.kpi::before { display: none !important; }
+/* halo ambiental suave en una esquina, como en la imagen */
+.kpi::after {
+  content: '';
+  position: absolute; right: -35px; bottom: -35px; top: auto; left: auto;
+  width: 130px; height: 130px; border-radius: 50%;
+  background: radial-gradient(circle, #5b9dff 0%, transparent 70%);
+  opacity: .10 !important; filter: blur(10px); pointer-events: none;
+}
+.kpi:hover {
+  transform: translateY(-3px) !important;
+  border-color: rgba(120,160,255,0.30) !important;
+  box-shadow: 0 12px 30px rgba(8,14,30,0.38) !important;
+}
+.kpi:hover::after { opacity: .16 !important; }
+
+/* icono superior (SVG con stroke = currentColor) */
+.kpi-icon {
+  order: 1;
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 40px; height: 40px; margin-bottom: .15rem;
+  border-radius: 11px;
+  color: #5b9dff;
+  background: rgba(91,157,255,0.10);
+  border: 1px solid rgba(91,157,255,0.18);
+}
+.kpi-icon svg { width: 22px; height: 22px; stroke: currentColor; fill: none;
+  stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
+/* Número grande de cada KPI — texto plano en el color de acento del tema,
+   sin caja de fondo. (Antes era un degradado recortado al texto vía
+   background-clip:text; una regla más específica en nocturne.css
+   reescribía `background` con el atajo, lo que sin querer reseteaba
+   background-clip a su valor por defecto y pintaba el degradado como una
+   caja sólida detrás del número en vez de sólo dentro de sus trazos.) */
+.kpi .kpi-value {
+  order: 2;
+  font-family: var(--font-display) !important;
+  font-size: 2rem !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.02em !important;
+  line-height: 1 !important;
+  background: transparent !important;
+  color: var(--cyan) !important;
+  filter: none !important;
+}/* etiqueta debajo,
+gris,
+tipo título (sin mayúsculas forzadas) */
+.kpi .kpi-label {
+  order: 3;
+  font-size: .72rem !important;
+  font-weight: 500 !important;
+  letter-spacing: .01em !important;
+  text-transform: none !important;
+  color: #93a0b8 !important;
+}
+/* subtítulo opcional (delta): pequeño y muy discreto */
+.kpi .kpi-delta { order: 4; font-size: .54rem !important; color: #66748f !important; opacity: .85; }

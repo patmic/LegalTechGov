@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+<script>
+  /* Tema aplicado ANTES de pintar (core.js llega con defer, demasiado
+     tarde para evitar el parpadeo). Misma clave que index.html. */
+  try {
+    document.documentElement.setAttribute('data-theme',
+      localStorage.getItem('maltg-theme') === 'light' ? 'light' : 'dark');
+  } catch (e) {}
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#030711">
+<meta name="color-scheme" content="dark light">
+<title>MALTG Architecture Validator — Bitácora · Evidencia</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/standalone/umd/vis-network.min.js" defer></script>
+<script>/* fallback: si vis-network 9 no carga desde el CDN, usar vis 4.21 */
+window.addEventListener('DOMContentLoaded',()=>{ if(!window.vis){ const s=document.createElement('script');
+  s.src='https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js'; document.head.appendChild(s); } });</script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Nova+Mono&family=Outfit:wght@200;300;400;500;600;700;800;900&family=JetBrains+Mono:wght@300;400;600&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+<!-- Estructura primero, luego las dos pieles de tema. El orden importa:
+     dashboard.css (forma) → nocturne.css (oscuro) → aurora.css (claro). -->
+<link rel="stylesheet" href="../assets/css/dashboard.css">
+<link rel="stylesheet" href="../assets/css/nocturne.css">
+<link rel="stylesheet" href="../assets/css/aurora.css">
+<!-- Runtime compartido (header/nav, tema, animación de arranque) + lógica propia de esta página -->
+<script src="../assets/js/core.js" defer></script>
+<script src="../assets/js/tab-bitacora.js" defer></script>
+</head>
+<body data-page="bitacora">
+
+<!-- LOADING OVERLAY — misma animación de arranque que el resto del dashboard -->
+<div id="overlay" class="show">
+  <div class="ov-spinner"></div>
+  <div class="ov-msg">Sincronizando ecosistema MALTG</div>
+  <div class="ov-steps" id="ov-steps"></div>
+</div>
+
+<!-- HEADER (inyectado por core.js desde assets/partials/header.html) -->
+<div id="app-header"></div>
+
+<main>
+<div class="section active" id="sec-bitacora">
+  <div class="stitle">Bitácora del Proyecto · Evidencia Reproducible (Protocolo v1)</div>
+
+  <!-- Protocolo + acciones -->
+  <div class="panel" style="margin-bottom:1rem">
+    <div class="ph">
+      <div class="ptitle">Protocolo de Recolección Documental</div>
+      <div style="display:flex;gap:.45rem;align-items:center">
+        <span class="pbadge g" id="ev-runs-badge">— corridas</span>
+        <span class="pbadge d">SHA-256</span>
+      </div>
+    </div>
+    <div class="src-bar">
+      <span>Protocolo:</span><span class="src-file" style="color:var(--gold)">/data/evidence/PROTOCOLO.md</span>
+      <span class="vsep">·</span>
+      <span>Semillas:</span><span class="src-file">/data/evidence/sources_semilla.json</span>
+      <span class="vsep">·</span>
+      <span>Bitácora:</span><span class="src-file">/data/bitacora.json</span>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:.8rem;align-items:center;padding:.9rem 1.1rem">
+      <button id="ev-capture-btn" onclick="runEvidenceCapture()"
+        style="cursor:pointer;border:none;border-radius:9px;padding:.65rem 1.2rem;font-family:var(--font-mono);
+               font-weight:700;font-size:.8rem;color:#04121a;letter-spacing:.4px;
+               background:linear-gradient(95deg,#ffc947,#10e98c);box-shadow:0 6px 22px rgba(255,201,71,.25)">
+        📸 Capturar evidencia
+      </button>
+      <button id="ev-verify-btn" onclick="runEvidenceVerify()"
+        style="cursor:pointer;border:1px solid rgba(0,229,255,.4);border-radius:9px;padding:.65rem 1.2rem;
+               font-family:var(--font-mono);font-weight:700;font-size:.8rem;color:var(--cyan);
+               background:rgba(0,229,255,.08)">
+        ✔ Verificar integridad
+      </button>
+      <select id="ev-run-sel" class="app-select" onchange="loadEvidenceManifest(this.value)"></select>
+      <span id="ev-status" style="font-family:var(--font-mono);font-size:.66rem;color:var(--t3)">
+        Cada captura guarda snapshots HTML + manifest con SHA-256 en /data/evidence/&lt;corrida&gt;/ y se asienta en la bitácora.
+      </span>
+    </div>
+    <div id="ev-protocolo" style="padding:0 1.1rem .9rem;font-size:.7rem;color:var(--t3);line-height:1.55"></div>
+  </div>
+
+  <!-- Manifest de la corrida -->
+  <div class="panel" style="margin-bottom:1rem">
+    <div class="ph"><div class="ptitle">Manifest de Evidencia · Snapshots verificables</div>
+      <span class="pbadge d" id="ev-mf-badge">—</span></div>
+    <div id="ev-manifest" style="padding:.6rem 1rem;overflow-x:auto"></div>
+    <div id="ev-snap-preview" style="display:none;margin:0 1rem 1rem;border:1px solid var(--bdr);border-radius:8px;
+         background:rgba(0,0,0,.35);padding:.8rem;max-height:260px;overflow:auto">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem">
+        <span id="ev-snap-title" style="font-family:var(--font-mono);font-size:.68rem;color:var(--cyan)"></span>
+        <span onclick="document.getElementById('ev-snap-preview').style.display='none'"
+              style="cursor:pointer;color:var(--t3);font-size:.8rem">✕</span>
+      </div>
+      <pre id="ev-snap-body" style="white-space:pre-wrap;font-size:.62rem;color:var(--t3);margin:0"></pre>
+    </div>
+  </div>
+
+  <!-- Bitácora -->
+  <div style="display:grid;grid-template-columns:1.6fr 1fr;gap:1rem">
+    <div class="panel">
+      <div class="ph"><div class="ptitle">Bitácora · registro append-only</div>
+        <div style="display:flex;gap:.45rem;align-items:center">
+          <span class="pbadge g" id="bit-count">— entradas</span>
+          <span class="pbadge d" id="bit-chain">cadena: —</span>
+        </div>
+      </div>
+      <div id="bit-log" style="padding:.6rem 1rem;max-height:520px;overflow-y:auto"></div>
+    </div>
+    <div class="panel">
+      <div class="ph"><div class="ptitle">Nueva entrada manual</div><span class="pbadge d">investigador</span></div>
+      <div style="padding:1rem;display:flex;flex-direction:column;gap:.7rem">
+        <input id="bit-actor" placeholder="Actor (ej. pat_mic)" style="background:rgba(255,255,255,.05);
+          border:1px solid var(--bdr);border-radius:8px;color:var(--t1);font-family:var(--font-mono);
+          font-size:.72rem;padding:.6rem .7rem">
+        <input id="bit-accion" placeholder="Acción (ej. decision_metodologica)" style="background:rgba(255,255,255,.05);
+          border:1px solid var(--bdr);border-radius:8px;color:var(--t1);font-family:var(--font-mono);
+          font-size:.72rem;padding:.6rem .7rem">
+        <textarea id="bit-detalle" rows="4" placeholder="Detalle: qué se hizo/decidió y por qué…"
+          style="background:rgba(255,255,255,.05);border:1px solid var(--bdr);border-radius:8px;color:var(--t1);
+          font-family:var(--font-mono);font-size:.72rem;padding:.6rem .7rem;resize:vertical"></textarea>
+        <button onclick="addBitacoraEntry()" style="cursor:pointer;border:none;border-radius:9px;
+          padding:.65rem 1.2rem;font-family:var(--font-mono);font-weight:700;font-size:.78rem;color:#04121a;
+          background:linear-gradient(95deg,#00e5ff,#b060ff)">✍ Asentar en bitácora</button>
+        <span id="bit-status" style="font-family:var(--font-mono);font-size:.64rem;color:var(--t3)">
+          Cada entrada queda encadenada por hash (no editable ni borrable desde la app).
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
+</main>
+
+</body>
+</html>

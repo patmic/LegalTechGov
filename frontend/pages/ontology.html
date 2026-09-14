@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+<script>
+  /* Tema aplicado ANTES de pintar (core.js llega con defer, demasiado
+     tarde para evitar el parpadeo). Misma clave que index.html. */
+  try {
+    document.documentElement.setAttribute('data-theme',
+      localStorage.getItem('maltg-theme') === 'light' ? 'light' : 'dark');
+  } catch (e) {}
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#030711">
+<meta name="color-scheme" content="dark light">
+<title>MALTG Architecture Validator — Ontología</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/standalone/umd/vis-network.min.js" defer></script>
+<script>/* fallback: si vis-network 9 no carga desde el CDN, usar vis 4.21 */
+window.addEventListener('DOMContentLoaded',()=>{ if(!window.vis){ const s=document.createElement('script');
+  s.src='https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js'; document.head.appendChild(s); } });</script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Nova+Mono&family=Outfit:wght@200;300;400;500;600;700;800;900&family=JetBrains+Mono:wght@300;400;600&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+<!-- Estructura primero, luego las dos pieles de tema. El orden importa:
+     dashboard.css (forma) → nocturne.css (oscuro) → aurora.css (claro). -->
+<link rel="stylesheet" href="../assets/css/dashboard.css">
+<link rel="stylesheet" href="../assets/css/nocturne.css">
+<link rel="stylesheet" href="../assets/css/aurora.css">
+<!-- Runtime compartido (header/nav, tema, animación de arranque) + lógica propia de esta página -->
+<script src="../assets/js/core.js" defer></script>
+<script src="../assets/js/tab-ontology.js" defer></script>
+</head>
+<body data-page="ontology">
+
+<!-- LOADING OVERLAY — misma animación de arranque que el resto del dashboard -->
+<div id="overlay" class="show">
+  <div class="ov-spinner"></div>
+  <div class="ov-msg">Sincronizando ecosistema MALTG</div>
+  <div class="ov-steps" id="ov-steps"></div>
+</div>
+
+<!-- HEADER (inyectado por core.js desde assets/partials/header.html) -->
+<div id="app-header"></div>
+
+<main>
+<div class="section active" id="sec-ontology">
+  <div class="panel">
+    <div class="ph">
+      <div class="ptitle">Grafo Ontológico · vis-network · MALTG_ontology.json</div>
+      <div style="display:flex;gap:.55rem;align-items:center;flex-wrap:wrap">
+        <!-- selector único de acciones del grafo -->
+        <select class="vis-ctrl-select" id="sel-onto-action" onchange="ontoAction(this.value)" title="Acciones del grafo">
+          <option value="" selected>⚙ Grafo…</option>
+          <option value="fit">Encuadrar</option>
+          <option value="clusters">Clústeres por capa (doble clic expande)</option>
+          <option value="physics">Físico (default) — recargar grafo</option>
+        </select>
+        <span class="vis-stabilizing" id="vis-stabilizing">
+          <span class="vis-stab-dot"></span>Estabilizando…
+        </span>
+        <span class="pbadge" id="onto-badge">—</span>
+      </div>
+    </div>
+    <div class="src-bar">
+      <span>Fuente:</span><span class="src-file">/data/MALTG_ontology.json</span>
+      <span class="vsep">·</span><span style="color:var(--t3);font-size:.56rem" id="onto-hash">—</span>
+      <span class="vsep">·</span><span>Cargado:</span><span class="src-ts" id="onto-ts">—</span>
+      <span class="vsep">·</span>
+      <span id="vis-node-count" style="color:var(--t2)">Nodos: —</span>
+      <span class="vsep">·</span>
+      <span id="vis-edge-count" style="color:var(--t2)">Aristas: —</span>
+    </div>
+    <!-- vis-network canvas container -->
+    <div style="position:relative">
+      <div id="onto-vis" style="width:100%;height:560px;overflow:hidden;"></div>
+      <!-- Modal de detalle del nodo (clic en un nodo) — fuera de #onto-vis: vis-network vacía su contenedor -->
+      <div id="onto-modal" style="position:absolute;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,0.45);z-index:20" onclick="if(event.target===this)closeNodeModal()">
+        <div id="onto-modal-card" style="width:min(460px,92%);max-height:90%;overflow:auto;background:var(--bg1);border:1px solid var(--bdr2);border-radius:12px;box-shadow:var(--shadow);transform:scale(.94);opacity:0;transition:transform .2s cubic-bezier(.16,1,.3,1),opacity .2s ease">
+          <div style="display:flex;align-items:flex-start;gap:.6rem;padding:.85rem 1rem;border-bottom:1px solid var(--bdr);position:sticky;top:0;background:var(--bg1)">
+            <span id="onto-m-dot" style="width:14px;height:14px;border-radius:50%;flex-shrink:0;margin-top:3px;background:#888"></span>
+            <div style="flex:1;min-width:0">
+              <div id="onto-m-title" style="font-family:var(--font-display);font-weight:700;font-size:.92rem;color:var(--t1);line-height:1.25">Nodo</div>
+              <div id="onto-m-meta" style="font-size:.58rem;color:var(--t3);margin-top:.25rem;display:flex;gap:.5rem;flex-wrap:wrap"></div>
+            </div>
+            <button onclick="closeNodeModal()" class="vis-ctrl-btn" style="flex-shrink:0">✕</button>
+          </div>
+          <div style="padding:.85rem 1rem">
+            <div id="onto-m-desc" style="font-size:.7rem;color:var(--t1);line-height:1.6"></div>
+            <div id="onto-m-conn" style="margin-top:.85rem"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="leg-row">
+      <div class="leg-item"><div class="leg-dot" style="background:var(--cyan)"></div>TOGAF</div>
+      <div class="leg-item"><div class="leg-dot" style="background:var(--gold)"></div>COBIT</div>
+      <div class="leg-item"><div class="leg-dot" style="background:var(--rose)"></div>NIST CSF</div>
+      <div class="leg-item"><div class="leg-dot" style="background:var(--violet)"></div>IA</div>
+      <div class="leg-item"><div class="leg-dot" style="background:var(--green)"></div>Blockchain</div>
+      <div class="leg-item"><div class="leg-dot" style="background:var(--orange)"></div>Open Data</div>
+      <div class="leg-item"><div class="leg-dot" style="background:var(--pink)"></div>Security</div>
+      <div class="leg-item"><div class="leg-dot" style="background:#60a5fa"></div>LegalTech</div>
+      <div class="leg-item" style="gap:.5rem;margin-left:auto;font-size:.58rem;color:var(--t3)">
+        🖱 Arrastra nodos (física viva) · Scroll zoom · Clic: descripción del nodo · Doble clic en clúster: expandir
+      </div>
+    </div>
+  </div>
+</div>
+</main>
+
+</body>
+</html>

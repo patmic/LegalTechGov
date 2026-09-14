@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+<script>
+  /* Tema aplicado ANTES de pintar (core.js llega con defer, demasiado
+     tarde para evitar el parpadeo). Misma clave que index.html. */
+  try {
+    document.documentElement.setAttribute('data-theme',
+      localStorage.getItem('maltg-theme') === 'light' ? 'light' : 'dark');
+  } catch (e) {}
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#030711">
+<meta name="color-scheme" content="dark light">
+<title>MALTG Architecture Validator — Guía del Experimento</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/standalone/umd/vis-network.min.js" defer></script>
+<script>/* fallback: si vis-network 9 no carga desde el CDN, usar vis 4.21 */
+window.addEventListener('DOMContentLoaded',()=>{ if(!window.vis){ const s=document.createElement('script');
+  s.src='https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js'; document.head.appendChild(s); } });</script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Nova+Mono&family=Outfit:wght@200;300;400;500;600;700;800;900&family=JetBrains+Mono:wght@300;400;600&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+<!-- Estructura primero, luego las dos pieles de tema. El orden importa:
+     dashboard.css (forma) → nocturne.css (oscuro) → aurora.css (claro). -->
+<link rel="stylesheet" href="../assets/css/dashboard.css">
+<link rel="stylesheet" href="../assets/css/nocturne.css">
+<link rel="stylesheet" href="../assets/css/aurora.css">
+<!-- Runtime compartido (header/nav, tema, animación de arranque) + lógica propia de esta página -->
+<script src="../assets/js/core.js" defer></script>
+<script src="../assets/js/tab-guia.js" defer></script>
+</head>
+<body data-page="guia">
+
+<!-- LOADING OVERLAY — misma animación de arranque que el resto del dashboard -->
+<div id="overlay" class="show">
+  <div class="ov-spinner"></div>
+  <div class="ov-msg">Sincronizando ecosistema MALTG</div>
+  <div class="ov-steps" id="ov-steps"></div>
+</div>
+
+<!-- HEADER (inyectado por core.js desde assets/partials/header.html) -->
+<div id="app-header"></div>
+
+<main>
+<div class="section active" id="sec-guia">
+  <div class="stitle">Guía del Experimento · Términos, Aspectos Técnicos y Metodológicos</div>
+
+  <div class="panel" style="margin-bottom:1rem">
+    <div class="ph"><div class="ptitle">🔎 Buscar en la guía</div><span class="pbadge d" id="gu-n">—</span></div>
+    <div style="padding:.7rem 1rem">
+      <input id="gu-buscar" placeholder="Escriba un término (ej. F1, MAPE-K, drift, AHP, término legal…)" oninput="guFiltrar()"
+        style="width:100%;box-sizing:border-box;background:rgba(255,255,255,.06);border:1px solid var(--bdr);border-radius:10px;color:var(--t1);font-family:var(--font-mono);font-size:.78rem;padding:.65rem .8rem">
+    </div>
+  </div>
+
+  <div id="gu-contenido"></div>
+
+  <div class="panel" style="margin-top:1rem;--ac:var(--gold)">
+    <div class="ph"><div class="ptitle">🎛 Supuestos vigentes del experimento (dinámico)</div>
+      <span class="pbadge g">se fijan en el tab Adaptativo → Supuestos</span></div>
+    <div style="padding:.4rem 1rem 0;font-family:var(--font-mono);font-size:.62rem;color:var(--t3)">
+      Esta tabla lee en vivo los valores asumidos y su procedencia. Ningún parámetro de la simulación está fuera de esta lista.
+    </div>
+    <div id="gu-supuestos" style="padding:.6rem 1rem;overflow-x:auto"></div>
+  </div>
+</div>
+</main>
+
+</body>
+</html>

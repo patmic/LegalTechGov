@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+<script>
+  /* Tema aplicado ANTES de pintar (core.js llega con defer, demasiado
+     tarde para evitar el parpadeo). Misma clave que index.html. */
+  try {
+    document.documentElement.setAttribute('data-theme',
+      localStorage.getItem('maltg-theme') === 'light' ? 'light' : 'dark');
+  } catch (e) {}
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#030711">
+<meta name="color-scheme" content="dark light">
+<title>MALTG Architecture Validator — Validación Experta</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/standalone/umd/vis-network.min.js" defer></script>
+<script>/* fallback: si vis-network 9 no carga desde el CDN, usar vis 4.21 */
+window.addEventListener('DOMContentLoaded',()=>{ if(!window.vis){ const s=document.createElement('script');
+  s.src='https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js'; document.head.appendChild(s); } });</script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Nova+Mono&family=Outfit:wght@200;300;400;500;600;700;800;900&family=JetBrains+Mono:wght@300;400;600&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+<!-- Estructura primero, luego las dos pieles de tema. El orden importa:
+     dashboard.css (forma) → nocturne.css (oscuro) → aurora.css (claro). -->
+<link rel="stylesheet" href="../assets/css/dashboard.css">
+<link rel="stylesheet" href="../assets/css/nocturne.css">
+<link rel="stylesheet" href="../assets/css/aurora.css">
+<!-- Runtime compartido (header/nav, tema, animación de arranque) + lógica propia de esta página -->
+<script src="../assets/js/core.js" defer></script>
+<script src="../assets/js/tab-experto.js" defer></script>
+</head>
+<body data-page="experto">
+
+<!-- LOADING OVERLAY — misma animación de arranque que el resto del dashboard -->
+<div id="overlay" class="show">
+  <div class="ov-spinner"></div>
+  <div class="ov-msg">Sincronizando ecosistema MALTG</div>
+  <div class="ov-steps" id="ov-steps"></div>
+</div>
+
+<!-- HEADER (inyectado por core.js desde assets/partials/header.html) -->
+<div id="app-header"></div>
+
+<main>
+<div class="section active" id="sec-experto">
+  <div class="stitle">Validación Experta · Punto 1: Gold Standard (abogado) · Punto 2: Pesos AHP (expertos)</div>
+
+  <!-- Intro + sesión simulada -->
+  <div class="panel" style="margin-bottom:1rem;--ac:#a855f7">
+    <div class="ph"><div class="ptitle">🧭 ¿Qué se hace en este tab?</div>
+      <span class="pbadge d" id="ex-estado">—</span></div>
+    <div id="ex-sim-banner" style="display:none;margin:.6rem 1rem 0;padding:.5rem .8rem;border:1px solid rgba(255,154,60,.6);
+         border-radius:8px;background:rgba(255,154,60,.1);font-family:var(--font-mono);font-size:.66rem;color:#ff9a3c">
+      ⚠ HAY DATOS SIMULADOS ACTIVOS — sirven solo para ver el flujo; límpielos antes de la sesión real y NO los use en la tesis.
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;padding:.8rem 1rem">
+      <div style="font-size:.68rem;color:var(--t2);line-height:1.65">
+        <b style="color:#a855f7">Punto 1 — Validez del razonador (abogado).</b>
+        Un abogado anota 30–50 actuaciones reales (acto correcto + veredicto) sin ver la predicción del sistema.
+        Al evaluar, se obtiene F1, precisión, recall, matriz de confusión y kappa si hay 2º anotador.
+        Resultado: el dictamen IA pasa a tener <i>desempeño conocido</i> (chip de validez).
+        Guía: <span class="src-file">/data/gold/GUIA_ANOTACION.md</span>
+      </div>
+      <div style="font-size:.68rem;color:var(--t2);line-height:1.65">
+        <b style="color:var(--cyan)">Punto 2 — Pesos Ψ por AHP (expertos).</b>
+        3–7 expertos responden una comparación por pares (escala Saaty): ¿cuánto más importa cubrir el concepto raíz
+        que los subconceptos? El sistema deriva los pesos, los agrega y el radar los usa en vez del 0.40/0.60 asumido.
+        El análisis de sensibilidad ±10/20% demuestra que las conclusiones no dependen del valor exacto.
+      </div>
+    </div>
+    <div style="display:flex;gap:.6rem;flex-wrap:wrap;align-items:center;padding:0 1rem 1rem">
+      <button onclick="exSimular()" style="cursor:pointer;border:none;border-radius:9px;padding:.55rem 1rem;
+        font-family:var(--font-mono);font-weight:700;font-size:.74rem;color:#04121a;
+        background:linear-gradient(95deg,#a855f7,#ffc947)">🧪 Cargar sesión simulada (demo del flujo)</button>
+      <button onclick="exLimpiar()" style="cursor:pointer;border:1px solid rgba(255,77,109,.5);border-radius:9px;padding:.55rem 1rem;
+        font-family:var(--font-mono);font-weight:700;font-size:.74rem;color:#ff4d6d;background:rgba(255,77,109,.08)">🧹 Limpiar simulación</button>
+      <span id="ex-sim-status" style="font-family:var(--font-mono);font-size:.62rem;color:var(--t3)">
+        La simulación crea 40 anotaciones (+15 de un 2º anotador) y 3 juicios AHP marcados "SIMULADO", corre la evaluación y queda en bitácora.
+      </span>
+    </div>
+  </div>
+
+  <!-- Punto 1: Validez IA (movido desde el tab Adaptativo) -->
+  <div class="panel" id="ad-p-validez" style="margin-bottom:1rem;--ac:#a855f7">
+    <div class="ph"><div class="ptitle">🎯 Punto 1 · Gold Standard y Evaluación del Razonador</div>
+      <div style="display:flex;gap:.45rem;align-items:center">
+        <span class="pbadge d" id="ev-chip">sin validez medida</span>
+        <span class="pbadge g" id="ev-progreso">0 anotadas</span>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1.4fr 1fr;gap:1rem;padding:.8rem 1rem">
+      <div>
+        <div style="display:flex;gap:.5rem;flex-wrap:wrap;align-items:center;margin-bottom:.5rem">
+          <select id="ev-causa" class="app-select" onchange="evLoadCausa()"></select>
+          <input id="ev-anotador" placeholder="Anotador (abogado)" style="background:rgba(255,255,255,.06);border:1px solid var(--bdr);border-radius:8px;color:var(--t1);font-family:var(--font-mono);font-size:.7rem;padding:.45rem .55rem">
+          <button onclick="evGuardar()" style="cursor:pointer;border:1px solid rgba(168,85,247,.5);border-radius:8px;padding:.45rem .8rem;font-family:var(--font-mono);font-weight:700;font-size:.72rem;color:#a855f7;background:rgba(168,85,247,.1)">💾 Guardar anotaciones</button>
+        </div>
+        <div style="font-family:var(--font-mono);font-size:.6rem;color:var(--t3);margin-bottom:.4rem">
+          Anote el acto correcto según el contenido de la providencia (guía: /data/gold/GUIA_ANOTACION.md). La predicción del sistema se muestra en gris solo como referencia.
+        </div>
+        <div id="ev-filas" style="max-height:340px;overflow-y:auto;border:1px solid var(--bdr);border-radius:8px;padding:.4rem .6rem"></div>
+        <span id="ev-status" style="font-family:var(--font-mono);font-size:.62rem;color:var(--t3)"></span>
+      </div>
+      <div>
+        <button onclick="evRun()" style="cursor:pointer;border:none;border-radius:9px;padding:.6rem 1.1rem;width:100%;
+          font-family:var(--font-mono);font-weight:700;font-size:.76rem;color:#04121a;margin-bottom:.6rem;
+          background:linear-gradient(95deg,#a855f7,#00e5ff)">▶ Evaluar razonador contra el gold</button>
+        <div id="ev-result" style="font-size:.68rem;color:var(--t2);line-height:1.6"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Punto 2: AHP + sensibilidad + rúbrica (movido desde el tab 04) -->
+  <div class="panel" style="--ac:var(--cyan)">
+    <div class="ph"><div class="ptitle">⚖ Punto 2 · Pesos Ψ (AHP), Análisis de Sensibilidad y Rúbrica con Evidencia</div>
+      <span class="pbadge d" id="vz-psi-badge">Ψ: —</span></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1.2fr;gap:1rem;padding:.8rem 1rem">
+      <div>
+        <div style="font-family:var(--font-mono);font-size:.62rem;color:var(--t3);margin-bottom:.4rem">JUICIO AHP (escala Saaty) — ¿cuánto más importante es cubrir el <b>concepto raíz</b> que los <b>subconceptos</b>?</div>
+        <select id="vz-saaty" class="app-select" style="width:100%;margin-bottom:.4rem"></select>
+        <input id="vz-experto" placeholder="Nombre del experto" style="width:100%;box-sizing:border-box;background:rgba(255,255,255,.06);border:1px solid var(--bdr);border-radius:8px;color:var(--t1);font-family:var(--font-mono);font-size:.68rem;padding:.4rem .55rem;margin-bottom:.4rem">
+        <button onclick="vzGuardarAhp()" style="cursor:pointer;border:none;border-radius:9px;padding:.5rem 1rem;width:100%;
+          font-family:var(--font-mono);font-weight:700;font-size:.72rem;color:#04121a;
+          background:linear-gradient(95deg,#a855f7,#00e5ff)">💾 Registrar juicio AHP</button>
+        <div id="vz-ahp-info" style="font-family:var(--font-mono);font-size:.6rem;color:var(--t3);margin-top:.4rem;line-height:1.5"></div>
+      </div>
+      <div>
+        <button onclick="vzSensibilidad()" style="cursor:pointer;border:1px solid rgba(168,85,247,.5);border-radius:9px;padding:.5rem 1rem;width:100%;
+          font-family:var(--font-mono);font-weight:700;font-size:.72rem;color:#a855f7;background:rgba(168,85,247,.08);margin-bottom:.5rem">📈 Análisis de sensibilidad ±10/20%</button>
+        <div id="vz-sens" style="font-size:.66rem;color:var(--t2);line-height:1.6"></div>
+      </div>
+      <div>
+        <div style="display:flex;gap:.4rem;align-items:center;margin-bottom:.4rem">
+          <select id="vz-dim" class="app-select" onchange="vzShowRubrica()"></select>
+          <span class="pbadge g" id="vz-ev-n">0 evidencias</span>
+        </div>
+        <div id="vz-rubrica" style="max-height:180px;overflow-y:auto;font-size:.64rem;color:var(--t2);line-height:1.55;border:1px solid var(--bdr);border-radius:8px;padding:.4rem .6rem;margin-bottom:.4rem"></div>
+        <div style="display:flex;gap:.4rem;flex-wrap:wrap">
+          <input id="vz-ev-url" placeholder="URL o snapshot de evidencia" style="flex:1;min-width:130px;background:rgba(255,255,255,.06);border:1px solid var(--bdr);border-radius:8px;color:var(--t1);font-family:var(--font-mono);font-size:.64rem;padding:.35rem .5rem">
+          <input id="vz-ev-crit" placeholder="Criterio de rúbrica" style="width:120px;background:rgba(255,255,255,.06);border:1px solid var(--bdr);border-radius:8px;color:var(--t1);font-family:var(--font-mono);font-size:.64rem;padding:.35rem .5rem">
+          <button onclick="vzAddEvidencia()" style="cursor:pointer;border:1px solid rgba(255,201,71,.5);border-radius:8px;padding:.35rem .7rem;font-family:var(--font-mono);font-weight:700;font-size:.68rem;color:var(--gold);background:rgba(255,201,71,.1)">+ Evidencia</button>
+        </div>
+        <div id="vz-ev-status" style="font-family:var(--font-mono);font-size:.6rem;color:var(--t3);margin-top:.3rem">Un score sin evidencia queda rotulado "declarado".</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Punto 3: Ponderación de dimensiones (Delphi/Likert) -->
+  <div class="panel" style="margin-top:1rem;--ac:var(--gold)">
+    <div class="ph"><div class="ptitle">📊 Punto 3 · Ponderación de las Dimensiones del Radar (panel Delphi)</div>
+      <span class="pbadge d" id="xd-proc">sin ponderar (promedio simple)</span></div>
+    <div style="padding:.4rem 1rem 0;font-family:var(--font-mono);font-size:.62rem;color:var(--t3)">
+      Cada experto califica la importancia de cada dimensión (1 = mínima · 9 = máxima). El peso agregado = mediana normalizada;
+      el score global del radar pasa de promedio simple a promedio ponderado por expertos.
+    </div>
+    <div style="display:grid;grid-template-columns:1.4fr 1fr;gap:1rem;padding:.8rem 1rem">
+      <div>
+        <div id="xd-sliders" style="display:grid;grid-template-columns:1fr 1fr;gap:.35rem .9rem"></div>
+        <div style="display:flex;gap:.5rem;align-items:center;margin-top:.6rem">
+          <input id="xd-experto" placeholder="Nombre del experto" style="background:rgba(255,255,255,.06);border:1px solid var(--bdr);border-radius:8px;color:var(--t1);font-family:var(--font-mono);font-size:.68rem;padding:.4rem .55rem">
+          <button onclick="xdGuardar()" style="cursor:pointer;border:none;border-radius:9px;padding:.5rem 1rem;
+            font-family:var(--font-mono);font-weight:700;font-size:.72rem;color:#04121a;
+            background:linear-gradient(95deg,#ffc947,#00e5ff)">💾 Registrar ponderación</button>
+        </div>
+        <span id="xd-status" style="font-family:var(--font-mono);font-size:.6rem;color:var(--t3)"></span>
+      </div>
+      <div id="xd-pesos" style="font-size:.66rem;color:var(--t2);line-height:1.6"></div>
+    </div>
+  </div>
+
+  <!-- Punto 4: Doble evaluación con rúbrica + concordancia -->
+  <div class="panel" style="margin-top:1rem;--ac:#10e98c">
+    <div class="ph"><div class="ptitle">🤝 Punto 4 · Doble Evaluación de Dimensiones con Rúbrica · concordancia Spearman</div>
+      <span class="pbadge g" id="xr-n">0 evaluadores</span></div>
+    <div style="padding:.4rem 1rem 0;font-family:var(--font-mono);font-size:.62rem;color:var(--t3)">
+      Cada experto puntúa las 10 dimensiones con la rúbrica (niveles 0·25·50·75·100 — consúltela en el Punto 2).
+      Con ≥2 evaluadores se calcula la concordancia entre pares y frente al score del sistema (Fallo 1: doble evaluador).
+    </div>
+    <div style="display:grid;grid-template-columns:1.4fr 1fr;gap:1rem;padding:.8rem 1rem">
+      <div>
+        <div id="xr-inputs" style="display:grid;grid-template-columns:1fr 1fr;gap:.35rem .9rem"></div>
+        <div style="display:flex;gap:.5rem;align-items:center;margin-top:.6rem">
+          <input id="xr-experto" placeholder="Nombre del evaluador" style="background:rgba(255,255,255,.06);border:1px solid var(--bdr);border-radius:8px;color:var(--t1);font-family:var(--font-mono);font-size:.68rem;padding:.4rem .55rem">
+          <button onclick="xrGuardar()" style="cursor:pointer;border:none;border-radius:9px;padding:.5rem 1rem;
+            font-family:var(--font-mono);font-weight:700;font-size:.72rem;color:#04121a;
+            background:linear-gradient(95deg,#10e98c,#00e5ff)">💾 Registrar evaluación</button>
+        </div>
+        <span id="xr-status" style="font-family:var(--font-mono);font-size:.6rem;color:var(--t3)"></span>
+      </div>
+      <div id="xr-conc" style="font-size:.66rem;color:var(--t2);line-height:1.6"></div>
+    </div>
+  </div>
+
+  <!-- Punto 5: Registro de verificación ontológica externa -->
+  <div class="panel" style="margin-top:1rem;--ac:#60a5fa">
+    <div class="ph"><div class="ptitle">🧾 Punto 5 · Registro de Verificación Ontológica Externa (HermiT · Pellet · OOPS!)</div>
+      <span class="pbadge d" id="xv-n">0 registros</span></div>
+    <div style="padding:.4rem 1rem 0;font-family:var(--font-mono);font-size:.62rem;color:var(--t3)">
+      Genere el OWL en el tab 07, verifíquelo externamente (Protégé→HermiT, oops.linkeddata.es) y asiente aquí el resultado con el hash del OWL verificado — queda en bitácora como evidencia.
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1.2fr;gap:1rem;padding:.8rem 1rem">
+      <div style="display:flex;flex-direction:column;gap:.45rem">
+        <div style="display:flex;gap:.45rem;flex-wrap:wrap">
+          <select id="xv-herr" class="app-select">
+            <option>HermiT (Protégé)</option><option>Pellet (Protégé)</option><option>OOPS! Scanner</option><option>Otra</option>
+          </select>
+          <input id="xv-ver" placeholder="Versión" style="width:90px;background:rgba(255,255,255,.06);border:1px solid var(--bdr);border-radius:8px;color:var(--t1);font-family:var(--font-mono);font-size:.66rem;padding:.4rem .5rem">
+          <select id="xv-res" class="app-select">
+            <option value="consistente">✓ Consistente</option><option value="inconsistente">✖ Inconsistente</option>
+            <option value="pitfalls_menores">⚠ Pitfalls menores</option><option value="pitfalls_criticos">✖ Pitfalls críticos</option>
+          </select>
+        </div>
+        <input id="xv-det" placeholder="Detalle (clases insatisfacibles, pitfalls corregidos…)" style="background:rgba(255,255,255,.06);border:1px solid var(--bdr);border-radius:8px;color:var(--t1);font-family:var(--font-mono);font-size:.66rem;padding:.4rem .55rem">
+        <input id="xv-url" placeholder="URL o ruta del informe (opcional)" style="background:rgba(255,255,255,.06);border:1px solid var(--bdr);border-radius:8px;color:var(--t1);font-family:var(--font-mono);font-size:.66rem;padding:.4rem .55rem">
+        <button onclick="xvGuardar()" style="cursor:pointer;border:none;border-radius:9px;padding:.5rem 1rem;
+          font-family:var(--font-mono);font-weight:700;font-size:.72rem;color:#04121a;
+          background:linear-gradient(95deg,#60a5fa,#10e98c)">💾 Asentar verificación</button>
+        <span id="xv-status" style="font-family:var(--font-mono);font-size:.6rem;color:var(--t3)"></span>
+      </div>
+      <div id="xv-lista" style="max-height:230px;overflow-y:auto"></div>
+    </div>
+  </div>
+</div>
+</main>
+
+</body>
+</html>

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MALTG Architecture Validator — Inicio</title>
+<meta name="color-scheme" content="dark light">
+<script>
+  /* Tema aplicado ANTES de pintar, para que no parpadee el tema
+     equivocado. Misma clave que usa core.js en las 13 páginas. */
+  try {
+    document.documentElement.setAttribute('data-theme',
+      localStorage.getItem('maltg-theme') === 'light' ? 'light' : 'dark');
+  } catch (e) {}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<!-- Estructura primero, luego las dos pieles de tema:
+     inicio.css (forma) → nocturne.css (oscuro) → aurora.css (claro). -->
+<link rel="stylesheet" href="assets/css/inicio.css">
+<link rel="stylesheet" href="assets/css/nocturne.css">
+<link rel="stylesheet" href="assets/css/aurora.css">
+</head>
+<body>
+<div id="app">
+  <div class="bg-glow"></div>
+
+  <!-- ══ CABECERA ══ -->
+  <header class="top">
+    <div class="brand">
+      <b>pat_system</b>
+      <span>LEGALTECH ARCHITECTURE (MALTG)</span>
+    </div>
+    <div class="hdr-right">
+      <div class="api-pill">
+        <span class="api-dot" id="apiDot"></span>
+        <span id="apiLabel">SONDEANDO API</span>
+      </div>
+      <span class="clock" id="clock">—</span>
+    </div>
+  </header>
+
+  <!-- ══ CARRUSEL ══ -->
+  <main class="stage">
+    <div class="rings">
+      <svg class="ring-a" viewBox="0 0 200 200"><circle cx="100" cy="100" r="96" fill="none" stroke="currentColor" stroke-width=".35" stroke-dasharray="30 12" opacity=".35"/></svg>
+      <svg class="ring-b" viewBox="0 0 200 200"><circle cx="100" cy="100" r="84" fill="none" stroke="currentColor" stroke-width=".3" stroke-dasharray="4 14" opacity=".5"/></svg>
+    </div>
+
+    <span class="eyebrow">SELECCIONE UN MÓDULO</span>
+
+    <div id="cardStage"></div>
+
+    <div class="stage-controls">
+      <button class="arrow-btn" id="prevBtn" title="Anterior">‹‹</button>
+      <div class="dots" id="dots"></div>
+      <button class="arrow-btn" id="nextBtn" title="Siguiente">››</button>
+    </div>
+  </main>
+
+  <!-- ══ DETALLE ══ -->
+  <div class="detail-backdrop" id="detailBackdrop" style="display:none">
+    <div class="detail">
+      <div class="detail-head">
+        <div style="min-width:0">
+          <span class="detail-kicker" id="detailKicker"></span>
+          <span class="detail-title" id="detailTitle"></span>
+        </div>
+        <button class="detail-close" id="detailClose">×</button>
+      </div>
+      <span class="detail-desc" id="detailDesc"></span>
+      <div class="detail-stats" id="detailStats"></div>
+      <div class="detail-actions">
+        <a href="#" id="detailOpen" class="btn btn-primary">ABRIR EN EL DASHBOARD</a>
+        <a href="#" id="detailApi" target="_blank" rel="noopener" class="btn btn-ghost">VER ENDPOINT (SWAGGER)</a>
+        <span id="detailApiState"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ ARRANQUE ══ -->
+  <!-- Mismo círculo simple que el overlay de las 13 páginas del dashboard
+       (assets/css/dashboard.css: .ov-spinner) — visible mientras se
+       sondea la API (inicio.js: boot()), no una animación decorativa. -->
+  <div class="boot" id="boot">
+    <div class="boot-spin"></div>
+    <div class="boot-msg">Sincronizando ecosistema MALTG…</div>
+  </div>
+</div>
+
+<script src="assets/js/inicio.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,735 @@
+[
+  {
+    "id": 1,
+    "ts": "2026-07-02T20:28:02Z",
+    "tipo": "sistema",
+    "actor": "sistema/scraper",
+    "accion": "captura_evidencia",
+    "detalle": "Corrida 2026-07-02_202754: 10/11 fuentes capturadas con snapshot + SHA-256.",
+    "refs": [
+      "2026-07-02_202754"
+    ],
+    "prev_hash": "GENESIS",
+    "hash": "29214ae247fd14d7"
+  },
+  {
+    "id": 2,
+    "ts": "2026-07-02T20:31:28Z",
+    "tipo": "manual",
+    "actor": "patmic",
+    "accion": "good",
+    "detalle": "validar los datos y sus medidas",
+    "refs": [],
+    "prev_hash": "29214ae247fd14d7",
+    "hash": "477b4fd9bff338eb"
+  },
+  {
+    "id": 3,
+    "ts": "2026-07-03T22:15:54Z",
+    "tipo": "sistema",
+    "actor": "sistema/scraper",
+    "accion": "captura_evidencia",
+    "detalle": "Corrida 2026-07-03_221547: 10/11 fuentes capturadas con snapshot + SHA-256.",
+    "refs": [
+      "2026-07-03_221547"
+    ],
+    "prev_hash": "477b4fd9bff338eb",
+    "hash": "dbedc2c2b68cbe6b"
+  },
+  {
+    "id": 4,
+    "ts": "2026-07-03T22:15:54Z",
+    "tipo": "sistema",
+    "actor": "sistema/scraper",
+    "accion": "regeneracion_sdt_cj",
+    "detalle": "SDT_CJ.json regenerado (madurez 46/100); evidencia: 2026-07-03_221547",
+    "refs": [
+      "2026-07-03_221547",
+      "SDT_CJ.json"
+    ],
+    "prev_hash": "dbedc2c2b68cbe6b",
+    "hash": "f4be5375f336d890"
+  },
+  {
+    "id": 5,
+    "ts": "2026-07-04T03:44:45Z",
+    "tipo": "sistema",
+    "actor": "sistema/scraper",
+    "accion": "captura_evidencia",
+    "detalle": "Corrida 2026-07-04_034438: 10/11 fuentes capturadas con snapshot + SHA-256.",
+    "refs": [
+      "2026-07-04_034438"
+    ],
+    "prev_hash": "f4be5375f336d890",
+    "hash": "7411ebe828df019e"
+  },
+  {
+    "id": 6,
+    "ts": "2026-07-04T03:44:45Z",
+    "tipo": "sistema",
+    "actor": "sistema/scraper",
+    "accion": "regeneracion_sdt_cj",
+    "detalle": "SDT_CJ.json regenerado (madurez 46/100); evidencia: 2026-07-04_034438",
+    "refs": [
+      "2026-07-04_034438",
+      "SDT_CJ.json"
+    ],
+    "prev_hash": "7411ebe828df019e",
+    "hash": "622ac86a0936748a"
+  },
+  {
+    "id": 7,
+    "ts": "2026-07-04T03:46:27Z",
+    "tipo": "sistema",
+    "actor": "sistema/scraper",
+    "accion": "captura_evidencia",
+    "detalle": "Corrida 2026-07-04_034620: 10/11 fuentes capturadas con snapshot + SHA-256.",
+    "refs": [
+      "2026-07-04_034620"
+    ],
+    "prev_hash": "622ac86a0936748a",
+    "hash": "16c19fb4635aa6f2"
+  },
+  {
+    "id": 8,
+    "ts": "2026-07-04T03:46:27Z",
+    "tipo": "sistema",
+    "actor": "sistema/scraper",
+    "accion": "regeneracion_sdt_cj",
+    "detalle": "SDT_CJ.json regenerado (madurez 46/100); evidencia: 2026-07-04_034620",
+    "refs": [
+      "2026-07-04_034620",
+      "SDT_CJ.json"
+    ],
+    "prev_hash": "16c19fb4635aa6f2",
+    "hash": "9e3fd8848242d21e"
+  },
+  {
+    "id": 9,
+    "ts": "2026-07-04T06:24:15Z",
+    "tipo": "sistema",
+    "actor": "sistema/scraper",
+    "accion": "captura_evidencia",
+    "detalle": "Corrida 2026-07-04_062408: 10/11 fuentes capturadas con snapshot + SHA-256.",
+    "refs": [
+      "2026-07-04_062408"
+    ],
+    "prev_hash": "9e3fd8848242d21e",
+    "hash": "45bf9df5fb01e35d"
+  },
+  {
+    "id": 10,
+    "ts": "2026-07-04T06:24:15Z",
+    "tipo": "sistema",
+    "actor": "sistema/scraper",
+    "accion": "regeneracion_sdt_cj",
+    "detalle": "SDT_CJ.json regenerado (madurez 46/100); evidencia: 2026-07-04_062408",
+    "refs": [
+      "2026-07-04_062408",
+      "SDT_CJ.json"
+    ],
+    "prev_hash": "45bf9df5fb01e35d",
+    "hash": "667d7c4149cdd0ee"
+  },
+  {
+    "id": 11,
+    "ts": "2026-07-04T06:33:18Z",
+    "tipo": "sistema",
+    "actor": "sistema/scraper",
+    "accion": "captura_evidencia",
+    "detalle": "Corrida 2026-07-04_063310: 10/11 fuentes capturadas con snapshot + SHA-256.",
+    "refs": [
+      "2026-07-04_063310"
+    ],
+    "prev_hash": "667d7c4149cdd0ee",
+    "hash": "fe41873bd98cc008"
+  },
+  {
+    "id": 12,
+    "ts": "2026-07-04T06:33:18Z",
+    "tipo": "sistema",
+    "actor": "sistema/scraper",
+    "accion": "regeneracion_sdt_cj",
+    "detalle": "SDT_CJ.json regenerado (madurez 46/100); evidencia: 2026-07-04_063310",
+    "refs": [
+      "2026-07-04_063310",
+      "SDT_CJ.json"
+    ],
+    "prev_hash": "fe41873bd98cc008",
+    "hash": "5215180c0bd52bb7"
+  },
+  {
+    "id": 13,
+    "ts": "2026-07-04T06:37:45Z",
+    "tipo": "sistema",
+    "actor": "sistema/scraper",
+    "accion": "captura_evidencia",
+    "detalle": "Corrida 2026-07-04_063737: 10/11 fuentes capturadas con snapshot + SHA-256.",
+    "refs": [
+      "2026-07-04_063737"
+    ],
+    "prev_hash": "5215180c0bd52bb7",
+    "hash": "3eb5dac82b7d94bc"
+  },
+  {
+    "id": 14,
+    "ts": "2026-07-04T06:37:45Z",
+    "tipo": "sistema",
+    "actor": "sistema/scraper",
+    "accion": "regeneracion_sdt_cj",
+    "detalle": "SDT_CJ.json regenerado (madurez 46/100); evidencia: 2026-07-04_063737",
+    "refs": [
+      "2026-07-04_063737",
+      "SDT_CJ.json"
+    ],
+    "prev_hash": "3eb5dac82b7d94bc",
+    "hash": "a02b8b7b83b0a194"
+  },
+  {
+    "id": 15,
+    "ts": "2026-07-04T06:39:53Z",
+    "tipo": "sistema",
+    "actor": "sistema/scraper",
+    "accion": "captura_evidencia",
+    "detalle": "Corrida 2026-07-04_063946: 10/11 fuentes capturadas con snapshot + SHA-256.",
+    "refs": [
+      "2026-07-04_063946"
+    ],
+    "prev_hash": "a02b8b7b83b0a194",
+    "hash": "cf998bbe82209397"
+  },
+  {
+    "id": 16,
+    "ts": "2026-07-04T06:39:53Z",
+    "tipo": "sistema",
+    "actor": "sistema/scraper",
+    "accion": "regeneracion_sdt_cj",
+    "detalle": "SDT_CJ.json regenerado (madurez 46/100); evidencia: 2026-07-04_063946",
+    "refs": [
+      "2026-07-04_063946",
+      "SDT_CJ.json"
+    ],
+    "prev_hash": "cf998bbe82209397",
+    "hash": "a346faaa2a13f007"
+  },
+  {
+    "id": 17,
+    "ts": "2026-07-05T02:34:56Z",
+    "tipo": "sistema",
+    "actor": "sistema/scraper",
+    "accion": "captura_evidencia",
+    "detalle": "Corrida 2026-07-05_023448: 10/11 fuentes capturadas con snapshot + SHA-256.",
+    "refs": [
+      "2026-07-05_023448"
+    ],
+    "prev_hash": "a346faaa2a13f007",
+    "hash": "d4b7ee2dcad1613b"
+  },
+  {
+    "id": 18,
+    "ts": "2026-07-05T02:34:56Z",
+    "tipo": "sistema",
+    "actor": "sistema/scraper",
+    "accion": "regeneracion_sdt_cj",
+    "detalle": "SDT_CJ.json regenerado (madurez 46/100); evidencia: 2026-07-05_023448",
+    "refs": [
+      "2026-07-05_023448",
+      "SDT_CJ.json"
+    ],
+    "prev_hash": "d4b7ee2dcad1613b",
+    "hash": "95a102abbdc24c99"
+  },
+  {
+    "id": 19,
+    "ts": "2026-07-05T02:43:29Z",
+    "tipo": "sistema",
+    "actor": "sistema/scraper",
+    "accion": "captura_evidencia",
+    "detalle": "Corrida 2026-07-05_024321: 10/11 fuentes capturadas con snapshot + SHA-256.",
+    "refs": [
+      "2026-07-05_024321"
+    ],
+    "prev_hash": "95a102abbdc24c99",
+    "hash": "dbe83392f2ec94df"
+  },
+  {
+    "id": 20,
+    "ts": "2026-07-05T02:43:29Z",
+    "tipo": "sistema",
+    "actor": "sistema/scraper",
+    "accion": "regeneracion_sdt_cj",
+    "detalle": "SDT_CJ.json regenerado (madurez 46/100); evidencia: 2026-07-05_024321",
+    "refs": [
+      "2026-07-05_024321",
+      "SDT_CJ.json"
+    ],
+    "prev_hash": "dbe83392f2ec94df",
+    "hash": "bd6aad090fc3351c"
+  },
+  {
+    "id": 21,
+    "ts": "2026-07-05T05:02:07Z",
+    "tipo": "sistema",
+    "actor": "sistema/scraper",
+    "accion": "captura_evidencia",
+    "detalle": "Corrida 2026-07-05_050159: 10/11 fuentes capturadas con snapshot + SHA-256.",
+    "refs": [
+      "2026-07-05_050159"
+    ],
+    "prev_hash": "bd6aad090fc3351c",
+    "hash": "a06752ce228dad88"
+  },
+  {
+    "id": 22,
+    "ts": "2026-07-05T05:02:07Z",
+    "tipo": "sistema",
+    "actor": "sistema/scraper",
+    "accion": "regeneracion_sdt_cj",
+    "detalle": "SDT_CJ.json regenerado (madurez 46/100); evidencia: 2026-07-05_050159",
+    "refs": [
+      "2026-07-05_050159",
+      "SDT_CJ.json"
+    ],
+    "prev_hash": "a06752ce228dad88",
+    "hash": "29bb1c5fd8da8711"
+  },
+  {
+    "id": 23,
+    "ts": "2026-07-05T05:04:11Z",
+    "tipo": "sistema",
+    "actor": "sistema/scraper",
+    "accion": "captura_evidencia",
+    "detalle": "Corrida 2026-07-05_050403: 10/11 fuentes capturadas con snapshot + SHA-256.",
+    "refs": [
+      "2026-07-05_050403"
+    ],
+    "prev_hash": "29bb1c5fd8da8711",
+    "hash": "adef5b1e45f56e7d"
+  },
+  {
+    "id": 24,
+    "ts": "2026-07-05T05:04:11Z",
+    "tipo": "sistema",
+    "actor": "sistema/scraper",
+    "accion": "regeneracion_sdt_cj",
+    "detalle": "SDT_CJ.json regenerado (madurez 46/100); evidencia: 2026-07-05_050403",
+    "refs": [
+      "2026-07-05_050403",
+      "SDT_CJ.json"
+    ],
+    "prev_hash": "adef5b1e45f56e7d",
+    "hash": "34b22d04ea6a3319"
+  },
+  {
+    "id": 25,
+    "ts": "2026-07-05T05:46:45Z",
+    "tipo": "sistema",
+    "actor": "sistema/scraper",
+    "accion": "captura_evidencia",
+    "detalle": "Corrida 2026-07-05_054637: 10/11 fuentes capturadas con snapshot + SHA-256.",
+    "refs": [
+      "2026-07-05_054637"
+    ],
+    "prev_hash": "34b22d04ea6a3319",
+    "hash": "51dc4daa38179baf"
+  },
+  {
+    "id": 26,
+    "ts": "2026-07-05T05:46:45Z",
+    "tipo": "sistema",
+    "actor": "sistema/scraper",
+    "accion": "regeneracion_sdt_cj",
+    "detalle": "SDT_CJ.json regenerado (madurez 46/100); evidencia: 2026-07-05_054637",
+    "refs": [
+      "2026-07-05_054637",
+      "SDT_CJ.json"
+    ],
+    "prev_hash": "51dc4daa38179baf",
+    "hash": "db8774f33ae63257"
+  },
+  {
+    "id": 27,
+    "ts": "2026-07-05T05:52:22Z",
+    "tipo": "sistema",
+    "actor": "sistema/scraper",
+    "accion": "captura_evidencia",
+    "detalle": "Corrida 2026-07-05_055214: 10/11 fuentes capturadas con snapshot + SHA-256.",
+    "refs": [
+      "2026-07-05_055214"
+    ],
+    "prev_hash": "db8774f33ae63257",
+    "hash": "f447795924e9cc77"
+  },
+  {
+    "id": 28,
+    "ts": "2026-07-05T05:52:22Z",
+    "tipo": "sistema",
+    "actor": "sistema/scraper",
+    "accion": "regeneracion_sdt_cj",
+    "detalle": "SDT_CJ.json regenerado (madurez 46/100); evidencia: 2026-07-05_055214",
+    "refs": [
+      "2026-07-05_055214",
+      "SDT_CJ.json"
+    ],
+    "prev_hash": "f447795924e9cc77",
+    "hash": "e3d53e9bc7ada782"
+  },
+  {
+    "id": 29,
+    "ts": "2026-07-08T18:48:30Z",
+    "tipo": "sistema",
+    "actor": "sistema/scraper",
+    "accion": "captura_evidencia",
+    "detalle": "Corrida 2026-07-08_184824: 10/11 fuentes capturadas con snapshot + SHA-256.",
+    "refs": [
+      "2026-07-08_184824"
+    ],
+    "prev_hash": "e3d53e9bc7ada782",
+    "hash": "0650d72bde007e23"
+  },
+  {
+    "id": 30,
+    "ts": "2026-07-08T18:48:30Z",
+    "tipo": "sistema",
+    "actor": "sistema/scraper",
+    "accion": "regeneracion_sdt_cj",
+    "detalle": "SDT_CJ.json regenerado (madurez 46/100); evidencia: 2026-07-08_184824",
+    "refs": [
+      "2026-07-08_184824",
+      "SDT_CJ.json"
+    ],
+    "prev_hash": "0650d72bde007e23",
+    "hash": "2d4d1d76d0f9db77"
+  },
+  {
+    "id": 31,
+    "ts": "2026-07-13T17:54:25Z",
+    "tipo": "adaptacion",
+    "actor": "sistema-adaptativo",
+    "accion": "recalculo_salud_global",
+    "detalle": "Índice empírico — → 36.7 (22/60 actos en plazo, 47 causas). kb=84871451 feriados=df536c52",
+    "refs": [
+      "/api/cogep/salud-global"
+    ],
+    "prev_hash": "2d4d1d76d0f9db77",
+    "hash": "ddfb361c69be6f7e"
+  },
+  {
+    "id": 32,
+    "ts": "2026-07-13T18:01:08Z",
+    "tipo": "adaptacion",
+    "actor": "test-e2e",
+    "accion": "config_metricas_adaptativas",
+    "detalle": "pesos_ranking={'salud': 0.7, 'variabilidad': 0.2, 'drift': 0.1} peso_empirico_radar=0.5 umbrales={'loop_k': 3, 'gap_referencial_dias': 60}",
+    "refs": [
+      "/api/adaptativo/config"
+    ],
+    "prev_hash": "ddfb361c69be6f7e",
+    "hash": "89cee85739adbcc4"
+  },
+  {
+    "id": 33,
+    "ts": "2026-07-13T18:01:09Z",
+    "tipo": "adaptacion",
+    "actor": "test-e2e",
+    "accion": "config_metricas_adaptativas",
+    "detalle": "pesos_ranking={'salud': 0.5, 'variabilidad': 0.25, 'drift': 0.25} peso_empirico_radar=0.5 umbrales={'loop_k': 3, 'gap_referencial_dias': 60}",
+    "refs": [
+      "/api/adaptativo/config"
+    ],
+    "prev_hash": "89cee85739adbcc4",
+    "hash": "a098c08e7d2e7f74"
+  },
+  {
+    "id": 34,
+    "ts": "2026-07-30T22:24:55Z",
+    "tipo": "sistema",
+    "actor": "sistema/scraper",
+    "accion": "captura_evidencia",
+    "detalle": "Corrida 2026-07-30_222449: 10/11 fuentes capturadas con snapshot + SHA-256.",
+    "refs": [
+      "2026-07-30_222449"
+    ],
+    "prev_hash": "a098c08e7d2e7f74",
+    "hash": "f0e37c03be4ae18c"
+  },
+  {
+    "id": 35,
+    "ts": "2026-07-30T22:24:55Z",
+    "tipo": "sistema",
+    "actor": "sistema/scraper",
+    "accion": "regeneracion_sdt_cj",
+    "detalle": "SDT_CJ.json regenerado (madurez 46/100); evidencia: 2026-07-30_222449",
+    "refs": [
+      "2026-07-30_222449",
+      "SDT_CJ.json"
+    ],
+    "prev_hash": "f0e37c03be4ae18c",
+    "hash": "f8839ca7e78ef604"
+  },
+  {
+    "id": 36,
+    "ts": "2026-08-04T17:22:10Z",
+    "tipo": "sistema",
+    "actor": "sistema/scraper",
+    "accion": "captura_evidencia",
+    "detalle": "Corrida 2026-08-04_172201: 10/11 fuentes capturadas con snapshot + SHA-256.",
+    "refs": [
+      "2026-08-04_172201"
+    ],
+    "prev_hash": "f8839ca7e78ef604",
+    "hash": "f4f3fede3c5d50e7"
+  },
+  {
+    "id": 37,
+    "ts": "2026-08-04T17:22:10Z",
+    "tipo": "sistema",
+    "actor": "sistema/scraper",
+    "accion": "regeneracion_sdt_cj",
+    "detalle": "SDT_CJ.json regenerado (madurez 46/100); evidencia: 2026-08-04_172201",
+    "refs": [
+      "2026-08-04_172201",
+      "SDT_CJ.json"
+    ],
+    "prev_hash": "f4f3fede3c5d50e7",
+    "hash": "6c7d2847932a606f"
+  },
+  {
+    "id": 38,
+    "ts": "2026-08-29T22:36:52Z",
+    "tipo": "adaptacion",
+    "actor": "SIMULADO·experta-1",
+    "accion": "juicio_ahp_psi",
+    "detalle": "saaty=1.0 → root=0.5 · agregado root=0.5 (1 expertos)",
+    "refs": [
+      "/api/ahp"
+    ],
+    "prev_hash": "6c7d2847932a606f",
+    "hash": "ab2cab86448fbdd4"
+  },
+  {
+    "id": 39,
+    "ts": "2026-08-29T22:36:52Z",
+    "tipo": "adaptacion",
+    "actor": "SIMULADO·experto-2",
+    "accion": "juicio_ahp_psi",
+    "detalle": "saaty=3.0 → root=0.75 · agregado root=0.625 (2 expertos)",
+    "refs": [
+      "/api/ahp"
+    ],
+    "prev_hash": "ab2cab86448fbdd4",
+    "hash": "1707f260ca914b3a"
+  },
+  {
+    "id": 40,
+    "ts": "2026-08-29T22:36:52Z",
+    "tipo": "adaptacion",
+    "actor": "SIMULADO·experto-3",
+    "accion": "juicio_ahp_psi",
+    "detalle": "saaty=0.3333 → root=0.25 · agregado root=0.5 (3 expertos)",
+    "refs": [
+      "/api/ahp"
+    ],
+    "prev_hash": "1707f260ca914b3a",
+    "hash": "1d3dbbb66b16431a"
+  },
+  {
+    "id": 41,
+    "ts": "2026-08-29T22:36:52Z",
+    "tipo": "adaptacion",
+    "actor": "sistema",
+    "accion": "sesion_simulada",
+    "detalle": "40 anotaciones + 15 de 2º anotador + 3 juicios AHP simulados (semilla=42). Marcados SIMULADO — NO usar en resultados de tesis.",
+    "refs": [
+      "/api/experto/simulacion"
+    ],
+    "prev_hash": "1d3dbbb66b16431a",
+    "hash": "76afb173a580d9a7"
+  },
+  {
+    "id": 42,
+    "ts": "2026-08-29T22:36:52Z",
+    "tipo": "adaptacion",
+    "actor": "evaluador",
+    "accion": "evaluacion_razonador",
+    "detalle": "N=55 · exactitud=0.855 · F1_macro=0.621 · apto=NO (umbral 0.85)",
+    "refs": [
+      "/api/eval/run"
+    ],
+    "prev_hash": "76afb173a580d9a7",
+    "hash": "792c9d2c3d1141a1"
+  },
+  {
+    "id": 43,
+    "ts": "2026-08-30T09:59:55Z",
+    "tipo": "sistema",
+    "actor": "sistema/scraper",
+    "accion": "captura_evidencia",
+    "detalle": "Corrida 2026-08-30_095946: 11/11 fuentes capturadas con snapshot + SHA-256.",
+    "refs": [
+      "2026-08-30_095946"
+    ],
+    "prev_hash": "792c9d2c3d1141a1",
+    "hash": "80bf84ed1dc1a433"
+  },
+  {
+    "id": 44,
+    "ts": "2026-08-30T09:59:55Z",
+    "tipo": "sistema",
+    "actor": "sistema/scraper",
+    "accion": "regeneracion_sdt_cj",
+    "detalle": "SDT_CJ.json regenerado (madurez 46/100); evidencia: 2026-08-30_095946",
+    "refs": [
+      "2026-08-30_095946",
+      "SDT_CJ.json"
+    ],
+    "prev_hash": "80bf84ed1dc1a433",
+    "hash": "5d1bd52f1b6e7344"
+  },
+  {
+    "id": 45,
+    "ts": "2026-08-31T02:38:56Z",
+    "tipo": "adaptacion",
+    "actor": "SIMULADO·experta-1",
+    "accion": "juicio_ahp_psi",
+    "detalle": "saaty=1.0 → root=0.5 · agregado root=0.5 (3 expertos)",
+    "refs": [
+      "/api/ahp"
+    ],
+    "prev_hash": "5d1bd52f1b6e7344",
+    "hash": "e7c4b6e228f428ce"
+  },
+  {
+    "id": 46,
+    "ts": "2026-08-31T02:38:56Z",
+    "tipo": "adaptacion",
+    "actor": "SIMULADO·experto-2",
+    "accion": "juicio_ahp_psi",
+    "detalle": "saaty=3.0 → root=0.75 · agregado root=0.5 (3 expertos)",
+    "refs": [
+      "/api/ahp"
+    ],
+    "prev_hash": "e7c4b6e228f428ce",
+    "hash": "4e1c9f1b496cb7f8"
+  },
+  {
+    "id": 47,
+    "ts": "2026-08-31T02:38:56Z",
+    "tipo": "adaptacion",
+    "actor": "SIMULADO·experto-3",
+    "accion": "juicio_ahp_psi",
+    "detalle": "saaty=0.3333 → root=0.25 · agregado root=0.5 (3 expertos)",
+    "refs": [
+      "/api/ahp"
+    ],
+    "prev_hash": "4e1c9f1b496cb7f8",
+    "hash": "6f7fb23ab63528f6"
+  },
+  {
+    "id": 48,
+    "ts": "2026-08-31T02:38:56Z",
+    "tipo": "adaptacion",
+    "actor": "sistema",
+    "accion": "sesion_simulada",
+    "detalle": "40 anotaciones + 15 de 2º anotador + 3 juicios AHP simulados (semilla=42). Marcados SIMULADO — NO usar en resultados de tesis.",
+    "refs": [
+      "/api/experto/simulacion"
+    ],
+    "prev_hash": "6f7fb23ab63528f6",
+    "hash": "e44a0934a2353799"
+  },
+  {
+    "id": 49,
+    "ts": "2026-08-31T02:38:56Z",
+    "tipo": "adaptacion",
+    "actor": "evaluador",
+    "accion": "evaluacion_razonador",
+    "detalle": "N=55 · exactitud=0.855 · F1_macro=0.621 · apto=NO (umbral 0.85)",
+    "refs": [
+      "/api/eval/run"
+    ],
+    "prev_hash": "e44a0934a2353799",
+    "hash": "5a3a05984cb7e7fb"
+  },
+  {
+    "id": 50,
+    "ts": "2026-08-31T16:27:25Z",
+    "tipo": "sistema",
+    "actor": "sistema/scraper",
+    "accion": "captura_evidencia",
+    "detalle": "Corrida 2026-08-31_162700: 11/11 fuentes capturadas con snapshot + SHA-256.",
+    "refs": [
+      "2026-08-31_162700"
+    ],
+    "prev_hash": "5a3a05984cb7e7fb",
+    "hash": "6c169068d640e3c5"
+  },
+  {
+    "id": 51,
+    "ts": "2026-08-31T16:27:25Z",
+    "tipo": "sistema",
+    "actor": "sistema/scraper",
+    "accion": "regeneracion_sdt_cj",
+    "detalle": "SDT_CJ.json regenerado (madurez 46/100); evidencia: 2026-08-31_162700",
+    "refs": [
+      "2026-08-31_162700",
+      "SDT_CJ.json"
+    ],
+    "prev_hash": "6c169068d640e3c5",
+    "hash": "d1e758a86f97e2cc"
+  },
+  {
+    "id": 52,
+    "ts": "2026-08-31T17:07:12Z",
+    "tipo": "sistema",
+    "actor": "sistema/scraper",
+    "accion": "captura_evidencia",
+    "detalle": "Corrida 2026-08-31_170650: 11/11 fuentes capturadas con snapshot + SHA-256.",
+    "refs": [
+      "2026-08-31_170650"
+    ],
+    "prev_hash": "d1e758a86f97e2cc",
+    "hash": "4c44e23b85f257f5"
+  },
+  {
+    "id": 53,
+    "ts": "2026-08-31T17:07:12Z",
+    "tipo": "sistema",
+    "actor": "sistema/scraper",
+    "accion": "regeneracion_sdt_cj",
+    "detalle": "SDT_CJ.json regenerado (madurez 46/100); evidencia: 2026-08-31_170650",
+    "refs": [
+      "2026-08-31_170650",
+      "SDT_CJ.json"
+    ],
+    "prev_hash": "4c44e23b85f257f5",
+    "hash": "2416bb3f778d9bb2"
+  },
+  {
+    "id": 54,
+    "ts": "2026-09-03T14:59:46Z",
+    "tipo": "sistema",
+    "actor": "sistema/scraper",
+    "accion": "captura_evidencia",
+    "detalle": "Corrida 2026-09-03_145939: 11/11 fuentes capturadas con snapshot + SHA-256.",
+    "refs": [
+      "2026-09-03_145939"
+    ],
+    "prev_hash": "2416bb3f778d9bb2",
+    "hash": "8b436a0d63c1698a"
+  },
+  {
+    "id": 55,
+    "ts": "2026-09-03T14:59:46Z",
+    "tipo": "sistema",
+    "actor": "sistema/scraper",
+    "accion": "regeneracion_sdt_cj",
+    "detalle": "SDT_CJ.json regenerado (madurez 46/100); evidencia: 2026-09-03_145939",
+    "refs": [
+      "2026-09-03_145939",
+      "SDT_CJ.json"
+    ],
+    "prev_hash": "8b436a0d63c1698a",
+    "hash": "ee4841bc1505b7d7"
+  }
+]

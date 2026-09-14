@@ -1,0 +1,33 @@
+{
+  "expertos_psi": [
+    {
+      "experto": "SIMULADO·experta-1",
+      "saaty": 1.0,
+      "root": 0.5,
+      "subs": 0.5,
+      "cr": 0.0,
+      "ts": "2026-08-31T02:38:56Z"
+    },
+    {
+      "experto": "SIMULADO·experto-2",
+      "saaty": 3.0,
+      "root": 0.75,
+      "subs": 0.25,
+      "cr": 0.0,
+      "ts": "2026-08-31T02:38:56Z"
+    },
+    {
+      "experto": "SIMULADO·experto-3",
+      "saaty": 0.3333,
+      "root": 0.25,
+      "subs": 0.75,
+      "cr": 0.0,
+      "ts": "2026-08-31T02:38:56Z"
+    }
+  ],
+  "psi": {
+    "root": 0.5,
+    "subs": 0.5
+  },
+  "procedencia": "AHP (3 experto(s), media aritmética; CR=0 en matriz 2×2)"
+}

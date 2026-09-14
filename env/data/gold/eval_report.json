@@ -1,0 +1,227 @@
+{
+  "n_anotaciones": 55,
+  "exactitud_mapeo": 0.855,
+  "macro": {
+    "precision": 0.578,
+    "recall": 0.693,
+    "f1": 0.621
+  },
+  "por_clase": {
+    "act_apelacion": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "n": 2
+    },
+    "act_audiencia": {
+      "precision": 0.75,
+      "recall": 1.0,
+      "f1": 0.857,
+      "n": 3
+    },
+    "act_calificacion": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "n": 13
+    },
+    "act_citacion": {
+      "precision": 0.6,
+      "recall": 0.75,
+      "f1": 0.667,
+      "n": 4
+    },
+    "act_contestacion": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "n": 2
+    },
+    "act_convocatoria": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "n": 1
+    },
+    "act_embargo": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "n": 1
+    },
+    "act_inadmision": {
+      "precision": 0.6,
+      "recall": 1.0,
+      "f1": 0.75,
+      "n": 3
+    },
+    "act_oposicion": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "n": 2
+    },
+    "act_recepcion": {
+      "precision": 0.5,
+      "recall": 1.0,
+      "f1": 0.667,
+      "n": 1
+    },
+    "ninguno": {
+      "precision": 0.909,
+      "recall": 0.87,
+      "f1": 0.889,
+      "n": 23
+    }
+  },
+  "matriz_confusion": {
+    "act_calificacion": {
+      "act_calificacion": 13
+    },
+    "ninguno": {
+      "act_citacion": 1,
+      "ninguno": 20,
+      "act_recepcion": 1,
+      "act_audiencia": 1
+    },
+    "act_citacion": {
+      "act_citacion": 3,
+      "ninguno": 1
+    },
+    "act_contestacion": {
+      "act_contestacion": 2
+    },
+    "act_oposicion": {
+      "act_inadmision": 2
+    },
+    "act_apelacion": {
+      "act_apelacion": 2
+    },
+    "act_inadmision": {
+      "act_inadmision": 3
+    },
+    "act_recepcion": {
+      "act_recepcion": 1
+    },
+    "act_audiencia": {
+      "act_audiencia": 3
+    },
+    "act_embargo": {
+      "act_citacion": 1
+    },
+    "act_convocatoria": {
+      "ninguno": 1
+    }
+  },
+  "labels": [
+    "act_apelacion",
+    "act_audiencia",
+    "act_calificacion",
+    "act_citacion",
+    "act_contestacion",
+    "act_convocatoria",
+    "act_embargo",
+    "act_inadmision",
+    "act_oposicion",
+    "act_recepcion",
+    "ninguno"
+  ],
+  "veredicto": {
+    "n": 4,
+    "exactitud": 1.0,
+    "matriz": {
+      "CUMPLE": {
+        "CUMPLE": 2
+      },
+      "INCUMPLE": {
+        "INCUMPLE": 2
+      }
+    }
+  },
+  "errores": [
+    {
+      "file": "01333202200577.json",
+      "seq": 3,
+      "actividad": "RAZON ENVIO A CITACIONES",
+      "gold": "ninguno",
+      "prediccion": "act_citacion",
+      "anotador": "SIMULADO·abogado-1"
+    },
+    {
+      "file": "01333202412432.json",
+      "seq": 3,
+      "actividad": "ARCHIVO POR NO COMPLETAR DEMANDA",
+      "gold": "act_oposicion",
+      "prediccion": "act_inadmision",
+      "anotador": "SIMULADO·abogado-1"
+    },
+    {
+      "file": "05333202200027.json",
+      "seq": 3,
+      "actividad": "RAZON",
+      "gold": "act_citacion",
+      "prediccion": "ninguno",
+      "anotador": "SIMULADO·abogado-1"
+    },
+    {
+      "file": "07333202200092.json",
+      "seq": 4,
+      "actividad": "RECEPCION DEL PROCESO",
+      "gold": "ninguno",
+      "prediccion": "act_recepcion",
+      "anotador": "SIMULADO·abogado-1"
+    },
+    {
+      "file": "07333202301714.json",
+      "seq": 2,
+      "actividad": "ACTA GENERAL",
+      "gold": "ninguno",
+      "prediccion": "act_audiencia",
+      "anotador": "SIMULADO·abogado-1"
+    },
+    {
+      "file": "01333202200577.json",
+      "seq": 3,
+      "actividad": "RAZON ENVIO A CITACIONES",
+      "gold": "act_embargo",
+      "prediccion": "act_citacion",
+      "anotador": "SIMULADO·abogado-2"
+    },
+    {
+      "file": "01333202200577.json",
+      "seq": 4,
+      "actividad": "SENTAR RAZON",
+      "gold": "act_convocatoria",
+      "prediccion": "ninguno",
+      "anotador": "SIMULADO·abogado-2"
+    },
+    {
+      "file": "01333202412432.json",
+      "seq": 3,
+      "actividad": "ARCHIVO POR NO COMPLETAR DEMANDA",
+      "gold": "act_oposicion",
+      "prediccion": "act_inadmision",
+      "anotador": "SIMULADO·abogado-2"
+    }
+  ],
+  "kappa": {
+    "valor": 0.833,
+    "anotadores": [
+      "SIMULADO·abogado-1",
+      "SIMULADO·abogado-2"
+    ],
+    "n_comunes": 15
+  },
+  "f1_min_aceptado": 0.85,
+  "apto": false,
+  "contexto_adaptacion": {
+    "kb_hash": "848714513d96aa30bdd8f35844d942b3",
+    "feriados_hash": "df536c52cced03dd15e7cbc9025e2ec7",
+    "config_hash": "48915975699053aebf392bb5a7b1617b",
+    "ontologia_hash": "33594300c46da3b4a4755a9ea508e516",
+    "razonador_version": "v3-adaptativo",
+    "timestamp": "2026-08-31T02:38:56Z",
+    "trigger": "eval_razonador",
+    "n_gold": 55
+  }
+}

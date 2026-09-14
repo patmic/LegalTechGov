@@ -1,0 +1,10 @@
+pat_paper/
+.claude/
+
+# Python bytecode
+__pycache__/
+*.py[cod]
+
+# Copias/backups de datos
+*" - Copy".json
+*.bak

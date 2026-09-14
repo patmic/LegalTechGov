@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+<script>
+  /* Tema aplicado ANTES de pintar (core.js llega con defer, demasiado
+     tarde para evitar el parpadeo). Misma clave que index.html. */
+  try {
+    document.documentElement.setAttribute('data-theme',
+      localStorage.getItem('maltg-theme') === 'light' ? 'light' : 'dark');
+  } catch (e) {}
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#030711">
+<meta name="color-scheme" content="dark light">
+<title>MALTG Architecture Validator — Esfera Celeste Ontológica</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/standalone/umd/vis-network.min.js" defer></script>
+<script>/* fallback: si vis-network 9 no carga desde el CDN, usar vis 4.21 */
+window.addEventListener('DOMContentLoaded',()=>{ if(!window.vis){ const s=document.createElement('script');
+  s.src='https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js'; document.head.appendChild(s); } });</script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Nova+Mono&family=Outfit:wght@200;300;400;500;600;700;800;900&family=JetBrains+Mono:wght@300;400;600&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+<!-- Estructura primero, luego las dos pieles de tema. El orden importa:
+     dashboard.css (forma) → nocturne.css (oscuro) → aurora.css (claro). -->
+<link rel="stylesheet" href="../assets/css/dashboard.css">
+<link rel="stylesheet" href="../assets/css/nocturne.css">
+<link rel="stylesheet" href="../assets/css/aurora.css">
+<!-- Runtime compartido (header/nav, tema, animación de arranque) + lógica propia de esta página -->
+<script src="../assets/js/core.js" defer></script>
+<script src="../assets/js/sdtcj-render.js" defer></script>
+<script src="../assets/js/tab-simulacion.js" defer></script>
+</head>
+<body data-page="simulacion">
+
+<!-- LOADING OVERLAY — misma animación de arranque que el resto del dashboard -->
+<div id="overlay" class="show">
+  <div class="ov-spinner"></div>
+  <div class="ov-msg">Sincronizando ecosistema MALTG</div>
+  <div class="ov-steps" id="ov-steps"></div>
+</div>
+
+<!-- HEADER (inyectado por core.js desde assets/partials/header.html) -->
+<div id="app-header"></div>
+
+<main>
+<div class="section active" id="sec-simulacion">
+
+  <div class="panel" style="--ac:#a855f7">
+    <div class="ph">
+      <div class="ptitle">Grafo 3D · Three.js · nodos = estrellas · capas = constelaciones</div>
+      <div style="display:flex;gap:.45rem;align-items:center;flex-wrap:wrap">
+        <span class="pbadge d" id="sim-count">— nodos</span>
+        <span class="pbadge g" id="sim-fps">— fps</span>
+      </div>
+    </div>
+
+    <!-- Controles -->
+    <div style="display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;padding:.7rem 1.1rem;border-bottom:1px solid var(--bdr)">
+      <button class="vis-ctrl-btn" id="sim-rot-btn" onclick="simToggleRotate()">⏸ Rotación</button>
+      <button class="vis-ctrl-btn" onclick="simSetSpeed(-1)">−</button>
+      <span id="sim-speed" style="font-family:var(--font-mono);font-size:.68rem;color:var(--t2);min-width:52px;text-align:center">vel 1.0×</span>
+      <button class="vis-ctrl-btn" onclick="simSetSpeed(1)">+</button>
+      <span class="vsep" style="opacity:.4">·</span>
+      <button class="vis-ctrl-btn" id="sim-links-btn" onclick="simToggleLinks()">Enlaces: ON</button>
+      <button class="vis-ctrl-btn" id="sim-labels-btn" onclick="simToggleLabels()">Etiquetas: ON</button>
+      <button class="vis-ctrl-btn" onclick="simResetView()">⟲ Reset</button>
+      <span style="margin-left:auto;font-family:var(--font-mono);font-size:.62rem;color:var(--t3)">
+        arrastrar = rotar · rueda = zoom · hover = detalle · clic = resaltar conexiones
+      </span>
+    </div>
+
+    <!-- Scraping CJ sobre la constelación -->
+    <div style="display:flex;flex-wrap:wrap;gap:.55rem;align-items:center;padding:.7rem 1.1rem;border-bottom:1px solid var(--bdr)">
+      <span style="font-family:var(--font-mono);font-size:.68rem;color:var(--t2)">URL objetivo:</span>
+      <input id="sim-url" type="text" value="https://www.funcionjudicial.gob.ec/" spellcheck="false"
+        style="flex:1;min-width:280px;background:var(--bg3,rgba(255,255,255,.04));border:1px solid var(--bdr);
+               border-radius:8px;padding:.5rem .7rem;font-family:var(--font-mono);font-size:.7rem;color:var(--t1)">
+      <button id="sim-scrape-btn" onclick="runSimScrape()"
+        style="cursor:pointer;border:none;border-radius:9px;padding:.55rem 1.1rem;font-family:var(--font-mono);
+               font-weight:700;font-size:.74rem;color:#04121a;letter-spacing:.4px;
+               background:linear-gradient(95deg,#a855f7,#00e5ff);box-shadow:0 6px 22px rgba(168,85,247,.25)">
+        ⟳ Scraping CJ
+      </button>
+      <span id="sim-scan-status" style="font-family:var(--font-mono);font-size:.66rem;color:var(--t3)">
+        escaneo apaga/enciende las estrellas según evidencia
+      </span>
+    </div>
+
+    <!-- Canvas 3D -->
+    <div id="sim-wrap" style="position:relative;height:640px;background:radial-gradient(ellipse at 50% 40%,#0a0f2a 0%,#04060f 70%);overflow:hidden;border-radius:0 0 12px 12px">
+      <div id="sim-canvas" style="position:absolute;inset:0"></div>
+      <div id="sim-tooltip" style="position:absolute;display:none;pointer-events:none;z-index:5;max-width:280px;
+        background:rgba(6,10,26,.92);border:1px solid rgba(168,85,247,.5);border-radius:10px;padding:.6rem .8rem;
+        font-family:var(--font-mono);font-size:.68rem;color:var(--t1);backdrop-filter:blur(6px)"></div>
+      <div id="sim-legend" style="position:absolute;left:12px;bottom:12px;z-index:4;display:flex;flex-direction:column;gap:.25rem;
+        background:rgba(6,10,26,.55);border-radius:10px;padding:.55rem .7rem;
+        font-family:var(--font-mono);font-size:.6rem;color:var(--t2)"></div>
+      <div id="sim-hud" style="position:absolute;right:12px;top:12px;width:305px;max-height:calc(100% - 24px);z-index:4;
+        display:none;flex-direction:column;gap:.3rem;overflow:hidden;background:rgba(4,8,22,.60);
+        border-radius:12px;padding:.6rem .75rem;
+        font-family:var(--font-mono);font-size:.6rem;line-height:1.45;color:var(--t2);
+        backdrop-filter:blur(5px);pointer-events:none">
+        <div id="sim-hud-title" style="color:#00e5ff;font-weight:700;letter-spacing:.5px">▶ INSPECCIÓN EN VIVO</div>
+        <div id="sim-hud-body" style="display:flex;flex-direction:column;gap:.16rem;overflow:hidden"></div>
+      </div>
+      <div id="sim-loading" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:6;
+        font-family:var(--font-mono);font-size:.75rem;color:#a855f7">Cargando esfera celeste…</div>
+    </div>
+
+    <!-- Resultados del scraping en vivo -->
+    <div style="border-top:1px solid var(--bdr)">
+      <div class="ph" style="border-bottom:1px solid var(--bdr)">
+        <div class="ptitle">Inspección del sitio · resultados en vivo</div>
+        <div style="display:flex;gap:.45rem"><span class="pbadge d" id="sim-scan-count">— nodos con evidencia</span></div>
+      </div>
+      <div id="sim-scan-log" style="max-height:280px;overflow:auto;padding:.7rem 1.1rem;display:flex;flex-direction:column;gap:.22rem;
+        font-family:var(--font-mono);font-size:.66rem;line-height:1.5;color:var(--t2)">
+        <span style="color:var(--t3)">La constelación inicia en modo tenue. Pulsa <b style="color:#a855f7">⟳ Scraping CJ</b> —
+        cada término se escanea contra el gemelo digital del sitio: si hay evidencia la estrella se enciende y queda brillante;
+        si no, permanece opaca. El panel derecho de la gráfica muestra la inspección en vivo.</span>
+      </div>
+    </div>
+
+    <!-- Generados por el scraping (persisten en /data/sdt/LegalTech_<dominio>_<fecha>.json) -->
+    <div id="sim-extra" style="display:none">
+      <!-- Gemelo Estructural + Radar (misma vista del tab 08 SDT_CJ) -->
+      <div style="border-top:1px solid var(--bdr);display:grid;grid-template-columns:1.55fr 1fr;gap:1rem;padding:1rem">
+        <div class="panel">
+          <div class="ph"><div class="ptitle">Gemelo Estructural · Ecosistema Digital del CJ</div>
+            <span class="pbadge g">SVG · data-driven</span></div>
+          <div id="sim-sdtcj-graph" style="overflow:auto"></div>
+        </div>
+        <div class="panel">
+          <div class="ph"><div class="ptitle">Radar de Madurez · 4 Dimensiones MALTG</div>
+            <span class="pbadge d">0–100</span></div>
+          <div style="padding:1rem;position:relative;min-height:320px">
+            <canvas id="sim-sdtcj-radar"></canvas>
+          </div>
+        </div>
+      </div>
+      <div style="border-top:1px solid var(--bdr)">
+        <div class="ph"><div class="ptitle">Dimensiones de Gobernanza · Hallazgos y Brechas</div>
+          <span class="pbadge d" id="sim-sdt-file">—</span></div>
+        <div id="sim-dims" style="padding:.4rem"></div>
+      </div>
+      <div style="border-top:1px solid var(--bdr)">
+        <div class="ph"><div class="ptitle">Detalle completo del SDT · Componentes &amp; Fuentes</div></div>
+        <div id="sim-detail" style="padding:.4rem"></div>
+      </div>
+    </div>
+  </div>
+</div>
+</main>
+
+</body>
+</html>

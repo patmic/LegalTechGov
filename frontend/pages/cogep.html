@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+<script>
+  /* Tema aplicado ANTES de pintar (core.js llega con defer, demasiado
+     tarde para evitar el parpadeo). Misma clave que index.html. */
+  try {
+    document.documentElement.setAttribute('data-theme',
+      localStorage.getItem('maltg-theme') === 'light' ? 'light' : 'dark');
+  } catch (e) {}
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#030711">
+<meta name="color-scheme" content="dark light">
+<title>MALTG Architecture Validator — Ontología COGEP · IA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/standalone/umd/vis-network.min.js" defer></script>
+<script>/* fallback: si vis-network 9 no carga desde el CDN, usar vis 4.21 */
+window.addEventListener('DOMContentLoaded',()=>{ if(!window.vis){ const s=document.createElement('script');
+  s.src='https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js'; document.head.appendChild(s); } });</script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Nova+Mono&family=Outfit:wght@200;300;400;500;600;700;800;900&family=JetBrains+Mono:wght@300;400;600&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+<!-- Estructura primero, luego las dos pieles de tema. El orden importa:
+     dashboard.css (forma) → nocturne.css (oscuro) → aurora.css (claro). -->
+<link rel="stylesheet" href="../assets/css/dashboard.css">
+<link rel="stylesheet" href="../assets/css/nocturne.css">
+<link rel="stylesheet" href="../assets/css/aurora.css">
+<!-- Runtime compartido (header/nav, tema, animación de arranque) + lógica propia de esta página -->
+<script src="../assets/js/core.js" defer></script>
+<script src="../assets/js/tab-cogep.js" defer></script>
+</head>
+<body data-page="cogep">
+
+<!-- LOADING OVERLAY — misma animación de arranque que el resto del dashboard -->
+<div id="overlay" class="show">
+  <div class="ov-spinner"></div>
+  <div class="ov-msg">Sincronizando ecosistema MALTG</div>
+  <div class="ov-steps" id="ov-steps"></div>
+</div>
+
+<!-- HEADER (inyectado por core.js desde assets/partials/header.html) -->
+<div id="app-header"></div>
+
+<main>
+<div class="section active" id="sec-cogep">
+  <div class="stitle">Ontología COGEP — Conocimiento procesal para la IA jurídica
+    <span class="pbadge d" id="cogep-validez-chip" title="Validez medida del razonador (tab Validación Experta)" style="margin-left:.6rem;font-size:.6rem;color:#ffc947">razonador: sin validez medida</span>
+  </div>
+
+  <div class="panel">
+    <div class="ph">
+      <div class="ptitle">Grafo Ontológico Procesal · Procedimiento → Etapa → Acto → Término → Sujeto</div>
+      <span class="pbadge" style="color:#60a5fa" id="cogep-badge">cogep_kb.json</span>
+    </div>
+    <div class="src-bar">
+      <span>Fuente:</span><span class="src-file" style="color:#60a5fa">/data/cogep_kb.json</span>
+      <span class="vsep">·</span><span>Norma:</span><span class="src-ts">COGEP (R.O. 506, 22-V-2015 y reformas)</span>
+      <span class="vsep">·</span><span>Hash:</span><span class="src-ts" id="cogep-hash">—</span>
+    </div>
+    <div class="pbody">
+      <div style="display:flex;gap:1rem;flex-wrap:wrap">
+        <div style="flex:1;min-width:420px">
+          <div id="cogep-net" style="width:100%;height:560px;border:1px solid var(--bdr);border-radius:8px;background:var(--card-bg)"></div>
+          <div id="cogep-legend" style="display:flex;gap:1rem;flex-wrap:wrap;margin-top:.55rem;font-size:.58rem;color:var(--t2)"></div>
+        </div>
+        <div style="flex:0 0 320px;display:flex;flex-direction:column;gap:.8rem">
+          <div style="border:1px solid var(--bdr);border-radius:8px;padding:.7rem .8rem;background:var(--card-bg)">
+            <div style="font-size:.6rem;color:var(--t3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.35rem">Concepto seleccionado</div>
+            <div id="cogep-node-title" style="font-family:var(--font-display);font-weight:700;font-size:.85rem;color:var(--t1)">— clic en un nodo —</div>
+            <div id="cogep-node-desc" style="font-size:.65rem;color:var(--t2);line-height:1.5;margin-top:.35rem"></div>
+          </div>
+          <div style="border:1px solid var(--bdr);border-radius:8px;padding:.7rem .8rem;background:var(--card-bg)">
+            <div style="font-size:.6rem;color:var(--t3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.45rem">⚖ Razonador — juicio de valor sobre una causa</div>
+            <select id="cogep-causa" class="app-select" style="width:100%">
+              <option value="">— Seleccionar expediente —</option>
+            </select>
+            <button class="vis-ctrl-btn" style="margin-top:.5rem;width:100%" onclick="cogepRunJuicio()">▶ Ejecutar razonador COGEP</button>
+            <div id="cogep-juicio-out" style="margin-top:.55rem;max-height:330px;overflow:auto;display:flex;flex-direction:column;gap:.45rem"></div>
+          </div>
+          <div style="border:1px solid var(--bdr);border-radius:8px;padding:.7rem .8rem;background:var(--card-bg)">
+            <div style="font-size:.6rem;color:var(--t3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.4rem">📄 Dictamen sobre PDF de actuación</div>
+            <input type="file" id="cogep-pdf-input" accept=".pdf,.txt" style="font-size:.6rem;color:var(--t2);width:100%">
+            <button class="vis-ctrl-btn" style="margin-top:.45rem;width:100%" onclick="cogepJuicioPdf()">⚖ Dictaminar documento</button>
+            <div id="cogep-pdf-out" style="display:none;margin-top:.5rem;font-size:.64rem;line-height:1.5;padding:.55rem .7rem;border-radius:8px;border:1px solid var(--bdr)"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- A4 · Verificación ontológica + Competency Questions -->
+  <div class="panel" style="margin-top:1rem;--ac:#10e98c">
+    <div class="ph"><div class="ptitle">🧪 Verificación Ontológica COGEP · consistencia + competency questions</div>
+      <div style="display:flex;gap:.45rem;align-items:center">
+        <span class="pbadge d" id="ov-owl-hash">OWL: no generado</span>
+        <span class="pbadge g" id="ov-cq-n">CQ: —</span>
+      </div>
+    </div>
+    <div style="display:flex;gap:.6rem;flex-wrap:wrap;align-items:center;padding:.7rem 1rem 0">
+      <button onclick="ovGenerar()" style="cursor:pointer;border:none;border-radius:9px;padding:.5rem 1rem;
+        font-family:var(--font-mono);font-weight:700;font-size:.72rem;color:#04121a;
+        background:linear-gradient(95deg,#10e98c,#00e5ff)">⚙ Generar COGEP_ontology.owl</button>
+      <button onclick="ovVerificar()" style="cursor:pointer;border:1px solid rgba(16,233,140,.5);border-radius:9px;padding:.5rem 1rem;
+        font-family:var(--font-mono);font-weight:700;font-size:.72rem;color:#10e98c;background:rgba(16,233,140,.08)">✔ Verificar consistencia</button>
+      <button onclick="ovCq()" style="cursor:pointer;border:1px solid rgba(0,229,255,.5);border-radius:9px;padding:.5rem 1rem;
+        font-family:var(--font-mono);font-weight:700;font-size:.72rem;color:var(--cyan);background:rgba(0,229,255,.08)">❓ Ejecutar competency questions</button>
+      <button onclick="ovAlineacion()" style="cursor:pointer;border:1px solid rgba(255,201,71,.5);border-radius:9px;padding:.5rem 1rem;
+        font-family:var(--font-mono);font-weight:700;font-size:.72rem;color:var(--gold);background:rgba(255,201,71,.08)">🧭 Alineación LKIF-Core</button>
+      <span style="font-family:var(--font-mono);font-size:.6rem;color:var(--t3)">Verificación estructural en la app; HermiT/OOPS! se corren externamente y se asientan en bitácora.</span>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1.3fr;gap:1rem;padding:.8rem 1rem">
+      <div id="ov-checks" style="font-size:.66rem;color:var(--t2);line-height:1.6"></div>
+      <div id="ov-cqs" style="font-size:.66rem;color:var(--t2);line-height:1.6;max-height:300px;overflow-y:auto"></div>
+    </div>
+  </div>
+</div>
+</main>
+
+</body>
+</html>

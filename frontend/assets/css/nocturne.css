@@ -1,0 +1,265 @@
+/* ═══════════════════════════════════════════════════════════════════
+   NOCTURNE — TEMA OSCURO de toda la aplicación
+   ───────────────────────────────────────────────────────────────────
+   Este archivo ES el modo oscuro: define todos los tokens de color del
+   proyecto (pantalla de Inicio + las 13 páginas del dashboard) con la
+   paleta Nocturne, nacida del canvas de diseño "Inicio" (Claude Design).
+
+   Su contraparte clara es assets/css/aurora.css. Entre ambos:
+
+     nocturne.css   →  :root  y  :root[data-theme="dark"]   (oscuro, por defecto)
+     aurora.css     →  :root[data-theme="light"]            (claro, sobreescribe)
+
+   Orden de carga obligatorio en cada página:
+     (dashboard.css | inicio.css)  →  nocturne.css  →  aurora.css
+   Primero la ESTRUCTURA, después las dos pieles. Los tokens funcionan
+   en cualquier orden (las custom properties se resuelven al usarse),
+   pero las reglas de piel sí necesitan ir después de la estructura
+   para ganar por cascada sin llenarse de !important.
+
+   El atributo data-theme lo fija/persiste core.js (dashboard) e
+   inicio.js (Inicio) en localStorage['maltg-theme'].
+
+   Ningún componente debe llevar colores literales: todos salen de los
+   tokens de aquí, para que el tema claro pueda reemplazarlos.
+   ═══════════════════════════════════════════════════════════════════ */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+:root,
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  /* ── A · Paleta base Nocturne ─────────────────────────────────── */
+  --color-bg: #161826;
+  --color-surface: #232532;
+  --color-text: #e9e9ed;
+  --color-accent: #9184d9;
+  --color-accent-2: #a7a1db;
+  --color-divider: color-mix(in srgb, #e9e9ed 16%, transparent);
+
+  /* Rampas tonales — generadas en OKLCH sobre una única escala de luminosidad. */
+  --color-neutral-100: #f3f5fe;
+  --color-neutral-200: #e4e7f5;
+  --color-neutral-300: #cfd3e5;
+  --color-neutral-400: #b2b6ca;
+  --color-neutral-500: #9397ab;
+  --color-neutral-600: #75798c;
+  --color-neutral-700: #595d6c;
+  --color-neutral-800: #3f424d;
+  --color-neutral-900: #292b31;
+
+  --color-accent-100: #f5f4ff;
+  --color-accent-200: #e7e5fe;
+  --color-accent-300: #d2cefd;
+  --color-accent-400: #b5abfc;
+  --color-accent-500: #968ae0;
+  --color-accent-600: #796cbf;
+  --color-accent-700: #5d5294;
+  --color-accent-800: #423a6a;
+  --color-accent-900: #2b2741;
+
+  --color-accent-2-100: #f5f4ff;
+  --color-accent-2-200: #e7e5fe;
+  --color-accent-2-300: #d2cefd;
+  --color-accent-2-400: #b5afe8;
+  --color-accent-2-500: #9690c9;
+  --color-accent-2-600: #7972a9;
+  --color-accent-2-700: #5c5783;
+  --color-accent-2-800: #423e5d;
+  --color-accent-2-900: #2b293a;
+
+  --color-section: #262a60;
+  --color-section-glow: #353b80;
+  --color-section-ghost: #4c5397;
+
+  /* Tipografía, espaciado y radios (compartidos por ambos temas) */
+  --font-heading: "Inter", system-ui, sans-serif;
+  --font-heading-weight: 500;
+  --font-body: "Inter", system-ui, sans-serif;
+
+  --space-1: 2.8px;  --space-2: 5.6px; --space-3: 8.4px;
+  --space-4: 11.2px; --space-6: 16.8px; --space-8: 22.4px;
+
+  --radius-sm: 4px; --radius-md: 8px; --radius-lg: 14px;
+
+  /* Sombras Nocturne (prefijo nc- para no chocar con --shadow* del dashboard) */
+  --nc-shadow-sm: 0 0 0 1px #3f424d;
+  --nc-shadow-md: 0 0 0 1px #595d6c, 0 6px 18px rgba(0,0,0,0.55);
+  --nc-shadow-lg: 0 0 0 1px #9397ab, 0 16px 40px rgba(0,0,0,0.65);
+
+  /* ── B · Superficies del dashboard (13 páginas) ───────────────── */
+  /* Derivadas de la paleta Nocturne: el dashboard oscuro y el Inicio
+     comparten fondo, para que la app se lea como un solo producto.   */
+  --bg0: #161826;
+  --bg1: rgba(28,30,46,0.92);
+  --bg2: rgba(35,37,50,0.88);
+  --bg3: rgba(43,45,60,0.85);
+  --bg4: rgba(52,54,72,0.80);
+
+  --t1: #e9e9ed;
+  --t2: #9397ab;
+  --t3: #75798c;
+
+  --bdr:  rgba(255,255,255,0.07);
+  --bdr2: rgba(255,255,255,0.12);
+
+  --hdr-bg:    rgba(22,24,38,0.72);
+  --panel-bg:  rgba(35,37,50,0.55);
+  --card-bg:   rgba(41,43,58,0.50);
+  --glass-bg:  rgba(255,255,255,0.03);
+  --glass-bdr: rgba(255,255,255,0.08);
+
+  --shadow:       0 8px 32px rgba(0,0,0,0.6), 0 2px 8px rgba(0,0,0,0.4);
+  --shadow-sm:    0 4px 16px rgba(0,0,0,0.4);
+  --glass-shadow: 0 8px 32px rgba(0,0,0,0.37);
+  --blur:    blur(20px);
+  --blur-sm: blur(12px);
+
+  --grid-line: rgba(145,132,217,0.035);
+
+  /* ── C · Acentos ──────────────────────────────────────────────── */
+  /* --cyan es el ACENTO DE INTERFAZ (títulos, bordes, foco, logo): en
+     la piel Nocturne lo lleva el violeta del carrusel. El nombre se
+     conserva porque lo usan ~50 sitios entre CSS y tab-*.js — nombra
+     el ROL, no el tono. Los demás sí codifican significado (estado
+     procesal, series de gráficos) y mantienen su hue en ambos temas.  */
+  --cyan:  #9184d9; --gold: #ffc947; --violet: #a855f7;
+  --green: #10e98c; --rose: #ff4d6d; --orange: #ff9a3c;
+  --pink:  #f472b6; --teal: #2dd4bf; --indigo: #6366f1;
+
+  --gcyan:   0 0 18px rgba(145,132,217,.32), 0 0 54px rgba(145,132,217,.08);
+  --ggold:   0 0 20px rgba(255,201,71,.30), 0 0 60px rgba(255,201,71,.07);
+  --grose:   0 0 20px rgba(255,77,109,.30);
+  --gviolet: 0 0 20px rgba(168,85,247,.32);
+  --bglow:   rgba(145,132,217,0.18);
+
+  /* Selectores nativos — el popup de <option> sólo admite color OPACO */
+  --select-bg:       #232532;
+  --select-bg-hover: #2b2e3f;
+  --select-fg:       #cfd3e5;
+  --select-bdr:      #3f424d;
+  --select-caret:    #9397ab;
+  --select-ring:     rgba(145,132,217,0.22);
+  --select-pop:      #232532;
+  --select-pop-sel:  #3a3560;
+
+  --orb1: radial-gradient(ellipse 800px 600px at 20% 20%, rgba(145,132,217,0.07) 0%, transparent 70%);
+  --orb2: radial-gradient(ellipse 600px 800px at 80% 80%, rgba(168,85,247,0.05) 0%, transparent 70%);
+  --orb3: radial-gradient(ellipse 500px 400px at 50% 50%, rgba(0,229,255,0.03) 0%, transparent 70%);
+
+  /* ── D · Sistema AI-native (acentos "quantum", glows, glass, elevación) ── */
+  --q-cyan:   #a396e6;   /* acento primario (rol), en violeta Nocturne */
+  --q-violet: #c0b7f5;
+  --q-green:  #00ff9d;
+  --q-amber:  #ffb800;
+  --q-rose:   #ff3870;
+  --q-indigo: #6366f1;
+  --q-teal:   #2dd4bf;
+
+  --glow-cyan:   0 0 12px rgba(145,132,217,.45), 0 0 40px rgba(145,132,217,.14), 0 0 80px rgba(145,132,217,.05);
+  --glow-violet: 0 0 12px rgba(181,171,252,.45), 0 0 40px rgba(181,171,252,.14);
+  --glow-green:  0 0 12px rgba(0,255,157,.4), 0 0 30px rgba(0,255,157,.1);
+  --glow-rose:   0 0 12px rgba(255,56,112,.4), 0 0 30px rgba(255,56,112,.1);
+
+  --qglass-1: rgba(255,255,255,0.02);
+  --qglass-2: rgba(255,255,255,0.04);
+  --qglass-3: rgba(255,255,255,0.07);
+  --qglass-bdr: rgba(255,255,255,0.08);
+  --qglass-bdr-lit: rgba(145,132,217,0.28);
+
+  --elev-0: none;
+  --elev-1: 0 1px 3px rgba(0,0,0,.4), 0 0 0 1px rgba(255,255,255,.04);
+  --elev-2: 0 4px 16px rgba(0,0,0,.5), 0 0 0 1px rgba(255,255,255,.05);
+  --elev-3: 0 8px 32px rgba(0,0,0,.6), 0 0 0 1px rgba(255,255,255,.06);
+  --elev-4: 0 16px 64px rgba(0,0,0,.7), 0 0 0 1px rgba(255,255,255,.08);
+
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   PIEL NOCTURNE PARA EL DASHBOARD
+   ───────────────────────────────────────────────────────────────────
+   Lleva la estética del carrusel de Inicio a las 13 páginas: fondo
+   índigo profundo, superficies planas con filete de un píxel y acento
+   violeta — el mismo tratamiento que .mod-card. Sustituye a la capa
+   "deep space" (negro #030711 con starfield y scanlines) y al relieve
+   neumórfico, que convivían mal entre sí y con la pantalla de Inicio.
+
+   Estas reglas van DESPUÉS de dashboard.css en el orden de carga, así
+   que sólo necesitan !important donde dashboard.css ya lo usa.
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ── Lienzo ─────────────────────────────────────────────────────── */
+:root[data-theme="dark"] body {
+  background:
+    radial-gradient(1100px 620px at 50% -5%,
+      color-mix(in srgb, var(--color-accent) 13%, transparent) 0%, transparent 72%),
+    var(--color-bg) !important;
+}
+/* starfield y scanlines: pertenecen al look anterior, no a Nocturne */
+:root[data-theme="dark"] body::before,
+:root[data-theme="dark"] body::after { display: none !important; }
+
+/* ── Cabecera ───────────────────────────────────────────────────── */
+:root[data-theme="dark"] header {
+  background: color-mix(in srgb, var(--color-bg) 84%, transparent) !important;
+  border-bottom: 1px solid var(--color-neutral-900);
+  box-shadow: none !important;
+}
+:root[data-theme="dark"] .logo { color: var(--color-accent); }
+
+/* ── Superficies — el tratamiento de .mod-card del carrusel ─────── */
+:root[data-theme="dark"] .panel,
+:root[data-theme="dark"] .kpi,
+:root[data-theme="dark"] .lcard,
+:root[data-theme="dark"] .sc-card,
+:root[data-theme="dark"] .skcard {
+  background: var(--color-surface) !important;
+  border: 1px solid var(--color-neutral-900) !important;
+  border-radius: var(--radius-lg) !important;
+  box-shadow: 0 0 0 1px var(--color-neutral-900), 0 14px 34px rgba(0,0,0,.38) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+:root[data-theme="dark"] .panel::after,
+:root[data-theme="dark"] .kpi::after { display: none !important; }
+:root[data-theme="dark"] .kpi:hover,
+:root[data-theme="dark"] .lcard:hover,
+:root[data-theme="dark"] .sc-card:hover {
+  border-color: var(--color-accent-700) !important;
+  box-shadow: 0 0 0 1px var(--color-accent-700), 0 18px 44px rgba(0,0,0,.46) !important;
+}
+
+/* KPI — número e icono en la paleta del carrusel, no en azul.
+   El número ya no necesita override aquí: dashboard.css lo pinta con
+   var(--cyan) —el token de acento "de rol"—, que este archivo ya
+   remapea a violeta más arriba, así que sale correcto solo. (Antes
+   este bloque reescribía `background` con el atajo para el degradado
+   recortado al texto; eso reseteaba background-clip sin querer y
+   pintaba una caja sólida detrás del número — ver el comentario en
+   dashboard.css junto a `.kpi .kpi-value`.) */
+:root[data-theme="dark"] .kpi .kpi-label { color: var(--color-neutral-500) !important; }
+:root[data-theme="dark"] .kpi-icon {
+  color: var(--color-accent);
+  background: color-mix(in srgb, var(--color-accent) 12%, transparent);
+  border-color: var(--color-accent-700);
+}
+
+/* ── Controles de las visualizaciones (vis-network: Ontología, Simulación) ── */
+:root[data-theme="dark"] .vis-ctrl-btn {
+  background: var(--color-surface);
+  border: 1px solid var(--color-neutral-800);
+  color: var(--color-neutral-400);
+  box-shadow: none;
+}
+:root[data-theme="dark"] .vis-ctrl-btn:hover,
+:root[data-theme="dark"] .vis-ctrl-btn.active {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+  box-shadow: none;
+}
+
+/* ── Superficie del grafo (Ontología y Simulación 3D) ───────────── */
+:root[data-theme="dark"] #onto-vis {
+  background: color-mix(in srgb, var(--color-bg) 60%, transparent) !important;
+  border-radius: var(--radius-lg);
+}

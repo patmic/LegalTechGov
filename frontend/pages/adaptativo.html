@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+<script>
+  /* Tema aplicado ANTES de pintar (core.js llega con defer, demasiado
+     tarde para evitar el parpadeo). Misma clave que index.html. */
+  try {
+    document.documentElement.setAttribute('data-theme',
+      localStorage.getItem('maltg-theme') === 'light' ? 'light' : 'dark');
+  } catch (e) {}
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#030711">
+<meta name="color-scheme" content="dark light">
+<title>MALTG Architecture Validator — Adaptativo · MAPE-K</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/standalone/umd/vis-network.min.js" defer></script>
+<script>/* fallback: si vis-network 9 no carga desde el CDN, usar vis 4.21 */
+window.addEventListener('DOMContentLoaded',()=>{ if(!window.vis){ const s=document.createElement('script');
+  s.src='https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js'; document.head.appendChild(s); } });</script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Nova+Mono&family=Outfit:wght@200;300;400;500;600;700;800;900&family=JetBrains+Mono:wght@300;400;600&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+<!-- Estructura primero, luego las dos pieles de tema. El orden importa:
+     dashboard.css (forma) → nocturne.css (oscuro) → aurora.css (claro). -->
+<link rel="stylesheet" href="../assets/css/dashboard.css">
+<link rel="stylesheet" href="../assets/css/nocturne.css">
+<link rel="stylesheet" href="../assets/css/aurora.css">
+<!-- Runtime compartido (header/nav, tema, animación de arranque) + lógica propia de esta página -->
+<script src="../assets/js/core.js" defer></script>
+<script src="../assets/js/tab-adaptativo.js" defer></script>
+</head>
+<body data-page="adaptativo">
+
+<!-- LOADING OVERLAY — misma animación de arranque que el resto del dashboard -->
+<div id="overlay" class="show">
+  <div class="ov-spinner"></div>
+  <div class="ov-msg">Sincronizando ecosistema MALTG</div>
+  <div class="ov-steps" id="ov-steps"></div>
+</div>
+
+<!-- HEADER (inyectado por core.js desde assets/partials/header.html) -->
+<div id="app-header"></div>
+
+<main>
+<div class="section active" id="sec-adaptativo">
+  <div class="stitle">Gobernanza Adaptativa · Ciclo MAPE-K sobre Ontologías (Guardrails)</div>
+
+  <!-- Sub-navegación -->
+  <div style="display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:1rem">
+    <button class="vis-ctrl-btn" onclick="adGoto('ad-p-ciclo')">⟳ Ciclo</button>
+    <button class="vis-ctrl-btn" onclick="adGoto('ad-p-config')">⚖ Métricas</button>
+    <button class="vis-ctrl-btn" onclick="adGoto('ad-p-supuestos')">🎛 Supuestos</button>
+    <button class="vis-ctrl-btn" onclick="switchTab('experto')" style="border-color:rgba(168,85,247,.5)">🎯 Validez IA ↗ (tab 10)</button>
+    <button class="vis-ctrl-btn" onclick="adGoto('ad-p-normativo')">📜 Cambio Normativo</button>
+    <button class="vis-ctrl-btn" onclick="adGoto('ad-p-ranking')">🏛 Ranking</button>
+    <button class="vis-ctrl-btn" onclick="adGoto('ad-p-alertas')">🛡 Alertas</button>
+    <button class="vis-ctrl-btn" onclick="adGoto('ad-p-muestra')">📊 Muestra</button>
+    <button class="vis-ctrl-btn" onclick="adGoto('ad-p-trace')">🔗 Trazabilidad</button>
+  </div>
+
+  <!-- KPIs del ciclo -->
+  <div class="kpi-row">
+    <div class="kpi" style="--ac:#10e98c"><div class="kpi-label">Índice Empírico Global</div><div class="kpi-value" id="ad-k-indice">—</div><div class="kpi-delta up" id="ad-k-indice-d">actos en plazo / evaluables</div></div>
+    <div class="kpi" style="--ac:var(--cyan)"><div class="kpi-label">Causas Analizadas</div><div class="kpi-value" id="ad-k-causas">—</div><div class="kpi-delta neutral">/data/LegalCase</div></div>
+    <div class="kpi" style="--ac:var(--gold)"><div class="kpi-label">Salud Media</div><div class="kpi-value" id="ad-k-salud">—</div><div class="kpi-delta neutral">razonador COGEP</div></div>
+    <div class="kpi" style="--ac:#ff4d6d"><div class="kpi-label">Alertas Críticas</div><div class="kpi-value" id="ad-k-criticas">—</div><div class="kpi-delta down" id="ad-k-alertas-d">—</div></div>
+    <div class="kpi" style="--ac:var(--violet)"><div class="kpi-label">Radar ← Empírico</div><div class="kpi-value" id="ad-k-peso">—</div><div class="kpi-delta up">peso en dimensión LegalTech</div></div>
+  </div>
+
+  <!-- Ciclo MAPE-K -->
+  <div class="panel" id="ad-p-ciclo" style="margin-bottom:1rem;--ac:#10e98c">
+    <div class="ph"><div class="ptitle">Ciclo Adaptativo MAPE-K</div><span class="pbadge g" id="ad-ciclo-ts">—</span></div>
+    <div style="display:flex;flex-wrap:wrap;gap:.6rem;align-items:center;justify-content:center;padding:1rem">
+      <span class="pbadge g" title="Expedientes SATJE + scraping CJ">📡 Monitor · expedientes</span><span style="color:var(--t3)">→</span>
+      <span class="pbadge g" title="Razonador COGEP + detectores IVF/IDP">🧠 Analyze · razonador + drift</span><span style="color:var(--t3)">→</span>
+      <span class="pbadge g" title="Índice empírico + alertas">📐 Plan · índice + alertas</span><span style="color:var(--t3)">→</span>
+      <span class="pbadge g" title="El radar de validación se recalcula">⚙ Execute · radar recalibrado</span><span style="color:var(--t3)">↺</span>
+      <span class="pbadge d" title="Ontologías MALTG + COGEP = frontera de lo expresable">📚 Knowledge · ontologías (guardrail)</span>
+    </div>
+    <div style="padding:0 1.1rem .8rem;font-family:var(--font-mono);font-size:.64rem;color:var(--t3)" id="ad-disclaimer"></div>
+  </div>
+
+  <!-- Configuración del usuario -->
+  <div id="ad-p-config" style="display:grid;grid-template-columns:1fr 1.2fr;gap:1rem;margin-bottom:1rem">
+    <div class="panel" style="--ac:var(--violet)">
+      <div class="ph"><div class="ptitle">⚖ Métricas del Usuario · pesos del ranking</div><span class="pbadge d" id="ad-cfg-upd">—</span></div>
+      <div style="padding:1rem;display:flex;flex-direction:column;gap:.85rem">
+        <div>
+          <div style="display:flex;justify-content:space-between;font-family:var(--font-mono);font-size:.7rem;color:var(--t2)">
+            <span>Salud procesal (términos COGEP)</span><b id="ad-w-salud-v" style="color:var(--cyan)">50%</b></div>
+          <input type="range" id="ad-w-salud" min="0" max="100" value="50" style="width:100%" oninput="adPesosPreview()">
+        </div>
+        <div>
+          <div style="display:flex;justify-content:space-between;font-family:var(--font-mono);font-size:.7rem;color:var(--t2)">
+            <span>Variabilidad fáctica (IVF · M1)</span><b id="ad-w-var-v" style="color:var(--gold)">25%</b></div>
+          <input type="range" id="ad-w-var" min="0" max="100" value="25" style="width:100%" oninput="adPesosPreview()">
+        </div>
+        <div>
+          <div style="display:flex;justify-content:space-between;font-family:var(--font-mono);font-size:.7rem;color:var(--t2)">
+            <span>Deriva procesal (IDP · M2)</span><b id="ad-w-drift-v" style="color:#ff9a3c">25%</b></div>
+          <input type="range" id="ad-w-drift" min="0" max="100" value="25" style="width:100%" oninput="adPesosPreview()">
+        </div>
+        <div style="border-top:1px solid var(--bdr);padding-top:.7rem">
+          <div style="display:flex;justify-content:space-between;font-family:var(--font-mono);font-size:.7rem;color:var(--t2)">
+            <span>Peso empírico en el radar (LegalTech)</span><b id="ad-w-emp-v" style="color:#10e98c">50%</b></div>
+          <input type="range" id="ad-w-emp" min="0" max="100" value="50" style="width:100%" oninput="adPesosPreview()">
+        </div>
+        <div style="display:flex;gap:.8rem;flex-wrap:wrap;align-items:center">
+          <label style="font-family:var(--font-mono);font-size:.66rem;color:var(--t3)">Loop ≥
+            <input type="number" id="ad-u-loop" min="2" max="10" value="3" style="width:52px;background:rgba(255,255,255,.06);border:1px solid var(--bdr);border-radius:6px;color:var(--t1);padding:.25rem .4rem"> repeticiones</label>
+          <label style="font-family:var(--font-mono);font-size:.66rem;color:var(--t3)">Gap referencial
+            <input type="number" id="ad-u-gap" min="5" max="365" value="60" style="width:60px;background:rgba(255,255,255,.06);border:1px solid var(--bdr);border-radius:6px;color:var(--t1);padding:.25rem .4rem"> días háb.</label>
+        </div>
+        <button onclick="adSaveConfig()" style="cursor:pointer;border:none;border-radius:9px;padding:.6rem 1.1rem;
+          font-family:var(--font-mono);font-weight:700;font-size:.76rem;color:#04121a;
+          background:linear-gradient(95deg,#b060ff,#00e5ff)">💾 Guardar métricas → recalcular ranking</button>
+        <span id="ad-cfg-status" style="font-family:var(--font-mono);font-size:.62rem;color:var(--t3)">Los pesos se normalizan y quedan asentados en la bitácora (M5).</span>
+      </div>
+    </div>
+
+    <div class="panel" style="--ac:var(--gold)">
+      <div class="ph"><div class="ptitle">📅 Feriados y Suspensiones de Término (Art. 77 COGEP)</div>
+        <span class="pbadge g" id="ad-fer-count">—</span></div>
+      <div style="padding:.8rem 1rem;display:flex;flex-direction:column;gap:.6rem">
+        <div style="display:flex;gap:.5rem;flex-wrap:wrap;align-items:center">
+          <input type="date" id="ad-fer-fecha" style="background:rgba(255,255,255,.06);border:1px solid var(--bdr);border-radius:8px;color:var(--t1);font-family:var(--font-mono);font-size:.7rem;padding:.45rem .5rem">
+          <input id="ad-fer-motivo" placeholder="Motivo (ej. feriado local, traslado)" style="flex:1;min-width:150px;background:rgba(255,255,255,.06);border:1px solid var(--bdr);border-radius:8px;color:var(--t1);font-family:var(--font-mono);font-size:.7rem;padding:.45rem .55rem">
+          <button onclick="adAddFeriado()" style="cursor:pointer;border:1px solid rgba(255,201,71,.5);border-radius:8px;padding:.45rem .8rem;font-family:var(--font-mono);font-weight:700;font-size:.72rem;color:var(--gold);background:rgba(255,201,71,.1)">+ Feriado</button>
+        </div>
+        <div id="ad-fer-list" style="max-height:170px;overflow-y:auto;border:1px solid var(--bdr);border-radius:8px;padding:.4rem .6rem"></div>
+        <div style="display:flex;gap:.5rem;flex-wrap:wrap;align-items:center">
+          <input type="date" id="ad-sus-desde" title="Desde" style="background:rgba(255,255,255,.06);border:1px solid var(--bdr);border-radius:8px;color:var(--t1);font-family:var(--font-mono);font-size:.7rem;padding:.45rem .5rem">
+          <input type="date" id="ad-sus-hasta" title="Hasta" style="background:rgba(255,255,255,.06);border:1px solid var(--bdr);border-radius:8px;color:var(--t1);font-family:var(--font-mono);font-size:.7rem;padding:.45rem .5rem">
+          <input id="ad-sus-motivo" placeholder="Suspensión del CJ (resolución)" style="flex:1;min-width:130px;background:rgba(255,255,255,.06);border:1px solid var(--bdr);border-radius:8px;color:var(--t1);font-family:var(--font-mono);font-size:.7rem;padding:.45rem .55rem">
+          <button onclick="adAddSuspension()" style="cursor:pointer;border:1px solid rgba(0,229,255,.5);border-radius:8px;padding:.45rem .8rem;font-family:var(--font-mono);font-weight:700;font-size:.72rem;color:var(--cyan);background:rgba(0,229,255,.08)">+ Suspensión</button>
+        </div>
+        <div id="ad-sus-list" style="max-height:90px;overflow-y:auto;border:1px solid var(--bdr);border-radius:8px;padding:.4rem .6rem"></div>
+        <button onclick="adSaveFeriados()" style="cursor:pointer;border:none;border-radius:9px;padding:.6rem 1.1rem;
+          font-family:var(--font-mono);font-weight:700;font-size:.76rem;color:#04121a;
+          background:linear-gradient(95deg,#ffc947,#10e98c)">💾 Guardar calendario → recomputar días hábiles</button>
+        <span id="ad-fer-status" style="font-family:var(--font-mono);font-size:.62rem;color:var(--t3)">Todo dictamen usa este calendario para el cómputo de términos; el cambio queda en bitácora.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Panel de Supuestos del experto (todo valor asumido, con min-max) -->
+  <div class="panel" id="ad-p-supuestos" style="margin-bottom:1rem;--ac:var(--gold)">
+    <div class="ph"><div class="ptitle">🎛 Supuestos del Experimento · valores asumidos, configurables por el experto</div>
+      <span class="pbadge d" id="ad-su-upd">—</span></div>
+    <div style="padding:.4rem 1rem 0;font-family:var(--font-mono);font-size:.63rem;color:var(--t3)">
+      Cada valor asumido de la simulación se declara aquí con su rango permitido [mín – máx] y su procedencia. Los cambios se validan en el servidor y quedan en bitácora (M5).
+    </div>
+    <div id="ad-su-table" style="padding:.6rem 1rem;overflow-x:auto"></div>
+    <div style="display:flex;gap:.8rem;align-items:center;padding:0 1rem 1rem">
+      <button onclick="adSaveSupuestos()" style="cursor:pointer;border:none;border-radius:9px;padding:.6rem 1.1rem;
+        font-family:var(--font-mono);font-weight:700;font-size:.76rem;color:#04121a;
+        background:linear-gradient(95deg,#ffc947,#00e5ff)">💾 Aplicar supuestos → recalcular todo</button>
+      <span id="ad-su-status" style="font-family:var(--font-mono);font-size:.62rem;color:var(--t3)"></span>
+    </div>
+  </div>
+
+  <!-- Cambio Normativo / Jurisprudencial -->
+  <div class="panel" id="ad-p-normativo" style="margin-bottom:1rem;--ac:#60a5fa">
+    <div class="ph"><div class="ptitle">📜 Gestión del Cambio Normativo · KB versionada con aplicación temporal</div>
+      <span class="pbadge d" id="nm-kbv">KB v—</span></div>
+    <div style="display:grid;grid-template-columns:1fr 1.2fr;gap:1rem;padding:.8rem 1rem">
+      <div style="display:flex;flex-direction:column;gap:.5rem">
+        <select id="nm-regla" class="app-select" onchange="nmShowRegla()"></select>
+        <div id="nm-regla-info" style="font-family:var(--font-mono);font-size:.64rem;color:var(--t3)"></div>
+        <div style="display:flex;gap:.5rem;flex-wrap:wrap">
+          <label style="font-family:var(--font-mono);font-size:.64rem;color:var(--t3)">Nuevo término
+            <input type="number" id="nm-termino" min="1" max="365" style="width:64px;background:rgba(255,255,255,.06);border:1px solid var(--bdr);border-radius:6px;color:var(--t1);padding:.3rem .4rem"> días</label>
+          <label style="font-family:var(--font-mono);font-size:.64rem;color:var(--t3)">Vigente desde
+            <input type="date" id="nm-vigencia" style="background:rgba(255,255,255,.06);border:1px solid var(--bdr);border-radius:6px;color:var(--t1);padding:.3rem .4rem"></label>
+        </div>
+        <div style="display:flex;gap:.5rem;flex-wrap:wrap">
+          <select id="nm-tipo" class="app-select"><option value="reforma">Reforma legal</option><option value="jurisprudencia">Jurisprudencia</option></select>
+          <input id="nm-ref" placeholder="Fuente: RO / sentencia (obligatorio)" style="flex:1;min-width:150px;background:rgba(255,255,255,.06);border:1px solid var(--bdr);border-radius:8px;color:var(--t1);font-family:var(--font-mono);font-size:.68rem;padding:.4rem .55rem">
+        </div>
+        <input id="nm-motivo" placeholder="Motivo / nota" style="background:rgba(255,255,255,.06);border:1px solid var(--bdr);border-radius:8px;color:var(--t1);font-family:var(--font-mono);font-size:.68rem;padding:.4rem .55rem">
+        <div style="display:flex;gap:.6rem">
+          <button onclick="nmRegistrar()" style="cursor:pointer;border:none;border-radius:9px;padding:.55rem 1rem;
+            font-family:var(--font-mono);font-weight:700;font-size:.74rem;color:#04121a;
+            background:linear-gradient(95deg,#60a5fa,#10e98c)">✍ Registrar cambio</button>
+          <button onclick="nmImpacto()" style="cursor:pointer;border:1px solid rgba(96,165,250,.5);border-radius:9px;padding:.55rem 1rem;
+            font-family:var(--font-mono);font-weight:700;font-size:.74rem;color:#60a5fa;background:rgba(96,165,250,.08)">⚡ Re-evaluar impacto</button>
+        </div>
+        <span id="nm-status" style="font-family:var(--font-mono);font-size:.62rem;color:var(--t3)">El razonador aplica la versión de la regla vigente a la fecha de cada acto.</span>
+      </div>
+      <div>
+        <div id="nm-impacto" style="font-size:.68rem;color:var(--t2);line-height:1.6;margin-bottom:.6rem"></div>
+        <div style="font-family:var(--font-mono);font-size:.62rem;color:var(--t3);margin-bottom:.3rem">Timeline de cambios normativos:</div>
+        <div id="nm-timeline" style="max-height:220px;overflow-y:auto"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Ranking por proceso -->
+  <div class="panel" id="ad-p-ranking" style="margin-bottom:1rem;--ac:var(--cyan)">
+    <div class="ph"><div class="ptitle">🏛 Ranking de Juicios por Proceso · métricas fijadas por el usuario</div>
+      <div style="display:flex;gap:.45rem;align-items:center">
+        <select id="ad-rk-proc" class="app-select" onchange="adLoadRanking()"></select>
+        <span class="pbadge g" id="ad-rk-n">—</span>
+      </div>
+    </div>
+    <div style="padding:.4rem 1rem 0;font-family:var(--font-mono);font-size:.63rem;color:var(--t3)" id="ad-rk-formula"></div>
+    <div id="ad-rk-table" style="padding:.6rem 1rem;overflow-x:auto"></div>
+    <div id="ad-rk-detail" style="display:none;margin:0 1rem 1rem;border:1px solid var(--bdr);border-radius:8px;background:rgba(0,0,0,.3);padding:.8rem">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem">
+        <span id="ad-rk-detail-title" style="font-family:var(--font-mono);font-size:.72rem;color:var(--cyan)"></span>
+        <span onclick="document.getElementById('ad-rk-detail').style.display='none'" style="cursor:pointer;color:var(--t3)">✕</span>
+      </div>
+      <div id="ad-rk-detail-body" style="font-size:.68rem;line-height:1.6;color:var(--t2)"></div>
+    </div>
+  </div>
+
+  <!-- Seguridad cognitiva -->
+  <div class="panel" id="ad-p-alertas" style="margin-bottom:1rem;--ac:#ff4d6d">
+    <div class="ph"><div class="ptitle">🛡 Seguridad Cognitiva · alertas de aspectos fuera de ley</div>
+      <div style="display:flex;gap:.45rem;align-items:center">
+        <select id="ad-al-nivel" class="app-select" onchange="adRenderAlertas()">
+          <option value="">Todos los niveles</option>
+          <option value="critica">🔴 Críticas</option>
+          <option value="alta">🟠 Altas</option>
+          <option value="media">🟡 Medias</option>
+        </select>
+        <span class="pbadge d" id="ad-al-n">—</span>
+      </div>
+    </div>
+    <div id="ad-al-list" style="padding:.6rem 1rem;max-height:420px;overflow-y:auto"></div>
+  </div>
+
+  <!-- Caracterización de la muestra (A5) -->
+  <div class="panel" id="ad-p-muestra" style="margin-bottom:1rem;--ac:var(--violet)">
+    <div class="ph"><div class="ptitle">📊 Caracterización de la Muestra · alcance de las conclusiones</div>
+      <span class="pbadge d" id="mu-n">— causas</span></div>
+    <div id="mu-decl" style="padding:.5rem 1rem 0;font-family:var(--font-mono);font-size:.63rem;color:var(--gold);line-height:1.5"></div>
+    <div id="mu-tablas" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;padding:.8rem 1rem"></div>
+  </div>
+
+  <!-- Trazabilidad de la adaptación -->
+  <div class="panel" id="ad-p-trace" style="--ac:#10e98c">
+    <div class="ph"><div class="ptitle">🔗 Trazabilidad de la Adaptación (M5) · metadatos de contexto</div>
+      <span class="pbadge g" id="ad-tr-n">—</span></div>
+    <div id="ad-tr-ctx" style="padding:.5rem 1rem 0;font-family:var(--font-mono);font-size:.64rem;color:var(--t3)"></div>
+    <div id="ad-tr-log" style="padding:.6rem 1rem;max-height:260px;overflow-y:auto"></div>
+  </div>
+</div>
+</main>
+
+</body>
+</html>
