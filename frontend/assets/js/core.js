@@ -27,6 +27,15 @@
 //  caliente, sin recargar la página.
 // ═══════════════════════════════════════════════════════════════════
 
+// Version de assets: se lee del ?v= con que el HTML carga este mismo
+// archivo, para que el fetch del header no quede servido de cache viejo.
+const APP_VERSION_Q = (() => {
+  try {
+    const m = (document.currentScript && document.currentScript.src || '').match(/[?&]v=([^&]+)/);
+    return m ? '?v=' + m[1] : '';
+  } catch (e) { return ''; }
+})();
+
 // ── Helpers genéricos (antes duplicados/dispersos en dashboard.html) ──
 const setTxt = (id, v) => { const e = document.getElementById(id); if (e) e.textContent = v; };
 const delay  = ms => new Promise(r => setTimeout(r, ms));
@@ -151,7 +160,9 @@ async function initHeader() {
   const mount = document.getElementById('app-header');
   if (!mount) return;
   try {
-    const r = await fetch('../assets/partials/header.html');
+    // Hereda ?v= del propio <script src="core.js?v=…">: una sola fuente de
+    // verdad para la version de assets, definida en el HTML.
+    const r = await fetch('../assets/partials/header.html' + APP_VERSION_Q);
     mount.outerHTML = await r.text();
   } catch (e) {
     console.error('No se pudo cargar el header compartido', e);

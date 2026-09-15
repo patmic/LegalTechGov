@@ -204,7 +204,8 @@ appLegaltechTesis/
 │   ├── pages/
 │   └── index.html
 ├── storage/
-│   └── data/
+│   ├── data/
+│   └── digitalShadow/
 ├── docker-compose.yml
 └── README.md
 ```
