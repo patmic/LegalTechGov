@@ -5,7 +5,7 @@
 El análisis previo se basó en la estructura real del proyecto y en las evidencias de configuración de ejecución:
 
 - [README.md](README.md): describe la aplicación como un dashboard web de validación de arquitectura LegalTech, con backend FastAPI, frontend HTML/CSS/JS y persistencia en archivos JSON/OWL.
-- [docker-compose.yml](docker-compose.yml): define un único servicio `maltg` con `build.context: ./backend` y montaje de [frontend](frontend) y [env/data](env/data).
+- [docker-compose.yml](docker-compose.yml): define un único servicio `maltg` con `build.context: ./backend` y montaje de [frontend](frontend) y [storage/data](storage/data).
 - [backend/main.py](backend/main.py): expone una API FastAPI que procesa ontologías, JSON de arquitectura, workflows y evidencia, sin depender de una base de datos relacional.
 
 A partir de eso, la conclusión es que el sistema actual se comporta como un monolito modular con frontend estático y backend de dominio, orientado a análisis y **validación** documental/ontológica. No es una arquitectura distribuida por microservicios, sino una solución de prototipo académico+operativo con fuerte dependencia de archivos y **módulos** compartidos.
@@ -30,7 +30,7 @@ flowchart LR
 flowchart LR
     Browser[Web Browser] --> Frontend[Frontend estático\nHTML/CSS/JS]
     Frontend --> API[FastAPI Backend\nAPI REST]
-    API --> Files[Repositorio de datos\nenv/data]
+    API --> Files[Repositorio de datos\nstorage/data]
     API --> OWL[MALTG Ontology OWL]
     API --> SDT[Digital Twin JSON]
     API --> WF[Workflow / case data]
@@ -203,7 +203,7 @@ appLegaltechTesis/
 │   ├── assets/
 │   ├── pages/
 │   └── index.html
-├── env/
+├── storage/
 │   └── data/
 ├── docker-compose.yml
 └── README.md

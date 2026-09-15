@@ -3,12 +3,12 @@ version: "3.9"
 # ══════════════════════════════════════════════════════════
 #  MALTG Architecture Validator — Docker Compose
 #  UI UX Pro Max Skill integrado — Glassmorphism Dashboard
-#  ► Edita ./env/data/MALTG_ontology.owl       → Tab Ontología se actualiza en 5s
-#  ► Edita ./env/data/sdt/SDT_Synthetic.json   → Tab Gemelo Digital / Validación
-#  ► Coloca .json en ./env/data/sdt/ o ./env/digitalShadow/ → aparecen en el
+#  ► Edita ./storage/data/MALTG_ontology.owl       → Tab Ontología se actualiza en 5s
+#  ► Edita ./storage/data/sdt/SDT_Synthetic.json   → Tab Gemelo Digital / Validación
+#  ► Coloca .json en ./storage/data/sdt/ o ./storage/digitalShadow/ → aparecen en el
 #    selector del tab "05 Digital Shadow Maturity"
 #  ► El botón "Get" de "04 Get Digital Shadow" persiste sus resultados
-#    (scraping + DS_<dominio>_<fecha>.json) en ./env/digitalShadow/
+#    (scraping + DS_<dominio>_<fecha>.json) en ./storage/digitalShadow/
 # ══════════════════════════════════════════════════════════
 
 services:
@@ -22,10 +22,10 @@ services:
       - "8080:8080"
     volumes:
       # Data files mounted as volumes (lectura/escritura: el backend persiste cambios de score)
-      - ./env/data:/data
+      - ./storage/data:/data
       # Resultados de "04 Get Digital Shadow" / "05 Digital Shadow Maturity":
       # scraping (snapshots+manifest+PROTOCOLO.md) y los DS_<dominio>_<fecha>.json generados
-      - ./env/digitalShadow:/digitalShadow
+      - ./storage/digitalShadow:/digitalShadow
       # Frontend mounted too → edit HTML without rebuild
       - ./frontend:/frontend:ro
       # Backend mounted too → edit main.py without rebuild (uvicorn --reload)

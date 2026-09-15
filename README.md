@@ -37,7 +37,7 @@ Además de validar arquitectura, el sistema:
 
 No hay base de datos: todo el estado (ontología, gemelos digitales, expedientes,
 bitácora, evidencia, configuración adaptativa) se persiste como archivos JSON/OWL
-bajo `env/data/`, montados como volumen dentro del contenedor.
+bajo `storage/data/`, montados como volumen dentro del contenedor.
 
 ## Estructura del proyecto
 
@@ -79,10 +79,10 @@ appLegaltechTesis/
 │   │       └── header.html     # Header (logo · módulo actual · ☰ Home/módulos), sin tabs ni botones sueltos
 │   └── flujo_procesal_alertas.html  # Vista independiente de flujo procesal COGEP con alertas de plazo
 │                                #   (autocontenida: no depende de assets/, no está en el menú)
-├── env/
+├── storage/
 │   ├── tools/
 │   │   └── scraper_cj.py       # Instrumento de recolección documental reproducible
-│   │                            #   (snapshots + manifest SHA-256 en env/digitalShadow/scraping)
+│   │                            #   (snapshots + manifest SHA-256 en storage/digitalShadow/scraping)
 │   └── data/                   # Todo el estado persistente de la app
 │       ├── MALTG_ontology.owl          # Ontología MALTG (OWL/RDF)
 │       ├── MALTG_ontology.json         # Ontología → grafo D3 (estructura)
@@ -133,7 +133,7 @@ docker compose up --build
 - Health check: `http://localhost:8080/api/health`
 
 El backend corre con `uvicorn --reload`, y tanto `backend/main.py` como todo
-`frontend/` y `env/data/` están montados como volúmenes: los cambios se
+`frontend/` y `storage/data/` están montados como volúmenes: los cambios se
 reflejan sin reconstruir la imagen (ontología y gemelos digitales se
 recargan en ~5s).
 
@@ -234,15 +234,15 @@ Adoption), `OD` (Open Data Comply), `SEC` (Security Posture), `INTEROP`
 
 ## Herramientas de recolección de datos
 
-`env/tools/scraper_cj.py` captura snapshots verificables de las fuentes
+`storage/digitalShadow/tools/scraper_cj.py` captura snapshots verificables de las fuentes
 oficiales del Consejo de la Judicatura del Ecuador, con hash SHA-256 por
 fuente y registro en la bitácora, para permitir que la captura sea
 reproducible por un tercero:
 
 ```bash
-python env/tools/scraper_cj.py                          # corrida con fecha de hoy
-python env/tools/scraper_cj.py --fecha-corte 2026-07-02  # etiqueta la corrida
-python env/tools/scraper_cj.py --verificar <run_id>      # re-hash de una corrida
+python storage/digitalShadow/tools/scraper_cj.py                          # corrida con fecha de hoy
+python storage/digitalShadow/tools/scraper_cj.py --fecha-corte 2026-07-02  # etiqueta la corrida
+python storage/digitalShadow/tools/scraper_cj.py --verificar <run_id>      # re-hash de una corrida
 ```
 
 Este proyecto está subido a:

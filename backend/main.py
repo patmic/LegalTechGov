@@ -49,6 +49,7 @@ SDT_DIR    = DATA_DIR / "sdt"                         # gemelos digitales estruc
 OWL_PATH   = DATA_DIR / "MALTG_ontology.owl"
 ONTO_JSON  = DATA_DIR / "MALTG_ontology.json"       # estructura (estrella) del grafo de ontología (tab 03)
 ONTO_INFO  = DATA_DIR / "MALTG_ontologyInfo.json"   # detalles informativos por nodo (descripción, norma…)
+DT_PATH    = SDT_DIR / "SDT_Synthetic.json"          # gemelo digital sintético (antes dt_arch.json)
 WF_DIR     = DATA_DIR / "workflow"        # directory holding BPMN workflow JSON files
 EXP_DIR    = DATA_DIR / "LegalCase"        # decided cases (causas/juicios) JSON files
 MALTG_PATH = DATA_DIR / "MALTG_architecture.json"  # JSON-LD multidimensional architecture
@@ -56,11 +57,10 @@ FRONT_DIR  = Path("/frontend")
 
 # ── Digital Shadow (módulos "04 Get Digital Shadow" / "05 Digital Shadow
 #    Maturity") — resultados de scraping fuera de /data, en su propio volumen
-#    montado (ver docker-compose.yml → ./env/digitalShadow:/digitalShadow).
+#    montado (ver docker-compose.yml → ./storage/digitalShadow:/digitalShadow).
 DS_DIR         = Path("/digitalShadow")
 DS_SCRAPING_DIR = DS_DIR / "scraping"              # snapshots + manifest + semillas del protocolo de scraping
 SDT_CJ_PATH    = DS_DIR / "SDT_CJ.json"            # Modelo Digital Estructural (SDT) del dominio auditado (JSON-LD) — regenerado en cada scraping
-DT_PATH        = DS_DIR / "DS_Synthetic.json"      # gemelo sintético — el que se carga por defecto en "05 Digital Shadow Maturity"
 
 OWL_NS   = "http://www.w3.org/2002/07/owl#"
 RDF_NS   = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
@@ -2250,8 +2250,8 @@ def bitacora_verify(entries):
 
 # ── Nomenclatura homogénea corrida ↔ gemelo digital ──────────────────
 #  El directorio de snapshots y el .json generado comparten el mismo prefijo:
-#      env/digitalShadow/scraping/DS_<dominio>_<YYYYMMDD>_<HHMMSS>/   (corrida)
-#      env/digitalShadow/DS_<dominio>_<YYYYMMDD>.json                 (gemelo)
+#      storage/digitalShadow/scraping/DS_<dominio>_<YYYYMMDD>_<HHMMSS>/   (corrida)
+#      storage/digitalShadow/DS_<dominio>_<YYYYMMDD>.json                 (gemelo)
 #  Así la trazabilidad snapshot ↔ SDT es evidente por el nombre.
 DS_DEFAULT_DOMAIN = "funcionjudicial"
 

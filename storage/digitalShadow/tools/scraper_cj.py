@@ -3,22 +3,22 @@
 scraper_cj.py — Instrumento de recolección documental reproducible (Protocolo v1)
 ==================================================================================
 Captura snapshots verificables de las fuentes oficiales del Consejo de la
-Judicatura del Ecuador definidas en env/digitalShadow/scraping/sources_semilla.json.
+Judicatura del Ecuador definidas en storage/digitalShadow/scraping/sources_semilla.json.
 
 Cada corrida produce:
-  env/digitalShadow/scraping/<run_id>/<slug>.html     — snapshot de la fuente
-  env/digitalShadow/scraping/<run_id>/manifest.json   — URL, timestamp, bytes, SHA-256 por fuente
-y registra la corrida en env/data/bitacora.json (append-only, hash-encadenada).
+  storage/digitalShadow/scraping/<run_id>/<slug>.html     — snapshot de la fuente
+  storage/digitalShadow/scraping/<run_id>/manifest.json   — URL, timestamp, bytes, SHA-256 por fuente
+y registra la corrida en storage/data/bitacora.json (append-only, hash-encadenada).
 
 Reproducibilidad: otro investigador con este script + sources_semilla.json +
 la fecha de corte puede repetir la captura y comparar hashes.
 
 Uso:
-  python env/tools/scraper_cj.py                              # corrida con fecha de hoy
-  python env/tools/scraper_cj.py --fecha-corte 2026-07-02     # etiqueta la corrida
-  python env/tools/scraper_cj.py --ds-dir ./env/digitalShadow # raíz de Digital Shadow (default ./env/digitalShadow)
-  python env/tools/scraper_cj.py --data-dir ./env/data        # raíz de datos/bitácora (default ./env/data)
-  python env/tools/scraper_cj.py --verificar <run_id>         # re-hash de una corrida
+  python storage/digitalShadow/tools/scraper_cj.py                              # corrida con fecha de hoy
+  python storage/digitalShadow/tools/scraper_cj.py --fecha-corte 2026-07-02     # etiqueta la corrida
+  python storage/digitalShadow/tools/scraper_cj.py --ds-dir ./storage/digitalShadow # raíz de Digital Shadow (default ./storage/digitalShadow)
+  python storage/digitalShadow/tools/scraper_cj.py --data-dir ./storage/data        # raíz de datos/bitácora (default ./storage/data)
+  python storage/digitalShadow/tools/scraper_cj.py --verificar <run_id>         # re-hash de una corrida
 Solo stdlib — sin dependencias.
 """
 import argparse, hashlib, json, ssl, sys, time, urllib.request
@@ -141,8 +141,8 @@ def verificar(ds_dir: Path, run_id: str):
 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser(description="Captura reproducible de evidencia del ecosistema CJ")
-    ap.add_argument("--data-dir", default="./env/data", help="Raíz de datos/bitácora (default ./env/data)")
-    ap.add_argument("--ds-dir", default="./env/digitalShadow", help="Raíz de Digital Shadow / scraping (default ./env/digitalShadow)")
+    ap.add_argument("--data-dir", default="./storage/data", help="Raíz de datos/bitácora (default ./storage/data)")
+    ap.add_argument("--ds-dir", default="./storage/digitalShadow", help="Raíz de Digital Shadow / scraping (default ./storage/digitalShadow)")
     ap.add_argument("--fecha-corte", default="", help="Etiqueta YYYY-MM-DD de la corrida")
     ap.add_argument("--verificar", default="", metavar="RUN_ID", help="Verificar hashes de una corrida existente")
     a = ap.parse_args()

@@ -35,7 +35,7 @@ async function initSimulacionTab(){
     const [_, r] = await Promise.all([ simLoadThree(), fetch('/api/ontology?_='+Date.now()) ]);
     let data = await r.json();
     if(data.error || !data.nodes){
-      const r2 = await fetch('../../env/data/MALTG_ontology.json?_='+Date.now());
+      const r2 = await fetch('../../storage/data/MALTG_ontology.json?_='+Date.now());
       data = await r2.json();
     }
     simBuildScene(data);

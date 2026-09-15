@@ -67,7 +67,7 @@ const ITEMS = [
     num: "06", key: "workflow", title: "Workflow",
     desc: "Diagrama BPMN del flujo procesal COGEP (Sumario, Ordinario, Ejecución…) por expediente.",
     meta: "PROCESO BPMN", endpoint: "/api/workflow", href: "pages/workflow.html",
-    detail: "Parsea los JSON de workflow BPMN (env/data/workflow) y los representa como grafo de flujo procesal: etapas, actos y transiciones del procedimiento COGEP seleccionado.",
+    detail: "Parsea los JSON de workflow BPMN (storage/data/workflow) y los representa como grafo de flujo procesal: etapas, actos y transiciones del procedimiento COGEP seleccionado.",
     stats: [["FORMATO", "BPMN → grafo"], ["PROCESOS", "Sumario, Ordinario…"], ["FUENTE", "data/workflow/*.json"]]
   },
   {

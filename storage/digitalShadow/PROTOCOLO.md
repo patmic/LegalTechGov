@@ -49,7 +49,7 @@ un único entorno.
 - **En la app:** módulo *04 · Get Digital Shadow* → botón «Get» (ejecuta el scraping del dominio
   ingresado, captura evidencia y regenera su Digital Shadow), o tab *Bitácora · Evidencia* →
   «Capturar evidencia» para una corrida de snapshots independiente sobre las fuentes semilla vigentes.
-- **Fuera de la app (reproducción independiente):** `python env/tools/scraper_cj.py --fecha-corte YYYY-MM-DD`.
+- **Fuera de la app (reproducción independiente):** `python storage/digitalShadow/tools/scraper_cj.py --fecha-corte YYYY-MM-DD`.
 
 ## 7. Registro (bitácora)
 Toda corrida, verificación y decisión metodológica queda en `/data/bitacora.json`:
