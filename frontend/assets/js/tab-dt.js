@@ -144,24 +144,31 @@ function renderDT(data){
   });
 
   // Boxes
+  // dominioMALTG === 0 → el componente no ancla en ningún concepto de la
+  // ontología MALTG: se dibuja en gris y atenuado, para distinguir de un
+  // vistazo lo que el modelo cubre de lo que queda fuera de su dominio.
+  // Si el gemelo es anterior a esta bandera, el backend la calcula al leerlo;
+  // aun así, si faltara, se asume dentro del dominio (no se penaliza).
+  const GRIS = isDark ? '#5b6780' : '#9aa5b8';
   (data.services||[]).forEach(s=>{
-    const c=colors[s.colorType]||'#64748b';
+    const fuera = s.dominioMALTG === 0 || s.dominioMALTG === '0';
+    const c = fuera ? GRIS : (colors[s.colorType]||'#64748b');
     const sc=s.status==='active'?'#10e98c':'#ff4d6d';
     // ★ FIX: safely convert maltg_ref (may be array) to display string
     const refStr = maltgRefStr(s.maltg_ref).replace(/"/g,"'").replace(/</g,'&lt;');
     const desc   = (s.description||'').replace(/"/g,"'").replace(/</g,'&lt;');
-    const subtxt = isDark ? '#3d4f6e' : '#7a8db0';
-    h+=`<g class="dtb" style="cursor:pointer" filter="url(#dtg)"
-      data-desc="${desc}" data-maltg="${refStr}" data-col="${c}" data-lbl="${s.label}">
+    const subtxt = fuera ? GRIS : (isDark ? '#3d4f6e' : '#7a8db0');
+    h+=`<g class="dtb${fuera?' fuera-dominio':''}" style="cursor:pointer"${fuera?' opacity=".45"':' filter="url(#dtg)"'}
+      data-desc="${desc}" data-maltg="${refStr}" data-col="${c}" data-lbl="${s.label}" data-fuera="${fuera?1:0}">
       <rect x="${s.x+2}" y="${s.y+3}" width="${s.width}" height="${s.height}" rx="5" fill="${c}" opacity=".055"/>
       <rect x="${s.x}" y="${s.y}" width="${s.width}" height="${s.height}"
-        rx="5" fill="${boxFill}" stroke="${c}" stroke-width="1.2"/>
+        rx="5" fill="${boxFill}" stroke="${c}" stroke-width="1.2"${fuera?' stroke-dasharray="4,2"':''}/>
       <rect x="${s.x}" y="${s.y}" width="${s.width}" height="3" rx="5" fill="${c}" opacity=".75"/>
       <text x="${s.x+s.width/2}" y="${s.y+17}" text-anchor="middle"
         fill="${c}" font-size="8.5" font-family="JetBrains Mono" font-weight="600">${s.label}</text>
       <text x="${s.x+s.width/2}" y="${s.y+28}" text-anchor="middle"
         fill="${subtxt}" font-size="7" font-family="JetBrains Mono">${s.subtitle}</text>
-      <circle cx="${s.x+s.width-8}" cy="${s.y+10}" r="3" fill="${sc}" opacity=".8"/>
+      <circle cx="${s.x+s.width-8}" cy="${s.y+10}" r="3" fill="${fuera?GRIS:sc}" opacity=".8"/>
     </g>`;
   });
 

@@ -974,5 +974,59 @@
     ],
     "prev_hash": "4231c181a424db9e",
     "hash": "d3f1cc3dd924293b"
+  },
+  {
+    "id": 74,
+    "ts": "2026-09-15T04:44:41Z",
+    "tipo": "sistema",
+    "actor": "sistema/scraper",
+    "accion": "captura_evidencia",
+    "detalle": "Corrida DS_funcionjudicial_20260915_044433: 11/11 fuentes capturadas con snapshot + SHA-256.",
+    "refs": [
+      "DS_funcionjudicial_20260915_044433"
+    ],
+    "prev_hash": "d3f1cc3dd924293b",
+    "hash": "d7408382e81bdb19"
+  },
+  {
+    "id": 75,
+    "ts": "2026-09-15T04:44:41Z",
+    "tipo": "sistema",
+    "actor": "sistema/scraper",
+    "accion": "regeneracion_sdt_cj",
+    "detalle": "SDT_CJ.json regenerado (madurez 46/100); evidencia: DS_funcionjudicial_20260915_044433",
+    "refs": [
+      "DS_funcionjudicial_20260915_044433",
+      "SDT_CJ.json"
+    ],
+    "prev_hash": "d7408382e81bdb19",
+    "hash": "a5b777e31f5c5aa9"
+  },
+  {
+    "id": 76,
+    "ts": "2026-09-15T04:47:01Z",
+    "tipo": "sistema",
+    "actor": "sistema/scraper",
+    "accion": "captura_evidencia",
+    "detalle": "Corrida DS_corteconstitucional_20260915_044653: 11/11 fuentes capturadas con snapshot + SHA-256.",
+    "refs": [
+      "DS_corteconstitucional_20260915_044653"
+    ],
+    "prev_hash": "a5b777e31f5c5aa9",
+    "hash": "78bd077fa3e72d86"
+  },
+  {
+    "id": 77,
+    "ts": "2026-09-15T04:47:01Z",
+    "tipo": "sistema",
+    "actor": "sistema/scraper",
+    "accion": "regeneracion_sdt_cj",
+    "detalle": "SDT_CJ.json regenerado (madurez 46/100); evidencia: DS_corteconstitucional_20260915_044653",
+    "refs": [
+      "DS_corteconstitucional_20260915_044653",
+      "SDT_CJ.json"
+    ],
+    "prev_hash": "78bd077fa3e72d86",
+    "hash": "bd2ea3b12544c333"
   }
 ]

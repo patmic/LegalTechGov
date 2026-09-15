@@ -409,12 +409,53 @@ def _resolve_sdt_path(file: str = ""):
             return p
     return candidates[0] if candidates else DT_PATH
 
+# ─── Pertenencia al dominio de la ontología MALTG ─────────────────────────────
+def _onto_node_ids() -> set:
+    """Identificadores de los conceptos declarados en MALTG_ontology.
+    Es el universo contra el que se decide si un componente pertenece al dominio."""
+    try:
+        onto = parse_ontology()
+        return {n.get("id") for n in (onto.get("nodes") or []) if n.get("id")}
+    except Exception:
+        return set()
+
+def _refs_of(svc) -> list:
+    """maltg_ref normalizado a lista (el campo admite string o array)."""
+    ref = svc.get("maltg_ref", "")
+    if isinstance(ref, list):
+        return [r for r in ref if r]
+    return [ref] if ref else []
+
+def dominio_maltg(svc, onto_ids: set) -> int:
+    """1 si el componente está anclado al dominio de la ontología MALTG, 0 si no.
+
+    Criterio: al menos uno de sus `maltg_ref` corresponde a un concepto declarado
+    en MALTG_ontology. Un componente sin `maltg_ref`, o cuyos refs no existen en
+    la ontología, queda fuera del dominio (0) y se dibuja en gris en el tab 05."""
+    refs = _refs_of(svc)
+    if not refs:
+        return 0
+    if not onto_ids:
+        return 1              # sin ontología legible no se penaliza al componente
+    return 1 if any(r in onto_ids for r in refs) else 0
+
+def anotar_dominio_maltg(services, onto_ids=None) -> list:
+    """Escribe `dominioMALTG` en cada componente. Idempotente."""
+    ids = onto_ids if onto_ids is not None else _onto_node_ids()
+    for s in services or []:
+        s["dominioMALTG"] = dominio_maltg(s, ids)
+    return services
+
 def parse_dt(path=None):
     p = path or DT_PATH
     if not p.exists():
         return {"error": f"SDT no encontrado: {p}"}
     try:
         data = json.loads(p.read_text(encoding="utf-8"))
+        # Los gemelos generados ya traen la bandera; los anteriores a este cambio
+        # no, así que se calcula al vuelo para que el tab 05 los pinte igual.
+        if any("dominioMALTG" not in s for s in (data.get("services") or [])):
+            anotar_dominio_maltg(data.get("services"))
         data["hash"] = file_hash(p)
         data["_file"] = p.name
         return data
@@ -2019,10 +2060,176 @@ def _level_for(score, scale):
             return f'Nivel {it["level"]} · {it["name"]}'
     return "n/d"
 
+# ═══════════════════════════════════════════════════════════════════
+#  DESCUBRIMIENTO DE COMPONENTES OBSERVADOS (no previstos por el modelo)
+#  Lee los snapshots ya capturados de la corrida — no vuelve a la red, de
+#  modo que lo descubierto es reproducible a partir de la evidencia sellada
+#  con SHA-256. Todo lo que sale de aquí nace con maltg_ref vacío, luego
+#  dominioMALTG = 0, y el tab 05 lo dibuja en gris.
+# ═══════════════════════════════════════════════════════════════════
+
+# Firmas de plataforma: (etiqueta, subtítulo, regex, capa destino)
+TECH_SIGNATURES = [
+    ("WordPress",   "CMS acoplado",     r"wp-content|wp-includes",      "l_front"),
+    ("Elementor",   "Page builder",     r"elementor",                   "l_front"),
+    ("jQuery",      "JS heredado",      r"jquery[.\-/]",                "l_front"),
+    ("Bootstrap",   "Framework CSS",    r"bootstrap(\.min)?\.(css|js)", "l_front"),
+    ("Font Awesome","Iconografia",      r"font-?awesome",               "l_front"),
+    ("Google TM",   "Analitica 3os",    r"googletagmanager|gtag\(",     "l_front"),
+    ("reCAPTCHA",   "Anti-bot 3os",     r"recaptcha",                   "l_front"),
+    ("JSF",         "JavaServer Faces", r"\.jsf\b",                     "l_leg"),
+    ("PHP",         "Script heredado",  r"\.php\b",                     "l_leg"),
+    ("ASP.NET",     "Script heredado",  r"\.aspx\b",                    "l_leg"),
+]
+
+# Subdominios cuyo nombre sugiere integración/infraestructura, no cara al público
+_SUBDOM_INTEGRACION = ("intranet", "ms", "api", "ws", "fsweb", "sso", "ldap")
+
+def _dominio_registrable(host: str) -> str:
+    """funcionjudicial.gob.ec a partir de www.funcionjudicial.gob.ec (ccTLD de 2 niveles)."""
+    partes = (host or "").lower().split(".")
+    return ".".join(partes[-3:]) if len(partes) >= 3 else ".".join(partes)
+
+def _ya_modelado(token: str, services) -> bool:
+    """¿El modelo experto ya cubre este token? Compara con límite de palabra
+    contra id, etiqueta, subtítulo, descripción y evidencia de cada componente."""
+    if not token:
+        return True
+    rx = re.compile(r"\b" + re.escape(token.lower()) + r"\b")
+    for s in services:
+        blob = " ".join(str(s.get(k, "")) for k in
+                        ("id", "label", "subtitle", "description", "evidence")).lower()
+        if rx.search(blob):
+            return True
+    return False
+
+def _base_por_capa(layers, services):
+    """Para cada capa: (x de su columna, primer y libre bajo lo ya colocado)."""
+    PASO, ALTO = 90, 46
+    base = {}
+    for lay in layers:
+        x0, x1 = lay["x"], lay["x"] + lay["width"]
+        propios = [s for s in services if x0 <= s.get("x", -1) < x1]
+        col_x = (propios[0]["x"] if propios else x0 + 8)
+        tope = max((s["y"] + s.get("height", ALTO) for s in propios), default=lay["y"] + 54)
+        base[lay["id"]] = (col_x, tope + (PASO - ALTO))
+    return base
+
+def descubrir_componentes(services, layers, run_dir, base_url=""):
+    """Promueve a componente lo observado en los snapshots y no previsto por el
+    modelo experto: subdominios institucionales, entidades del Estado enlazadas
+    y firmas de plataforma. Devuelve (nuevos, informe)."""
+    informe = {"run": run_dir.name if run_dir else None, "snapshots": 0,
+               "subdominios": [], "entidades": [], "tecnologias": [], "sin_sitio": []}
+    if not run_dir or not run_dir.is_dir():
+        return [], informe
+
+    host_base = ""
+    try:
+        from urllib.parse import urlparse
+        host_base = (urlparse(base_url).hostname or "").lower()
+    except Exception:
+        pass
+    raiz = _dominio_registrable(host_base or "www.funcionjudicial.gob.ec")
+
+    hosts, blob = {}, []
+    for f in sorted(run_dir.glob("*.html")):
+        try:
+            html = f.read_text(encoding="utf-8", errors="ignore")
+        except Exception:
+            continue
+        informe["snapshots"] += 1
+        blob.append((f.stem, html))
+        for h in re.findall(r"https?://([A-Za-z0-9.\-]+)", html):
+            hosts.setdefault(h.lower(), f.stem)
+
+    # Hosts que el modelo ya cubre aunque su nombre no aparezca en las etiquetas:
+    # los destinos de CJ_TARGETS y las URL de las fuentes semilla. Sin esto,
+    # procesosjudiciales (= SATJE v4) o fsweb (= Portal Estadistica) se colarian
+    # como "descubiertos" cuando en realidad ya estan modelados.
+    hosts_modelados = set()
+    try:
+        from urllib.parse import urlparse as _up
+        urls = list(CJ_TARGETS.values()) + [s.get("url", "") for s in load_seeds()]
+        hosts_modelados = {(_up(u).hostname or "").lower() for u in urls if u}
+    except Exception:
+        pass
+
+    candidatos = []          # (tipo, token, label, subtitle, colorType, capa, evidencia)
+    for host, slug in sorted(hosts.items()):
+        if host in hosts_modelados:
+            continue
+        if not host.endswith(".gob.ec"):
+            continue                                   # solo dominio estatal ecuatoriano
+        etiqueta = host.split(".")[0]
+        if etiqueta == "www":
+            etiqueta = host.split(".")[1] if len(host.split(".")) > 1 else host
+        if host.endswith(raiz) and host != raiz and not host.startswith("www."):
+            capa = "l_leg" if etiqueta in _SUBDOM_INTEGRACION else "l_svc"
+            candidatos.append(("subdominio", etiqueta, etiqueta[:16], "Subdominio observado",
+                               "service", capa, f"{slug}: {host}"))
+        elif not host.endswith(raiz):
+            candidatos.append(("entidad", etiqueta, etiqueta[:16], "Entidad del Estado",
+                               "external", "l_ext", f"{slug}: {host}"))
+
+    texto = "\n".join(h for _, h in blob)
+    for label, sub, rx, capa in TECH_SIGNATURES:
+        if re.search(rx, texto, re.I):
+            slug = next((s for s, h in blob if re.search(rx, h, re.I)), "")
+            candidatos.append(("tecnologia", label, label, sub, "legacy", capa, f"{slug}: {label}"))
+
+    PASO = 90
+    base = _base_por_capa(layers, services)
+    usados = {k: 0 for k in base}
+    nuevos, vistos = [], set()
+    for tipo, token, label, sub, ct, capa, ev in candidatos:
+        clave = (tipo, token.lower())
+        if clave in vistos or _ya_modelado(token, services) or _ya_modelado(token, nuevos):
+            continue
+        vistos.add(clave)
+        col_x, y0 = base.get(capa, base[layers[0]["id"]])
+        x, y = col_x, y0 + PASO * usados.get(capa, 0)
+        usados[capa] = usados.get(capa, 0) + 1
+        nuevos.append({
+            "id": f"obs_{re.sub(r'[^a-z0-9]+', '_', token.lower())}",
+            "label": label, "subtitle": sub, "colorType": ct,
+            "x": x, "y": y, "width": 140, "height": 46,
+            "status": "observado", "maltg_ref": [], "dominioMALTG": 0,
+            "origen": "scraping", "tipo_hallazgo": tipo,
+            "description": f"Observado en los snapshots de la corrida; el modelo experto MALTG no lo contempla ({ev}).",
+            "evidence": ev, "dimension": "",
+        })
+        informe[{"subdominio": "subdominios", "entidad": "entidades",
+                 "tecnologia": "tecnologias"}[tipo]].append(token)
+
+    # El lienzo crece para que quepa todo lo observado: ningún hallazgo se
+    # descarta por falta de sitio (eso falsearía la cobertura declarada).
+    fondo = max((n["y"] + n["height"] for n in nuevos), default=0)
+    for lay in layers:
+        if fondo + 10 > lay["y"] + lay["height"]:
+            lay["height"] = fondo + 10 - lay["y"]
+    alto_canvas = max(l["y"] + l["height"] for l in layers) + 8
+    informe["canvas_height"] = alto_canvas
+    return nuevos, informe, alto_canvas
+
 def build_sdt_cj(scrape_report=None, evidence_run=None):
     """Construye el SDT_CJ JSON-LD; integra señales del scraping si están disponibles.
     `evidence_run` = id de la corrida de snapshots en /digitalShadow/scraping (trazabilidad)."""
     colorTypes, layers, services, connections, scale, dimensions, sources = _cj_model()
+    n_modelo = len(services)
+
+    # Componentes observados en los snapshots que el modelo experto no preveía.
+    # Se leen de la corrida indicada, o de la última disponible.
+    run_dir = _resolve_run(evidence_run or "")
+    base_url = (scrape_report or {}).get("base") or CJ_TARGETS["portal"]
+    descubiertos, informe_desc, alto_canvas = descubrir_componentes(services, layers, run_dir, base_url)
+    services = services + descubiertos
+
+    # Pertenencia al dominio de la ontología: cada componente queda marcado con
+    # dominioMALTG 1/0 según ancle o no en un concepto de MALTG_ontology.
+    onto_ids = _onto_node_ids()
+    anotar_dominio_maltg(services, onto_ids)
+    n_fuera = sum(1 for s in services if not s.get("dominioMALTG"))
 
     # Verificación en vivo: las señales del scraping confirman/ajustan la evidencia.
     verification = {}
@@ -2057,6 +2264,7 @@ def build_sdt_cj(scrape_report=None, evidence_run=None):
             "evidence":"sdt:evidence","findings":"sdt:findings","gaps":"sdt:gaps",
             "maltg_ref":{"@id":"maltg:mapsTo","@type":"@id"},
             "maltg_refs":{"@id":"maltg:mapsTo","@type":"@id"},
+            "dominioMALTG":"maltg:inDomain",
             "services":"sdt:hasComponent","connections":"sdt:hasFlow","dimensions":"sdt:hasDimension",
             "from":{"@id":"sdt:source","@type":"@id"},"to":{"@id":"sdt:target","@type":"@id"},
         },
@@ -2083,8 +2291,22 @@ def build_sdt_cj(scrape_report=None, evidence_run=None):
             "overall_score":overall,"overall_level":_level_for(overall, scale),"scale":scale,
             "dimensions_summary":[{"id":d["id"],"label":d["label"],"score":d["score"],"level":d["level"]} for d in dimensions],
         },
+        # Cobertura ontologica: cuantos componentes anclan en MALTG_ontology.
+        # `descubiertos` son los que aporta el scraping y el modelo no preveia:
+        # nacen sin maltg_ref, luego siempre caen fuera del dominio.
+        "dominio":{
+            "ontologia":"MALTG_ontology",
+            "criterio":"un componente pertenece al dominio si algun maltg_ref existe como concepto en la ontologia",
+            "componentes_total":len(services),
+            "componentes_modelo":n_modelo,
+            "componentes_descubiertos":len(descubiertos),
+            "en_dominio":len(services)-n_fuera,
+            "fuera_de_dominio":n_fuera,
+            "fuera_de_dominio_ids":[s["id"] for s in services if not s.get("dominioMALTG")],
+            "descubrimiento":informe_desc,
+        },
         "scrape_report": verification,
-        "canvas":{"width":1136,"height":706},
+        "canvas":{"width":1136,"height":max(706, alto_canvas)},
         "colorTypes":colorTypes,"layers":layers,"services":services,"connections":connections,
         "dimensions":dimensions,"sources":sources,
     }
@@ -2117,6 +2339,7 @@ def post_sdt_cj_scrape(base: str = ""):
     except Exception as e:
         rep.setdefault("errors", []).append(f"capture_evidence: {e}")
     try:
+        rep["base"] = base or CJ_TARGETS["portal"]   # el descubrimiento necesita el dominio auditado
         doc = build_sdt_cj(rep, evidence_run=evidence_run)
     except Exception as e:
         return {"error": f"build_sdt_cj fallo: {e}", "trace": traceback.format_exc()[-600:],

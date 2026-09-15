@@ -45,6 +45,42 @@ const delay  = ms => new Promise(r => setTimeout(r, ms));
 // para no tener que renombrar los ~90 sitios que ya lo llaman así).
 function wfEsc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
 
+// Word-wrap para etiquetas de SVG: <text> no salta de línea solo, así que hay
+// que partir el texto y emitir un <tspan> por línea. Devuelve SIEMPRE un array
+// (nunca vacío) para que el `.map(...)` del llamador no falle.
+//   wfWrap(texto, maxChars, maxLines) -> ["linea 1", "linea 2", …]
+// Lo usan tab-workflow.js (nodos y anotaciones BPMN) y tab-maltg.js (Foundation
+// Layer). Si el texto no cabe en maxLines se recorta con elipsis; las palabras
+// más largas que maxChars se parten con guion en vez de desbordar la caja.
+function wfWrap(text, maxChars, maxLines) {
+  const max = Math.max(1, parseInt(maxChars, 10) || 24);
+  const lim = Math.max(1, parseInt(maxLines, 10) || 3);
+  const t = String(text == null ? '' : text).replace(/\s+/g, ' ').trim();
+  if (!t) return [''];
+
+  const palabras = [];
+  t.split(' ').forEach(w => {
+    while (w.length > max) { palabras.push(w.slice(0, max - 1) + '-'); w = w.slice(max - 1); }
+    if (w) palabras.push(w);
+  });
+
+  const lineas = [];
+  let linea = '';
+  palabras.forEach(w => {
+    if (!linea) linea = w;
+    else if (linea.length + 1 + w.length <= max) linea += ' ' + w;
+    else { lineas.push(linea); linea = w; }
+  });
+  if (linea) lineas.push(linea);
+  if (!lineas.length) return [''];
+  if (lineas.length <= lim) return lineas;
+
+  const cortadas = lineas.slice(0, lim);
+  const ultima = cortadas[lim - 1];
+  cortadas[lim - 1] = (ultima.length > max - 1 ? ultima.slice(0, max - 1) : ultima) + '…';
+  return cortadas;
+}
+
 // Colores por capa de gobernanza (ontología MALTG) — usados por Ontología y Simulación 3D.
 const LAYER_COLOR = {
   core: '#00e5ff', togaf: '#00e5ff', cobit: '#ffc947',

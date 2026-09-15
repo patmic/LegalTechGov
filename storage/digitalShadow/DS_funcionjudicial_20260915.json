@@ -21,6 +21,7 @@
       "@id": "maltg:mapsTo",
       "@type": "@id"
     },
+    "dominioMALTG": "maltg:inDomain",
     "services": "sdt:hasComponent",
     "connections": "sdt:hasFlow",
     "dimensions": "sdt:hasDimension",
@@ -42,7 +43,7 @@
     "subject": "Consejo de la Judicatura del Ecuador (funcionjudicial.gob.ec)",
     "auditor": "Auditor Principal de Arquitectura de Software / Consultor Senior LegalTech Governance",
     "method": "Web scraping + analisis multidimensional contra MALTG_ontology.owl",
-    "generated": "2026-09-15T02:37:06Z",
+    "generated": "2026-09-15T04:44:41Z",
     "maltg_compliance": "MALTG v4.1 · TOGAF · COBIT · NIST CSF · ISO 37001 · GDPR/eIDAS",
     "ontology_source": "/data/MALTG_ontology.owl",
     "primary_source": "https://www.funcionjudicial.gob.ec/",
@@ -51,7 +52,7 @@
       "documento": "/digitalShadow/PROTOCOLO.md",
       "semillas": "/digitalShadow/scraping/sources_semilla.json",
       "user_agent": "MALTG-SDT-Auditor/1.0 (+legaltech-governance-scraper; protocolo v1)",
-      "evidence_run": "DS_funcionjudicial_20260915_023657",
+      "evidence_run": "DS_funcionjudicial_20260915_044433",
       "fases": [
         "identificacion",
         "captura (snapshot + SHA-256)",
@@ -59,11 +60,11 @@
         "codificacion contra rubrica"
       ]
     },
-    "self_hash": "sha256:720e3e82e972768c",
+    "self_hash": "sha256:896e825cccc63b98",
     "domain": "funcionjudicial",
     "scraping_target": "https://www.funcionjudicial.gob.ec/",
-    "evidence_run": "DS_funcionjudicial_20260915_023657",
-    "evidence_dir": "/digitalShadow/scraping/DS_funcionjudicial_20260915_023657"
+    "evidence_run": "DS_funcionjudicial_20260915_044433",
+    "evidence_dir": "/digitalShadow/scraping/DS_funcionjudicial_20260915_044433"
   },
   "maturity": {
     "overall_score": 46,
@@ -127,8 +128,65 @@
       }
     ]
   },
+  "dominio": {
+    "ontologia": "MALTG_ontology",
+    "criterio": "un componente pertenece al dominio si algun maltg_ref existe como concepto en la ontologia",
+    "componentes_total": 51,
+    "componentes_modelo": 34,
+    "componentes_descubiertos": 17,
+    "en_dominio": 34,
+    "fuera_de_dominio": 17,
+    "fuera_de_dominio_ids": [
+      "obs_app",
+      "obs_apps",
+      "obs_appsj",
+      "obs_intranet",
+      "obs_ms",
+      "obs_satje_externo",
+      "obs_solicitudescj",
+      "obs_codigopostal",
+      "obs_compraspublicas",
+      "obs_cortenacional",
+      "obs_defensoria",
+      "obs_icert",
+      "obs_presidencia",
+      "obs_registrocivil",
+      "obs_bootstrap",
+      "obs_font_awesome",
+      "obs_google_tm"
+    ],
+    "descubrimiento": {
+      "run": "DS_funcionjudicial_20260915_044433",
+      "snapshots": 11,
+      "subdominios": [
+        "app",
+        "apps",
+        "appsj",
+        "intranet",
+        "ms",
+        "satje-externo",
+        "solicitudescj"
+      ],
+      "entidades": [
+        "codigopostal",
+        "compraspublicas",
+        "cortenacional",
+        "defensoria",
+        "icert",
+        "presidencia",
+        "registrocivil"
+      ],
+      "tecnologias": [
+        "Bootstrap",
+        "Font Awesome",
+        "Google TM"
+      ],
+      "sin_sitio": [],
+      "canvas_height": 1064
+    }
+  },
   "scrape_report": {
-    "scanned_at": "2026-09-15T02:36:55Z",
+    "scanned_at": "2026-09-15T04:44:32Z",
     "online": true,
     "wordpress_elementor_confirmado": true,
     "enlaces_legacy_jsf": 6,
@@ -144,7 +202,7 @@
         "status": 200,
         "ok": true,
         "bytes": 399779,
-        "ms": 689,
+        "ms": 441,
         "generator": ""
       },
       "satje_spa": {
@@ -152,7 +210,7 @@
         "status": 200,
         "ok": true,
         "bytes": 79412,
-        "ms": 251,
+        "ms": 188,
         "generator": ""
       },
       "esatje": {
@@ -160,7 +218,7 @@
         "status": 200,
         "ok": true,
         "bytes": 399797,
-        "ms": 436,
+        "ms": 307,
         "generator": ""
       },
       "estadistica": {
@@ -168,22 +226,22 @@
         "status": 200,
         "ok": true,
         "bytes": 34199,
-        "ms": 161,
+        "ms": 153,
         "generator": ""
       },
       "iso37001": {
         "url": "https://www.funcionjudicial.gob.ec/sistema-de-gestion-antisoborno-de-acuerdo-a-la-norma-iso-37001/",
         "status": 200,
         "ok": true,
-        "bytes": 363952,
-        "ms": 641,
+        "bytes": 363918,
+        "ms": 330,
         "generator": ""
       }
     }
   },
   "canvas": {
     "width": 1136,
-    "height": 706
+    "height": 1064
   },
   "colorTypes": {
     "external": "#ff9a3c",
@@ -202,7 +260,7 @@
       "x": 8,
       "y": 8,
       "width": 120,
-      "height": 690,
+      "height": 1048,
       "fill": "#0a1020"
     },
     {
@@ -211,7 +269,7 @@
       "x": 136,
       "y": 8,
       "width": 152,
-      "height": 690,
+      "height": 1048,
       "fill": "#0a1018"
     },
     {
@@ -220,7 +278,7 @@
       "x": 296,
       "y": 8,
       "width": 152,
-      "height": 690,
+      "height": 1048,
       "fill": "#160a12"
     },
     {
@@ -229,7 +287,7 @@
       "x": 456,
       "y": 8,
       "width": 152,
-      "height": 690,
+      "height": 1048,
       "fill": "#100a1a"
     },
     {
@@ -238,7 +296,7 @@
       "x": 616,
       "y": 8,
       "width": 164,
-      "height": 690,
+      "height": 1048,
       "fill": "#081820"
     },
     {
@@ -247,7 +305,7 @@
       "x": 788,
       "y": 8,
       "width": 172,
-      "height": 690,
+      "height": 1048,
       "fill": "#081020"
     },
     {
@@ -256,7 +314,7 @@
       "x": 968,
       "y": 8,
       "width": 160,
-      "height": 690,
+      "height": 1048,
       "fill": "#1a1608"
     }
   ],
@@ -276,7 +334,8 @@
       ],
       "description": "Ciudadano que consulta causas y tramites via portal y SATJE.",
       "evidence": "",
-      "dimension": ""
+      "dimension": "",
+      "dominioMALTG": 1
     },
     {
       "id": "abogado",
@@ -294,7 +353,8 @@
       ],
       "description": "Profesional que opera e-SATJE con firma electronica.",
       "evidence": "",
-      "dimension": ""
+      "dimension": "",
+      "dominioMALTG": 1
     },
     {
       "id": "interop_ent",
@@ -312,7 +372,8 @@
       ],
       "description": "Otras entidades de la Funcion Judicial; codigo fuente SATJE entregado al TCE (2024).",
       "evidence": "TCE recibe codigo SATJE (2024)",
-      "dimension": "D2"
+      "dimension": "D2",
+      "dominioMALTG": 1
     },
     {
       "id": "portal_wp",
@@ -329,7 +390,8 @@
       ],
       "description": "Portal publico sobre WordPress + Elementor (PHP/jQuery, CMS acoplado).",
       "evidence": "meta-generator Elementor",
-      "dimension": "D2"
+      "dimension": "D2",
+      "dominioMALTG": 1
     },
     {
       "id": "satje_spa",
@@ -347,7 +409,8 @@
       ],
       "description": "Consulta de Procesos SATJE v4.0.1: SPA moderna desacoplada.",
       "evidence": "SPA v4.0.1",
-      "dimension": "D2"
+      "dimension": "D2",
+      "dominioMALTG": 1
     },
     {
       "id": "esatje",
@@ -366,7 +429,8 @@
       ],
       "description": "Oficina de Gestion Judicial Electronica (e-SATJE 2020), 24/7.",
       "evidence": "e-SATJE 2020",
-      "dimension": "D2"
+      "dimension": "D2",
+      "dominioMALTG": 1
     },
     {
       "id": "supa",
@@ -383,7 +447,8 @@
       ],
       "description": "Sistema Unico de Pensiones Alimenticias.",
       "evidence": "",
-      "dimension": ""
+      "dimension": "",
+      "dominioMALTG": 1
     },
     {
       "id": "serv_linea",
@@ -400,7 +465,8 @@
       ],
       "description": "Hub que enlaza aplicaciones heredadas y modernas.",
       "evidence": "",
-      "dimension": ""
+      "dimension": "",
+      "dominioMALTG": 1
     },
     {
       "id": "jsf_remates",
@@ -417,7 +483,8 @@
       ],
       "description": "Remates Judiciales sobre JavaServer Faces (portal.jsf).",
       "evidence": "remates portal.jsf",
-      "dimension": "D2"
+      "dimension": "D2",
+      "dominioMALTG": 1
     },
     {
       "id": "jsf_dir",
@@ -434,7 +501,8 @@
       ],
       "description": "Directorio telefonico sobre JSF (directorio.jsf).",
       "evidence": "directorio.jsf",
-      "dimension": "D2"
+      "dimension": "D2",
+      "dominioMALTG": 1
     },
     {
       "id": "php_siscadep",
@@ -451,7 +519,8 @@
       ],
       "description": "Guia de Servicios sobre PHP heredado (frmConsultaExterna.php).",
       "evidence": "siscadep .php",
-      "dimension": "D2"
+      "dimension": "D2",
+      "dominioMALTG": 1
     },
     {
       "id": "citaciones",
@@ -468,7 +537,8 @@
       ],
       "description": "Consulta de Citaciones Judiciales.",
       "evidence": "",
-      "dimension": ""
+      "dimension": "",
+      "dominioMALTG": 1
     },
     {
       "id": "biometrico",
@@ -486,7 +556,8 @@
       ],
       "description": "Sistema biometrico institucional.",
       "evidence": "",
-      "dimension": ""
+      "dimension": "",
+      "dominioMALTG": 1
     },
     {
       "id": "gestion_doc",
@@ -504,7 +575,8 @@
       ],
       "description": "Sistema de gestion documental institucional.",
       "evidence": "",
-      "dimension": ""
+      "dimension": "",
+      "dominioMALTG": 1
     },
     {
       "id": "concursos",
@@ -521,7 +593,8 @@
       ],
       "description": "Sistema de Concursos para meritocracia judicial.",
       "evidence": "",
-      "dimension": ""
+      "dimension": "",
+      "dominioMALTG": 1
     },
     {
       "id": "mediacion",
@@ -538,7 +611,8 @@
       ],
       "description": "Centro Nacional de Mediacion.",
       "evidence": "",
-      "dimension": ""
+      "dimension": "",
+      "dominioMALTG": 1
     },
     {
       "id": "exp_disc",
@@ -557,7 +631,8 @@
       ],
       "description": "Expedientes/resoluciones disciplinarias (COFJ); automatizacion parcial.",
       "evidence": "Portal expedientes disc.",
-      "dimension": "D4"
+      "dimension": "D4",
+      "dominioMALTG": 1
     },
     {
       "id": "escuela",
@@ -574,7 +649,8 @@
       ],
       "description": "Escuela de la Funcion Judicial.",
       "evidence": "",
-      "dimension": ""
+      "dimension": "",
+      "dominioMALTG": 1
     },
     {
       "id": "estadistica",
@@ -592,7 +668,8 @@
       ],
       "description": "Portal de Estadisticas Judiciales (HTML/descargas), no Linked Data.",
       "evidence": "portalestadistica.html",
-      "dimension": "D1"
+      "dimension": "D1",
+      "dominioMALTG": 1
     },
     {
       "id": "datos_abiertos",
@@ -611,7 +688,8 @@
       ],
       "description": "Participacion en datosabiertos.gob.ec (CKAN/DCAT), sin JSON-LD judicial propio.",
       "evidence": "datosabiertos.gob.ec/cj",
-      "dimension": "D1"
+      "dimension": "D1",
+      "dominioMALTG": 1
     },
     {
       "id": "justicia_abierta",
@@ -629,7 +707,8 @@
       ],
       "description": "Portal unico de datos abiertos 'Justicia Abierta', en construccion.",
       "evidence": "Portal Justicia Abierta",
-      "dimension": "D1"
+      "dimension": "D1",
+      "dominioMALTG": 1
     },
     {
       "id": "bdd_jur",
@@ -647,7 +726,8 @@
       ],
       "description": "Repositorio que integra datos jurisdiccionales/operativos diarios.",
       "evidence": "",
-      "dimension": "D1"
+      "dimension": "D1",
+      "dominioMALTG": 1
     },
     {
       "id": "semantic_layer",
@@ -667,7 +747,8 @@
       ],
       "description": "AUSENTE: sin ontologias/Linked Data/JSON-LD/FAIR judicial. Oportunidad MALTG.",
       "evidence": "Sin Web Semantica publica",
-      "dimension": "D1"
+      "dimension": "D1",
+      "dominioMALTG": 1
     },
     {
       "id": "dt_judicial",
@@ -686,7 +767,8 @@
       ],
       "description": "AUSENTE: sin facilidades para Gemelos Digitales Judiciales.",
       "evidence": "Sin Digital Twins",
-      "dimension": "D1"
+      "dimension": "D1",
+      "dominioMALTG": 1
     },
     {
       "id": "iso37001",
@@ -706,7 +788,8 @@
       ],
       "description": "Sistema de Gestion Antisoborno ISO 37001 (Resol. CJ-DG-2025-049).",
       "evidence": "CJ-DG-2025-049",
-      "dimension": "D4"
+      "dimension": "D4",
+      "dominioMALTG": 1
     },
     {
       "id": "compliance_jud",
@@ -724,7 +807,8 @@
       ],
       "description": "Modelo de Gestion para el Compliance Judicial (documento).",
       "evidence": "Modelo Compliance Judicial",
-      "dimension": "D4"
+      "dimension": "D4",
+      "dominioMALTG": 1
     },
     {
       "id": "sist_disc",
@@ -743,7 +827,8 @@
       ],
       "description": "Modernizacion del sistema disciplinario con plataforma de ultima generacion.",
       "evidence": "Modernizacion disciplinario",
-      "dimension": "D4"
+      "dimension": "D4",
+      "dominioMALTG": 1
     },
     {
       "id": "denuncias",
@@ -760,7 +845,8 @@
       ],
       "description": "Canales de Denuncias de Actos de Corrupcion.",
       "evidence": "",
-      "dimension": "D4"
+      "dimension": "D4",
+      "dominioMALTG": 1
     },
     {
       "id": "plan_integridad",
@@ -778,7 +864,8 @@
       ],
       "description": "Adhesion al Plan Nacional de Integridad Publica 2024-2028.",
       "evidence": "Plan Integridad 2024-2028",
-      "dimension": "D4"
+      "dimension": "D4",
+      "dominioMALTG": 1
     },
     {
       "id": "lotaip",
@@ -797,7 +884,8 @@
       ],
       "description": "Portal de transparencia LOTAIP y rendicion de cuentas.",
       "evidence": "",
-      "dimension": ""
+      "dimension": "",
+      "dominioMALTG": 1
     },
     {
       "id": "plan_estr",
@@ -816,7 +904,8 @@
       ],
       "description": "Plan Estrategico 2026-2031 aprobado por el Pleno.",
       "evidence": "Pleno aprueba PE 2026-2031",
-      "dimension": "D3"
+      "dimension": "D3",
+      "dominioMALTG": 1
     },
     {
       "id": "eje_digital",
@@ -835,7 +924,8 @@
       ],
       "description": "Eje 'Transformacion digital e innovacion tecnologica' del PE.",
       "evidence": "Eje transf. digital",
-      "dimension": "D3"
+      "dimension": "D3",
+      "dominioMALTG": 1
     },
     {
       "id": "plan_inv",
@@ -853,7 +943,8 @@
       ],
       "description": "Plan Anual y Plurianual de Inversion 2026-2029.",
       "evidence": "Plan Inversion 2026-2029",
-      "dimension": "D3"
+      "dimension": "D3",
+      "dominioMALTG": 1
     },
     {
       "id": "infra_obsoleta",
@@ -871,7 +962,314 @@
       ],
       "description": "Brecha critica: ~90% de la infraestructura tecnologica obsoleta.",
       "evidence": "90% infra obsoleta",
-      "dimension": "D3"
+      "dimension": "D3",
+      "dominioMALTG": 1
+    },
+    {
+      "id": "obs_app",
+      "label": "app",
+      "subtitle": "Subdominio observado",
+      "colorType": "service",
+      "x": 464,
+      "y": 530,
+      "width": 140,
+      "height": 46,
+      "status": "observado",
+      "maltg_ref": [],
+      "dominioMALTG": 0,
+      "origen": "scraping",
+      "tipo_hallazgo": "subdominio",
+      "description": "Observado en los snapshots de la corrida; el modelo experto MALTG no lo contempla (esatje_ogje: app.funcionjudicial.gob.ec).",
+      "evidence": "esatje_ogje: app.funcionjudicial.gob.ec",
+      "dimension": ""
+    },
+    {
+      "id": "obs_apps",
+      "label": "apps",
+      "subtitle": "Subdominio observado",
+      "colorType": "service",
+      "x": 464,
+      "y": 620,
+      "width": 140,
+      "height": 46,
+      "status": "observado",
+      "maltg_ref": [],
+      "dominioMALTG": 0,
+      "origen": "scraping",
+      "tipo_hallazgo": "subdominio",
+      "description": "Observado en los snapshots de la corrida; el modelo experto MALTG no lo contempla (esatje_ogje: apps.funcionjudicial.gob.ec).",
+      "evidence": "esatje_ogje: apps.funcionjudicial.gob.ec",
+      "dimension": ""
+    },
+    {
+      "id": "obs_appsj",
+      "label": "appsj",
+      "subtitle": "Subdominio observado",
+      "colorType": "service",
+      "x": 464,
+      "y": 710,
+      "width": 140,
+      "height": 46,
+      "status": "observado",
+      "maltg_ref": [],
+      "dominioMALTG": 0,
+      "origen": "scraping",
+      "tipo_hallazgo": "subdominio",
+      "description": "Observado en los snapshots de la corrida; el modelo experto MALTG no lo contempla (esatje_ogje: appsj.funcionjudicial.gob.ec).",
+      "evidence": "esatje_ogje: appsj.funcionjudicial.gob.ec",
+      "dimension": ""
+    },
+    {
+      "id": "obs_intranet",
+      "label": "intranet",
+      "subtitle": "Subdominio observado",
+      "colorType": "service",
+      "x": 304,
+      "y": 530,
+      "width": 140,
+      "height": 46,
+      "status": "observado",
+      "maltg_ref": [],
+      "dominioMALTG": 0,
+      "origen": "scraping",
+      "tipo_hallazgo": "subdominio",
+      "description": "Observado en los snapshots de la corrida; el modelo experto MALTG no lo contempla (esatje_ogje: intranet.funcionjudicial.gob.ec).",
+      "evidence": "esatje_ogje: intranet.funcionjudicial.gob.ec",
+      "dimension": ""
+    },
+    {
+      "id": "obs_ms",
+      "label": "ms",
+      "subtitle": "Subdominio observado",
+      "colorType": "service",
+      "x": 304,
+      "y": 620,
+      "width": 140,
+      "height": 46,
+      "status": "observado",
+      "maltg_ref": [],
+      "dominioMALTG": 0,
+      "origen": "scraping",
+      "tipo_hallazgo": "subdominio",
+      "description": "Observado en los snapshots de la corrida; el modelo experto MALTG no lo contempla (esatje_ogje: ms.funcionjudicial.gob.ec).",
+      "evidence": "esatje_ogje: ms.funcionjudicial.gob.ec",
+      "dimension": ""
+    },
+    {
+      "id": "obs_satje_externo",
+      "label": "satje-externo",
+      "subtitle": "Subdominio observado",
+      "colorType": "service",
+      "x": 464,
+      "y": 800,
+      "width": 140,
+      "height": 46,
+      "status": "observado",
+      "maltg_ref": [],
+      "dominioMALTG": 0,
+      "origen": "scraping",
+      "tipo_hallazgo": "subdominio",
+      "description": "Observado en los snapshots de la corrida; el modelo experto MALTG no lo contempla (esatje_ogje: satje-externo.funcionjudicial.gob.ec).",
+      "evidence": "esatje_ogje: satje-externo.funcionjudicial.gob.ec",
+      "dimension": ""
+    },
+    {
+      "id": "obs_solicitudescj",
+      "label": "solicitudescj",
+      "subtitle": "Subdominio observado",
+      "colorType": "service",
+      "x": 464,
+      "y": 890,
+      "width": 140,
+      "height": 46,
+      "status": "observado",
+      "maltg_ref": [],
+      "dominioMALTG": 0,
+      "origen": "scraping",
+      "tipo_hallazgo": "subdominio",
+      "description": "Observado en los snapshots de la corrida; el modelo experto MALTG no lo contempla (portal_cj: solicitudescj.funcionjudicial.gob.ec).",
+      "evidence": "portal_cj: solicitudescj.funcionjudicial.gob.ec",
+      "dimension": ""
+    },
+    {
+      "id": "obs_codigopostal",
+      "label": "codigopostal",
+      "subtitle": "Entidad del Estado",
+      "colorType": "external",
+      "x": 16,
+      "y": 460,
+      "width": 140,
+      "height": 46,
+      "status": "observado",
+      "maltg_ref": [],
+      "dominioMALTG": 0,
+      "origen": "scraping",
+      "tipo_hallazgo": "entidad",
+      "description": "Observado en los snapshots de la corrida; el modelo experto MALTG no lo contempla (portal_cj: www.codigopostal.gob.ec).",
+      "evidence": "portal_cj: www.codigopostal.gob.ec",
+      "dimension": ""
+    },
+    {
+      "id": "obs_compraspublicas",
+      "label": "compraspublicas",
+      "subtitle": "Entidad del Estado",
+      "colorType": "external",
+      "x": 16,
+      "y": 550,
+      "width": 140,
+      "height": 46,
+      "status": "observado",
+      "maltg_ref": [],
+      "dominioMALTG": 0,
+      "origen": "scraping",
+      "tipo_hallazgo": "entidad",
+      "description": "Observado en los snapshots de la corrida; el modelo experto MALTG no lo contempla (iso37001_sgas: www.compraspublicas.gob.ec).",
+      "evidence": "iso37001_sgas: www.compraspublicas.gob.ec",
+      "dimension": ""
+    },
+    {
+      "id": "obs_cortenacional",
+      "label": "cortenacional",
+      "subtitle": "Entidad del Estado",
+      "colorType": "external",
+      "x": 16,
+      "y": 640,
+      "width": 140,
+      "height": 46,
+      "status": "observado",
+      "maltg_ref": [],
+      "dominioMALTG": 0,
+      "origen": "scraping",
+      "tipo_hallazgo": "entidad",
+      "description": "Observado en los snapshots de la corrida; el modelo experto MALTG no lo contempla (portal_cj: www.cortenacional.gob.ec).",
+      "evidence": "portal_cj: www.cortenacional.gob.ec",
+      "dimension": ""
+    },
+    {
+      "id": "obs_defensoria",
+      "label": "defensoria",
+      "subtitle": "Entidad del Estado",
+      "colorType": "external",
+      "x": 16,
+      "y": 730,
+      "width": 140,
+      "height": 46,
+      "status": "observado",
+      "maltg_ref": [],
+      "dominioMALTG": 0,
+      "origen": "scraping",
+      "tipo_hallazgo": "entidad",
+      "description": "Observado en los snapshots de la corrida; el modelo experto MALTG no lo contempla (portal_cj: www.defensoria.gob.ec).",
+      "evidence": "portal_cj: www.defensoria.gob.ec",
+      "dimension": ""
+    },
+    {
+      "id": "obs_icert",
+      "label": "icert",
+      "subtitle": "Entidad del Estado",
+      "colorType": "external",
+      "x": 16,
+      "y": 820,
+      "width": 140,
+      "height": 46,
+      "status": "observado",
+      "maltg_ref": [],
+      "dominioMALTG": 0,
+      "origen": "scraping",
+      "tipo_hallazgo": "entidad",
+      "description": "Observado en los snapshots de la corrida; el modelo experto MALTG no lo contempla (esatje_ogje: www.icert.fje.gob.ec).",
+      "evidence": "esatje_ogje: www.icert.fje.gob.ec",
+      "dimension": ""
+    },
+    {
+      "id": "obs_presidencia",
+      "label": "presidencia",
+      "subtitle": "Entidad del Estado",
+      "colorType": "external",
+      "x": 16,
+      "y": 910,
+      "width": 140,
+      "height": 46,
+      "status": "observado",
+      "maltg_ref": [],
+      "dominioMALTG": 0,
+      "origen": "scraping",
+      "tipo_hallazgo": "entidad",
+      "description": "Observado en los snapshots de la corrida; el modelo experto MALTG no lo contempla (ckan_datosabiertos_cj: www.presidencia.gob.ec).",
+      "evidence": "ckan_datosabiertos_cj: www.presidencia.gob.ec",
+      "dimension": ""
+    },
+    {
+      "id": "obs_registrocivil",
+      "label": "registrocivil",
+      "subtitle": "Entidad del Estado",
+      "colorType": "external",
+      "x": 16,
+      "y": 1000,
+      "width": 140,
+      "height": 46,
+      "status": "observado",
+      "maltg_ref": [],
+      "dominioMALTG": 0,
+      "origen": "scraping",
+      "tipo_hallazgo": "entidad",
+      "description": "Observado en los snapshots de la corrida; el modelo experto MALTG no lo contempla (portal_cj: www.registrocivil.gob.ec).",
+      "evidence": "portal_cj: www.registrocivil.gob.ec",
+      "dimension": ""
+    },
+    {
+      "id": "obs_bootstrap",
+      "label": "Bootstrap",
+      "subtitle": "Framework CSS",
+      "colorType": "legacy",
+      "x": 144,
+      "y": 520,
+      "width": 140,
+      "height": 46,
+      "status": "observado",
+      "maltg_ref": [],
+      "dominioMALTG": 0,
+      "origen": "scraping",
+      "tipo_hallazgo": "tecnologia",
+      "description": "Observado en los snapshots de la corrida; el modelo experto MALTG no lo contempla (ckan_datosabiertos_cj: Bootstrap).",
+      "evidence": "ckan_datosabiertos_cj: Bootstrap",
+      "dimension": ""
+    },
+    {
+      "id": "obs_font_awesome",
+      "label": "Font Awesome",
+      "subtitle": "Iconografia",
+      "colorType": "legacy",
+      "x": 144,
+      "y": 610,
+      "width": 140,
+      "height": 46,
+      "status": "observado",
+      "maltg_ref": [],
+      "dominioMALTG": 0,
+      "origen": "scraping",
+      "tipo_hallazgo": "tecnologia",
+      "description": "Observado en los snapshots de la corrida; el modelo experto MALTG no lo contempla (ckan_datosabiertos_cj: Font Awesome).",
+      "evidence": "ckan_datosabiertos_cj: Font Awesome",
+      "dimension": ""
+    },
+    {
+      "id": "obs_google_tm",
+      "label": "Google TM",
+      "subtitle": "Analitica 3os",
+      "colorType": "legacy",
+      "x": 144,
+      "y": 700,
+      "width": 140,
+      "height": 46,
+      "status": "observado",
+      "maltg_ref": [],
+      "dominioMALTG": 0,
+      "origen": "scraping",
+      "tipo_hallazgo": "tecnologia",
+      "description": "Observado en los snapshots de la corrida; el modelo experto MALTG no lo contempla (ckan_datosabiertos_cj: Google TM).",
+      "evidence": "ckan_datosabiertos_cj: Google TM",
+      "dimension": ""
     }
   ],
   "connections": [
