@@ -17,7 +17,7 @@
   },
   "@id": "maltg:MultidimensionalArchitecture",
   "@type": "Architecture",
-  "title": "Multidimensional Architecture Model for LegalTech Governance",
+  "title": "Model for LegalTech Governance",
   "layers": [
     {
       "@id": "maltg:StrategicLayer",

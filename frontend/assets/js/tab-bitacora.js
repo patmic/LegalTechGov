@@ -17,7 +17,7 @@ async function initBitacoraTab(){
         const resumen = p.text.split('\n').filter(l=>l.startsWith('## ')).map(l=>l.replace('## ','')).join(' · ');
         document.getElementById('ev-protocolo').innerHTML =
           '<b style="color:var(--t2)">Fases y secciones:</b> '+bitEsc(resumen)+
-          ' — documento completo en <span class="src-file">/data/evidence/PROTOCOLO.md</span>';
+          ' — documento completo en <span class="src-file">'+bitEsc(p.path||'/digitalShadow/PROTOCOLO.md')+'</span>';
       }
     }catch(e){ /* protocolo opcional */ }
   }

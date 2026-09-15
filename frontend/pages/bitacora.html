@@ -58,9 +58,9 @@ window.addEventListener('DOMContentLoaded',()=>{ if(!window.vis){ const s=docume
       </div>
     </div>
     <div class="src-bar">
-      <span>Protocolo:</span><span class="src-file" style="color:var(--gold)">/data/evidence/PROTOCOLO.md</span>
+      <span>Protocolo:</span><span class="src-file" style="color:var(--gold)">/digitalShadow/PROTOCOLO.md</span>
       <span class="vsep">·</span>
-      <span>Semillas:</span><span class="src-file">/data/evidence/sources_semilla.json</span>
+      <span>Semillas:</span><span class="src-file">/digitalShadow/scraping/sources_semilla.json</span>
       <span class="vsep">·</span>
       <span>Bitácora:</span><span class="src-file">/data/bitacora.json</span>
     </div>
@@ -79,7 +79,7 @@ window.addEventListener('DOMContentLoaded',()=>{ if(!window.vis){ const s=docume
       </button>
       <select id="ev-run-sel" class="app-select" onchange="loadEvidenceManifest(this.value)"></select>
       <span id="ev-status" style="font-family:var(--font-mono);font-size:.66rem;color:var(--t3)">
-        Cada captura guarda snapshots HTML + manifest con SHA-256 en /data/evidence/&lt;corrida&gt;/ y se asienta en la bitácora.
+        Cada captura guarda snapshots HTML + manifest con SHA-256 en /digitalShadow/scraping/&lt;corrida&gt;/ y se asienta en la bitácora.
       </span>
     </div>
     <div id="ev-protocolo" style="padding:0 1.1rem .9rem;font-size:.7rem;color:var(--t3);line-height:1.55"></div>

@@ -28,17 +28,39 @@ app = FastAPI(
 )
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["GET"], allow_headers=["*"])
 
+# ── Sin caché para el frontend estático (dashboard.css/tab-*.js/páginas) ──
+# El frontend se sirve montado en vivo (./frontend:/frontend:ro, ver
+# docker-compose.yml) para poder editar sin rebuild; sin esta cabecera el
+# navegador puede quedarse con una copia vieja en caché de un .js/.css tras
+# una edición (ej. un botón/ícono que "deja de funcionar" aunque el código
+# ya esté corregido en disco) y requerir un hard-refresh manual.
+@app.middleware("http")
+async def _no_cache_frontend(request, call_next):
+    response = await call_next(request)
+    path = request.url.path
+    if not path.startswith("/api/") and (
+        path == "/" or path.endswith((".html", ".js", ".css", ".mjs"))
+    ):
+        response.headers["Cache-Control"] = "no-cache, must-revalidate"
+    return response
+
 DATA_DIR   = Path("/data")
 SDT_DIR    = DATA_DIR / "sdt"                         # gemelos digitales estructurales (.json) — selector del tab Validación
 OWL_PATH   = DATA_DIR / "MALTG_ontology.owl"
 ONTO_JSON  = DATA_DIR / "MALTG_ontology.json"       # estructura (estrella) del grafo de ontología (tab 03)
 ONTO_INFO  = DATA_DIR / "MALTG_ontologyInfo.json"   # detalles informativos por nodo (descripción, norma…)
-DT_PATH    = SDT_DIR / "SDT_Synthetic.json"          # gemelo digital sintético (antes dt_arch.json)
 WF_DIR     = DATA_DIR / "workflow"        # directory holding BPMN workflow JSON files
 EXP_DIR    = DATA_DIR / "LegalCase"        # decided cases (causas/juicios) JSON files
 MALTG_PATH = DATA_DIR / "MALTG_architecture.json"  # JSON-LD multidimensional architecture
-SDT_CJ_PATH = SDT_DIR / "SDT_CJ.json"              # Modelo Digital Estructural (SDT) del Consejo de la Judicatura (JSON-LD)
 FRONT_DIR  = Path("/frontend")
+
+# ── Digital Shadow (módulos "04 Get Digital Shadow" / "05 Digital Shadow
+#    Maturity") — resultados de scraping fuera de /data, en su propio volumen
+#    montado (ver docker-compose.yml → ./env/digitalShadow:/digitalShadow).
+DS_DIR         = Path("/digitalShadow")
+DS_SCRAPING_DIR = DS_DIR / "scraping"              # snapshots + manifest + semillas del protocolo de scraping
+SDT_CJ_PATH    = DS_DIR / "SDT_CJ.json"            # Modelo Digital Estructural (SDT) del dominio auditado (JSON-LD) — regenerado en cada scraping
+DT_PATH        = DS_DIR / "DS_Synthetic.json"      # gemelo sintético — el que se carga por defecto en "05 Digital Shadow Maturity"
 
 OWL_NS   = "http://www.w3.org/2002/07/owl#"
 RDF_NS   = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
@@ -345,19 +367,47 @@ def parse_ontology():
 
 
 # ─── DT Parser ────────────────────────────────────────────────────────────────
-def _resolve_sdt_path(file: str = ""):
-    """Resuelve de forma segura un .json dentro de /data/sdt (sin path traversal)."""
-    if not file:
+def _default_sdt_path():
+    """Gemelo que se carga cuando no se pide uno explícito.
+
+    Es el sintético (/data/sdt/SDT_Synthetic.json) mientras exista; si no está
+    —por ejemplo porque /data/sdt se vació tras migrar todo a /digitalShadow—
+    cae al .json más reciente de /digitalShadow, que es el que acaba de generar
+    el botón "⟳ Get". Así la página nunca arranca con "SDT no encontrado"."""
+    if DT_PATH.exists():
         return DT_PATH
+    for base in (DS_DIR, SDT_DIR):
+        if not base.exists():
+            continue
+        cands = sorted(base.glob("*.json"), key=lambda p: p.stat().st_mtime, reverse=True)
+        if cands:
+            return cands[0]
+    return DT_PATH
+
+def _resolve_sdt_path(file: str = ""):
+    """Resuelve de forma segura un .json dentro de /data/sdt o /digitalShadow
+    (sin path traversal). Los gemelos "clásicos" (SDT_Synthetic.json, .json
+    subidos a mano) viven en /data/sdt; los generados por el scraping de
+    "04 Get Digital Shadow" (DS_<dominio>_<fecha>.json) viven en /digitalShadow —
+    ambos deben poder seleccionarse desde "05 Digital Shadow Maturity"."""
+    if not file:
+        return _default_sdt_path()
     name = Path(file).name                       # descarta cualquier ruta
     if not name.endswith(".json"):
         name += ".json"
-    p = (SDT_DIR / name).resolve()
-    try:
-        p.relative_to(SDT_DIR.resolve())         # debe quedar dentro de /data/sdt
-    except ValueError:
-        return DT_PATH
-    return p
+    candidates = []
+    for base in (DS_DIR, SDT_DIR):          # /digitalShadow gana ante nombres homónimos
+                                            # (p.ej. SDT_CJ.json, que el scraping regenera allí)
+        p = (base / name).resolve()
+        try:
+            p.relative_to(base.resolve())        # debe quedar dentro de esa base
+        except ValueError:
+            continue
+        candidates.append(p)
+    for p in candidates:
+        if p.exists():
+            return p
+    return candidates[0] if candidates else DT_PATH
 
 def parse_dt(path=None):
     p = path or DT_PATH
@@ -795,20 +845,42 @@ def get_dt_arch(file: str = ""):  return parse_dt(_resolve_sdt_path(file))
 @app.get("/api/validation",  summary="9-dim conformance scores",  tags=["MALTG Data"])
 def get_validation(file: str = ""): return compute_validation(file)
 
-@app.get("/api/sdt-files", summary="Lista los gemelos digitales (.json) en /data/sdt", tags=["MALTG Data"])
-def get_sdt_files():
-    files = []
-    if SDT_DIR.exists():
-        for p in sorted(SDT_DIR.glob("*.json")):
+@app.get("/api/sdt-files", summary="Lista los gemelos digitales (.json) en /data/sdt y /digitalShadow", tags=["MALTG Data"])
+def get_sdt_files(dir: str = ""):
+    """`dir=digitalShadow` → solo los gemelos generados por "04 Get Digital Shadow"
+    (selector del tab 05). `dir=sdt` → solo /data/sdt. Vacío → ambos directorios.
+    Si un mismo nombre existe en los dos, gana /digitalShadow (igual que
+    `_resolve_sdt_path`), de modo que el selector no muestre duplicados."""
+    want = (dir or "").strip().lower()
+    bases = {"digitalshadow": (DS_DIR,), "sdt": (SDT_DIR,)}.get(want, (DS_DIR, SDT_DIR))
+    seen, files = set(), []
+    for base in bases:                      # DS_DIR primero → su copia prevalece
+        if not base.exists():
+            continue
+        for p in sorted(base.glob("*.json")):
+            if p.name in seen:
+                continue
+            seen.add(p.name)
             title = ""
             try:
                 j = json.loads(p.read_text(encoding="utf-8"))
                 title = (j.get("meta") or {}).get("title", "")
             except Exception:
                 pass
-            files.append({"file": p.name, "title": title,
-                          "default": (p.name == DT_PATH.name)})
-    return {"dir": "/data/sdt", "files": files, "default": DT_PATH.name}
+            files.append({"file": p.name, "title": title, "stem": p.stem,
+                          "default": False, "dir": str(base),
+                          "mtime": int(p.stat().st_mtime)})
+    files.sort(key=lambda f: f["file"])
+    # Por defecto el gemelo sintético; si no está en este listado (p.ej. dir=digitalShadow),
+    # el más reciente, que es el que acaba de generar el scraping.
+    names = [f["file"] for f in files]
+    default = _default_sdt_path().name
+    if default not in names:
+        default = max(files, key=lambda f: f["mtime"])["file"] if files else ""
+    for f in files:
+        f["default"] = (f["file"] == default)
+    label = {"digitalshadow": "/digitalShadow", "sdt": "/data/sdt"}.get(want, "/data/sdt + /digitalShadow")
+    return {"dir": label, "files": files, "default": default}
 
 @app.get("/api/methodology", summary="5-phase validation methodology + formal model", tags=["MALTG Data"])
 def get_methodology():
@@ -1758,7 +1830,7 @@ CJ_TARGETS = {
     "iso37001":    "https://www.funcionjudicial.gob.ec/sistema-de-gestion-antisoborno-de-acuerdo-a-la-norma-iso-37001/",
 }
 
-# Protocolo reproducible (ver /data/evidence/PROTOCOLO.md)
+# Protocolo reproducible (ver /digitalShadow/PROTOCOLO.md)
 SCRAPER_UA = "MALTG-SDT-Auditor/1.0 (+legaltech-governance-scraper; protocolo v1)"
 
 def utcnow_iso():
@@ -1924,7 +1996,7 @@ def _cj_model():
          "gaps":["Compliance sustentado mayormente en politicas/PDF, no en motores regulatorios automatizados.",
                  "Automatizacion de procesos disciplinarios en transicion (anunciada, no consolidada)."]},
     ]
-    # slug = referencia estable al snapshot /data/evidence/<run>/<slug>.html (trazabilidad campo→fuente)
+    # slug = referencia estable al snapshot /digitalShadow/scraping/<run>/<slug>.html (trazabilidad campo→fuente)
     sources = [
         {"slug":"portal_cj","label":"Portal CJ","url":"https://www.funcionjudicial.gob.ec/","dimensiones":["D2"]},
         {"slug":"satje_spa","label":"SATJE Consulta de Procesos (SPA v4.0.1)","url":"https://procesosjudiciales.funcionjudicial.gob.ec/busqueda","dimensiones":["D2"]},
@@ -1949,7 +2021,7 @@ def _level_for(score, scale):
 
 def build_sdt_cj(scrape_report=None, evidence_run=None):
     """Construye el SDT_CJ JSON-LD; integra señales del scraping si están disponibles.
-    `evidence_run` = id de la corrida de snapshots en /data/evidence (trazabilidad)."""
+    `evidence_run` = id de la corrida de snapshots en /digitalShadow/scraping (trazabilidad)."""
     colorTypes, layers, services, connections, scale, dimensions, sources = _cj_model()
 
     # Verificación en vivo: las señales del scraping confirman/ajustan la evidencia.
@@ -2000,8 +2072,8 @@ def build_sdt_cj(scrape_report=None, evidence_run=None):
             "ontology_source":"/data/MALTG_ontology.owl","primary_source":"https://www.funcionjudicial.gob.ec/",
             "protocol":{
                 "instrumento":"Analisis documental sistematico de fuentes oficiales (web scraping con snapshots verificables)",
-                "documento":"/data/evidence/PROTOCOLO.md",
-                "semillas":"/data/evidence/sources_semilla.json",
+                "documento":"/digitalShadow/PROTOCOLO.md",
+                "semillas":"/digitalShadow/scraping/sources_semilla.json",
                 "user_agent":SCRAPER_UA,
                 "evidence_run":evidence_run,
                 "fases":["identificacion","captura (snapshot + SHA-256)","verificacion de integridad","codificacion contra rubrica"],
@@ -2035,10 +2107,12 @@ def post_sdt_cj_scrape(base: str = ""):
         rep = {"scanned_at": utcnow_iso(),
                "online": False, "signals": {}, "targets": {},
                "errors": [f"scrape_cj: {e}"]}
+    # Dominio auditado — fija la nomenclatura común de la corrida y del gemelo digital
+    _host, _dom = ds_domain(base)
     # Protocolo reproducible: snapshots verificables de TODAS las fuentes semilla
     evidence_run = None
     try:
-        manifest = capture_evidence()
+        manifest = capture_evidence(dom=_dom)
         evidence_run = manifest.get("run_id")
     except Exception as e:
         rep.setdefault("errors", []).append(f"capture_evidence: {e}")
@@ -2055,16 +2129,11 @@ def post_sdt_cj_scrape(base: str = ""):
                      refs=[r for r in [evidence_run, "SDT_CJ.json"] if r])
     except Exception as e:
         doc["_write_error"] = str(e)
-    # Persistir copia JSON-LD en /data/sdt/LegalTech_<dominio>_<fecha>.json
-    # (dominio de la URL objetivo del tab Simulación: funcionjudicial, corteconstitucional, ...)
+    # Persistir copia JSON-LD en /digitalShadow/DS_<dominio>_<fecha>.json
+    # (dominio de la URL objetivo del tab "04 Get Digital Shadow": funcionjudicial, corteconstitucional, ...)
     try:
         import copy as _copy
-        from urllib.parse import urlparse
-        host = (urlparse(base).hostname or "") if base else ""
-        host = (host or "funcionjudicial.gob.ec").lower()
-        if host.startswith("www."):
-            host = host[4:]
-        dom = re.sub(r"[^a-z0-9]", "", host.split(".")[0]) or "sitio"
+        host, dom = _host, _dom
         base_url = base or "https://www.funcionjudicial.gob.ec/"
 
         # El archivo por dominio hereda el análisis pero con metadatos coherentes
@@ -2086,22 +2155,29 @@ def post_sdt_cj_scrape(base: str = ""):
         m["domain"] = dom
         m["scraping_target"] = base_url
 
+        # El nombre del .json se deriva del run_id de la corrida para que
+        # DS_<dominio>_<YYYYMMDD>.json y scraping/DS_<dominio>_<YYYYMMDD>_<HHMMSS>/
+        # coincidan siempre (aunque la captura cruce la medianoche UTC).
         fecha = utcnow_iso()[:10].replace("-", "")
-        sdt_dir = DATA_DIR / "sdt"
-        sdt_dir.mkdir(parents=True, exist_ok=True)
-        out = sdt_dir / f"LegalTech_{dom}_{fecha}.json"
+        stem = ds_run_prefix(evidence_run) if evidence_run else f"DS_{dom}_{fecha}"
+        m["evidence_run"] = evidence_run
+        m["evidence_dir"] = f"/digitalShadow/scraping/{evidence_run}" if evidence_run else None
+        DS_DIR.mkdir(parents=True, exist_ok=True)
+        out = DS_DIR / f"{stem}.json"
         raw = json.dumps(sdt_doc, ensure_ascii=False, indent=2)
         sdt_doc["meta"]["self_hash"] = "sha256:" + hashlib.sha256(raw.encode()).hexdigest()[:16]
         out.write_text(json.dumps(sdt_doc, ensure_ascii=False, indent=2), encoding="utf-8")
         # Devolver el doc con metadatos del dominio para que el tab Simulación
-        # muestre las secciones coherentes con el sitio auditado.
+        # muestre las secciones coherentes con el sitio auditado. También queda
+        # disponible en el selector de "05 Digital Shadow Maturity" (/api/sdt-files),
+        # que ahora lista tanto /data/sdt como /digitalShadow.
         doc = sdt_doc
-        doc["_saved_sdt"] = f"/data/sdt/{out.name}"
+        doc["_saved_sdt"] = f"/digitalShadow/{out.name}"
     except Exception as e:
         doc["_sdt_save_error"] = str(e)
     return doc
 
-@app.get("/api/sdt-cj", summary="Lee /data/SDT_CJ.json (gemelo digital estructural del CJ)", tags=["SDT_CJ"])
+@app.get("/api/sdt-cj", summary="Lee /digitalShadow/SDT_CJ.json (gemelo digital estructural del dominio auditado)", tags=["SDT_CJ"])
 def get_sdt_cj():
     if SDT_CJ_PATH.exists():
         try:
@@ -2116,12 +2192,13 @@ def get_sdt_cj():
 
 # ═══════════════════════════════════════════════════════════════════
 #  EVIDENCIA REPRODUCIBLE & BITÁCORA — Protocolo de recolección (Fallo 2)
-#  Snapshots con SHA-256 en /data/evidence/<run>/ + manifest.json
+#  Snapshots con SHA-256 en /digitalShadow/scraping/<run>/ + manifest.json
+#  (usado tanto por "04 Get Digital Shadow" como por el tab Bitácora · Evidencia)
 #  Bitácora append-only encadenada por hash en /data/bitacora.json
 # ═══════════════════════════════════════════════════════════════════
-EV_DIR        = DATA_DIR / "evidence"
+EV_DIR        = DS_SCRAPING_DIR
 SEED_PATH     = EV_DIR / "sources_semilla.json"
-PROTOCOL_PATH = EV_DIR / "PROTOCOLO.md"
+PROTOCOL_PATH = DS_DIR / "PROTOCOLO.md"   # vive en la raíz de /digitalShadow (no es propio de una sola corrida)
 BITACORA_PATH = DATA_DIR / "bitacora.json"
 
 def load_seeds():
@@ -2134,7 +2211,7 @@ def load_seeds():
     _, _, _, _, _, _, sources = _cj_model()
     seeds = [{"slug": s["slug"], "label": s["label"], "url": s["url"],
               "dimensiones": s.get("dimensiones", []), "incluida": True,
-              "criterio": "Fuente oficial (*.funcionjudicial.gob.ec / *.gob.ec)"} for s in sources]
+              "criterio": "Fuente oficial declarada como semilla del dominio auditado"} for s in sources]
     EV_DIR.mkdir(parents=True, exist_ok=True)
     SEED_PATH.write_text(json.dumps(seeds, ensure_ascii=False, indent=2), encoding="utf-8")
     return seeds
@@ -2171,13 +2248,44 @@ def bitacora_verify(entries):
         prev = e["hash"]
     return True, None
 
+# ── Nomenclatura homogénea corrida ↔ gemelo digital ──────────────────
+#  El directorio de snapshots y el .json generado comparten el mismo prefijo:
+#      env/digitalShadow/scraping/DS_<dominio>_<YYYYMMDD>_<HHMMSS>/   (corrida)
+#      env/digitalShadow/DS_<dominio>_<YYYYMMDD>.json                 (gemelo)
+#  Así la trazabilidad snapshot ↔ SDT es evidente por el nombre.
+DS_DEFAULT_DOMAIN = "funcionjudicial"
+
+def ds_domain(base: str = ""):
+    """Dominio normalizado del sitio auditado (funcionjudicial, corteconstitucional, …)."""
+    from urllib.parse import urlparse
+    host = (urlparse(base).hostname or "") if base else ""
+    host = (host or "www.funcionjudicial.gob.ec").lower()
+    if host.startswith("www."):
+        host = host[4:]
+    return host, (re.sub(r"[^a-z0-9]", "", host.split(".")[0]) or "sitio")
+
+def ds_run_prefix(run_id: str):
+    """DS_<dominio>_<YYYYMMDD> a partir de un run_id DS_<dominio>_<YYYYMMDD>_<HHMMSS>[-vN]."""
+    return run_id.split("-v")[0].rsplit("_", 1)[0]
+
+_RUN_TS_RE = re.compile(r"(\d{8})_(\d{6})")
+
+def _run_sort_key(name: str):
+    """Ordena las corridas por su marca temporal, no alfabéticamente por dominio."""
+    m = _RUN_TS_RE.search(name)
+    return (m.group(1) + m.group(2)) if m else name
+
 # ── Captura de snapshots verificables ────────────────────────────────
-def capture_evidence(fecha_corte=None):
+def capture_evidence(fecha_corte=None, dom=None):
     """Descarga cada fuente semilla, guarda el HTML como snapshot y escribe manifest.json
-    con URL, timestamp, bytes y SHA-256. La corrida queda en /data/evidence/<run_id>/."""
+    con URL, timestamp, bytes y SHA-256. La corrida queda en
+    /digitalShadow/scraping/DS_<dominio>_<YYYYMMDD>_<HHMMSS>/ — mismo prefijo que el
+    DS_<dominio>_<YYYYMMDD>.json que genera el botón "⟳ Get"."""
     seeds = load_seeds()
     stamp = datetime.utcnow()
-    run_id = (fecha_corte or stamp.strftime("%Y-%m-%d")) + "_" + stamp.strftime("%H%M%S")
+    dom = dom or DS_DEFAULT_DOMAIN
+    fecha = (fecha_corte or stamp.strftime("%Y-%m-%d")).replace("-", "")
+    run_id = f"DS_{dom}_{fecha}_{stamp.strftime('%H%M%S')}"
     n = 1
     while (EV_DIR / run_id).exists():
         n += 1
@@ -2210,9 +2318,11 @@ def capture_evidence(fecha_corte=None):
     n_ok = sum(1 for e in entries if e.get("ok"))
     manifest = {
         "run_id": run_id, "captured_at": utcnow_iso(),
+        "domain": dom,
+        "sdt_file": f"/digitalShadow/{ds_run_prefix(run_id)}.json",  # gemelo digital homónimo
         "user_agent": SCRAPER_UA,
-        "seed_file": "/data/evidence/sources_semilla.json",
-        "protocol": "/data/evidence/PROTOCOLO.md",
+        "seed_file": "/digitalShadow/scraping/sources_semilla.json",
+        "protocol": "/digitalShadow/PROTOCOLO.md",
         "n_total": len(entries), "n_ok": n_ok,
         "entries": entries,
     }
@@ -2223,14 +2333,15 @@ def capture_evidence(fecha_corte=None):
     return manifest
 
 def _resolve_run(run: str = ""):
-    """Resuelve un run_id de forma segura dentro de /data/evidence (sin traversal)."""
+    """Resuelve un run_id de forma segura dentro de /digitalShadow/scraping (sin traversal)."""
     if run:
         name = Path(run).name
         d = (EV_DIR / name).resolve()
         if d.parent == EV_DIR.resolve() and d.is_dir() and (d / "manifest.json").exists():
             return d
         return None
-    runs = sorted([d for d in EV_DIR.iterdir() if d.is_dir() and (d / "manifest.json").exists()]) if EV_DIR.exists() else []
+    runs = sorted([d for d in EV_DIR.iterdir() if d.is_dir() and (d / "manifest.json").exists()],
+                  key=lambda d: _run_sort_key(d.name)) if EV_DIR.exists() else []
     return runs[-1] if runs else None
 
 # ── Endpoints de evidencia ───────────────────────────────────────────
@@ -2238,12 +2349,13 @@ def _resolve_run(run: str = ""):
 def get_evidence_runs():
     out = []
     if EV_DIR.exists():
-        for d in sorted(EV_DIR.iterdir()):
+        for d in sorted(EV_DIR.iterdir(), key=lambda p: _run_sort_key(p.name)):
             mf = d / "manifest.json"
             if d.is_dir() and mf.exists():
                 try:
                     m = json.loads(mf.read_text(encoding="utf-8"))
                     out.append({"run_id": m.get("run_id", d.name), "captured_at": m.get("captured_at"),
+                                "domain": m.get("domain"), "sdt_file": m.get("sdt_file"),
                                 "n_total": m.get("n_total"), "n_ok": m.get("n_ok")})
                 except Exception:
                     out.append({"run_id": d.name, "error": "manifest ilegible"})
@@ -2310,12 +2422,12 @@ def post_evidence_capture():
 @app.get("/api/evidence/protocolo", summary="Texto del protocolo de recolección", tags=["Evidencia & Bitácora"])
 def get_evidence_protocolo():
     if PROTOCOL_PATH.exists():
-        return {"path": "/data/evidence/PROTOCOLO.md", "text": PROTOCOL_PATH.read_text(encoding="utf-8")}
-    return {"error": "PROTOCOLO.md no encontrado en /data/evidence"}
+        return {"path": "/digitalShadow/PROTOCOLO.md", "text": PROTOCOL_PATH.read_text(encoding="utf-8")}
+    return {"error": "PROTOCOLO.md no encontrado en /digitalShadow"}
 
 @app.get("/api/evidence/seeds", summary="Fuentes semilla del protocolo", tags=["Evidencia & Bitácora"])
 def get_evidence_seeds():
-    return {"seeds": load_seeds(), "path": "/data/evidence/sources_semilla.json"}
+    return {"seeds": load_seeds(), "path": "/digitalShadow/scraping/sources_semilla.json"}
 
 # ── Endpoints de bitácora ────────────────────────────────────────────
 @app.get("/api/bitacora", summary="Bitácora del proyecto (append-only, hash-encadenada)", tags=["Evidencia & Bitácora"])

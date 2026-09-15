@@ -36,25 +36,6 @@ const delay  = ms => new Promise(r => setTimeout(r, ms));
 // para no tener que renombrar los ~90 sitios que ya lo llaman así).
 function wfEsc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
 
-// Word-wrap de una etiqueta en <=maxLines líneas de ~maxChars — nació en
-// tab-workflow.js (de ahí el prefijo "wf") pero lo usan también otras
-// pestañas (p.ej. el detalle de Foundation Layer en tab-maltg.js), así
-// que vive aquí para que esté disponible en cualquier página sin tener
-// que cargar tab-workflow.js entero.
-function wfWrap(text, maxChars, maxLines){
-  const words = String(text||'').split(/\s+/).filter(Boolean);
-  const lines=[]; let cur='';
-  for(const w of words){
-    if((cur+' '+w).trim().length<=maxChars){ cur=(cur+' '+w).trim(); }
-    else { if(cur) lines.push(cur); cur=w; }
-    if(lines.length>=maxLines) break;
-  }
-  if(cur && lines.length<maxLines) lines.push(cur);
-  if(lines.length===maxLines && (words.join(' ').length> lines.join(' ').length))
-    lines[maxLines-1]= lines[maxLines-1].replace(/.{0,1}$/,'…');
-  return lines.length?lines:[''];
-}
-
 // Colores por capa de gobernanza (ontología MALTG) — usados por Ontología y Simulación 3D.
 const LAYER_COLOR = {
   core: '#00e5ff', togaf: '#00e5ff', cobit: '#ffc947',
@@ -125,19 +106,19 @@ function toggleTheme() {
 // assets/js/inicio.js), en el mismo orden — si se agrega o renombra un
 // módulo ahí, actualizar también aquí.
 const NAV_PAGES = {
-  methodology: { num: '01', label: 'Metodología' },
-  maltg:       { num: '02', label: 'MALTG · Arquitectura' },
-  ontology:    { num: '03', label: 'Ontología MALTG' },
-  dt:          { num: '04', label: 'Gemelo Digital & Validación' },
-  simulacion:  { num: '05', label: 'Esfera Celeste Ontológica' },
-  workflow:    { num: '06', label: 'Workflow · Flujo Procesal' },
-  cogep:       { num: '07', label: 'Ontología COGEP · IA' },
-  bitacora:    { num: '08', label: 'Bitácora · Evidencia' },
-  adaptativo:  { num: '09', label: 'Adaptativo · MAPE-K' },
-  experto:     { num: '10', label: 'Validación Experta' },
-  guia:        { num: '11', label: 'Guía del Experimento' },
-  tesis:       { num: '12', label: 'Tesis Doctoral' },
-  styles:      { num: '13', label: 'UI Styles' },
+  methodology:      { num: '01', label: 'Methodology' },
+  maltg:            { num: '02', label: 'Architecture' },
+  ontology:         { num: '03', label: 'Ontology' },
+  digitalShadowGet: { num: '04', label: 'Get Digital Shadow' },
+  digitalShadow:    { num: '05', label: 'Digital Shadow Maturity' },
+  workflow:         { num: '06', label: 'Workflow' },
+  cogep:            { num: '07', label: 'Ontología COGEP · IA' },
+  bitacora:         { num: '08', label: 'Bitácora · Evidencia' },
+  adaptativo:       { num: '09', label: 'Adaptativo · MAPE-K' },
+  experto:          { num: '10', label: 'Validación Experta' },
+  guia:             { num: '11', label: 'Guía del Experimento' },
+  tesis:            { num: '12', label: 'Tesis Doctoral' },
+  styles:           { num: '13', label: 'UI Styles' },
 };
 
 // Íconos de línea (24×24, trazo — mismo idioma visual que la imagen de
@@ -151,8 +132,8 @@ const NAV_ICON_PATHS = {
   methodology: '<path d="M4 6h11M4 12h7M4 18h11"/><circle cx="19.3" cy="6" r="1.3" fill="currentColor" stroke="none"/><circle cx="15.3" cy="12" r="1.3" fill="currentColor" stroke="none"/><circle cx="19.3" cy="18" r="1.3" fill="currentColor" stroke="none"/>',
   maltg:       '<polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/>',
   ontology:    '<circle cx="18" cy="5" r="2.3"/><circle cx="6" cy="12" r="2.3"/><circle cx="18" cy="19" r="2.3"/><line x1="8.1" y1="10.7" x2="15.9" y2="6.3"/><line x1="8.1" y1="13.3" x2="15.9" y2="17.7"/>',
-  dt:          '<rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/>',
-  simulacion:  '<circle cx="12" cy="12" r="9"/><line x1="3" y1="12" x2="21" y2="12"/><path d="M12 3a14 14 0 0 1 0 18a14 14 0 0 1 0-18"/>',
+  digitalShadow: '<rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/>',
+  digitalShadowGet: '<circle cx="12" cy="12" r="9"/><line x1="3" y1="12" x2="21" y2="12"/><path d="M12 3a14 14 0 0 1 0 18a14 14 0 0 1 0-18"/>',
   workflow:    '<line x1="6" y1="3" x2="6" y2="15"/><circle cx="18" cy="6" r="2.3"/><circle cx="6" cy="18" r="2.3"/><path d="M18 8.3A9 9 0 0 1 9 17.3"/>',
   cogep:       '<path d="M12 3v18M5 8h14"/><path d="M5 8 2 15a3 3 0 0 0 6 0Z"/><path d="M19 8l-3 7a3 3 0 0 0 6 0Z"/>',
   bitacora:    '<path d="M6 3h9l5 5v13H6z"/><line x1="9" y1="12" x2="16" y2="12"/><line x1="9" y1="16" x2="16" y2="16"/>',
@@ -190,9 +171,9 @@ async function initHeader() {
   if (page) setTxt('hdr-page-num', page.num);
 
   // Sólo sube el título de APERTURA: el .stitle que encabeza la sección
-  // (primer elemento). En dt.html hay otro .stitle a media página
-  // ("Validación — Contraste…") que separa dos bloques dentro del mismo
-  // módulo; ése no es el título de la página y se queda donde está.
+  // (primer elemento). En digitalShadow.html hay otro .stitle a media
+  // página ("Validación — Contraste…") que separa dos bloques dentro del
+  // mismo módulo; ése no es el título de la página y se queda donde está.
   const first  = document.querySelector('main .stitle');
   const stitle = (first && first.previousElementSibling === null) ? first : null;
   const titleEl = document.getElementById('hdr-page-title');

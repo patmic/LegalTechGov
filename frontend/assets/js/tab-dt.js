@@ -1,38 +1,40 @@
 // ═══════════════════════════════════════════════════════════════════
-//  tab-dt.js — Página Gemelo Digital & Validación (04): render del
-//  Structural Digital Shadow + radar de madurez y análisis de brechas.
-//  Requiere core.js y sdtcj-render.js. Extraído/adaptado de dashboard.html.
+//  tab-dt.js — Página Digital Shadow Maturity (05): render del
+//  Digital·Shadow + radar de madurez y análisis de brechas.
+//  Requiere core.js y sdtcj-render.js.  
 // ═══════════════════════════════════════════════════════════════════
 
 let pendingVal = null;
 let radarChart = null;
 let gapChart = null;
 
-async function loadValSdtFiles(){
-  const sel = document.getElementById('val-sdt-select');
-  if(!sel) return;
-  try{
-    const d = await (await fetch('/api/sdt-files?_='+Date.now())).json();
-    const cur = sel.value;
-    sel.innerHTML = (d.files||[]).map(f=>
-      `<option value="${f.file}" ${f.file===(cur||d.default)?'selected':''}>${f.title? f.title.slice(0,40)+' · ':''}${f.file}</option>`
-    ).join('') || '<option value="">— sin gemelos en /data/sdt —</option>';
-  }catch(e){
-    sel.innerHTML = '<option value="">error al listar SDT</option>';
-  }
+// El panel "Radar de Madurez" ya no tiene selector propio: evalúa siempre el
+// gemelo elegido en "❰❰SD❱❱ Digital·Shadow". Esto solo refleja cuál es.
+function setValSdtLabel(file){
+  setTxt('val-sdt-label', (file || '—').replace(/\.json$/i, ''));
 }
 
-// ── Selector del diagrama DT (tab 03): grafica Y evalua cualquier .json de /data/sdt ──
+// ── Selector del diagrama DT: solo los gemelos de /digitalShadow, es decir los
+//    generados por "04 Get Digital Shadow" (dir=digitalShadow). La etiqueta es
+//    únicamente el nombre del archivo sin extensión; el value sí conserva el
+//    .json porque es lo que espera la API. El título del gemelo va en el
+//    tooltip para no alargar la opción. ──
 let dtCurrentFile = '';
 async function loadDtFiles(){
   const sel = document.getElementById('dt-file-select');
   if(!sel) return;
   try{
-    const d = await (await fetch('/api/sdt-files?_='+Date.now())).json();
+    const d = await (await fetch('/api/sdt-files?dir=digitalShadow&_='+Date.now())).json();
     const cur = sel.value || dtCurrentFile || d.default;
-    sel.innerHTML = (d.files||[]).map(f=>
-      `<option value="${f.file}" ${f.file===cur?'selected':''}>${f.file}${f.title? ' · '+f.title.slice(0,32):''}</option>`
-    ).join('') || '<option value="">— sin gemelos en /data/sdt —</option>';
+    sel.innerHTML = (d.files||[]).map(f=>{
+      const name = f.stem || f.file.replace(/\.json$/i,'');
+      return `<option value="${f.file}" ${f.file===cur?'selected':''} title="${(f.title||'').replace(/"/g,'&quot;')}">${name}</option>`;
+    }).join('') || '<option value="">— sin gemelos en /digitalShadow —</option>';
+    // Si el gemelo que se dibujó al arrancar no está en esta lista (p.ej. el
+    // sintético de /data/sdt), el navegador selecciona la primera opción SIN
+    // disparar 'change', y el lienzo se queda con otro gemelo — o vacío.
+    // Forzamos la carga del que realmente quedó seleccionado.
+    if(sel.value && sel.value !== dtCurrentFile) await onDtFileChange();
   }catch(e){
     sel.innerHTML = '<option value="">error al listar SDT</option>';
   }
@@ -74,25 +76,9 @@ async function onDtFileChange(){
       pendingVal = val;
       renderValidationCharts(val);
       setTxt('val-ts', new Date().toLocaleTimeString('es-EC',{hour12:false}));
-      // mantener sincronizado el selector del panel de Validación
-      const vs = document.getElementById('val-sdt-select');
-      if(vs){ const opt=[...vs.options].find(o=>o.value===file); if(opt) vs.value=file; }
+      setValSdtLabel(file);      // el panel de Validación refleja el mismo gemelo
     }
   }catch(e){ console.warn('validation:', e); }
-}
-
-async function onValSdtChange(){
-  const sel = document.getElementById('val-sdt-select');
-  if(!sel || !sel.value) return;
-  try{
-    const val = await (await fetch('/api/validation?file='+encodeURIComponent(sel.value)+'&_='+Date.now())).json();
-    if(val.error) throw new Error(val.error);
-    pendingVal = val;
-    renderValidationCharts(val);
-    setTxt('val-ts', new Date().toLocaleTimeString('es-EC',{hour12:false}));
-  }catch(e){
-    console.error('validation:', e);
-  }
 }
 
 function maltgRefStr(ref){
@@ -185,8 +171,9 @@ function renderDT(data){
 
   wrap.innerHTML=h;
 
-  // Tooltips
+  // Tooltips — el contenedor puede no existir en todas las páginas
   const tt=document.getElementById('dtt');
+  if(!tt) return;
   wrap.querySelectorAll('.dtb').forEach(el=>{
     el.addEventListener('mouseover',()=>{
       const d=el.dataset;
@@ -360,10 +347,10 @@ function renderValidationCharts(val){
 // ══════════════════════════════════════════════════════════════════
 
 // ── Carga inicial de esta página (equivalente a los bloques "Tab 03:
-//    Digital Twin" y "Tab 04: Validation" de reloadAll() en dashboard.html) ──
+//    Digital Shadow" y "Tab 04: Validation" de reloadAll() en dashboard.html) ──
 window.pageBoot = function () {
   runBoot([
-    { id: 's1', label: 'Leyendo gemelo digital (SDT)…' },
+    { id: 's1', label: 'Leyendo Digital Shadow (SDT)…' },
     { id: 's2', label: 'Calculando validación…' },
     { id: 's3', label: 'Actualizando interfaz…' },
   ], async () => {
@@ -388,12 +375,12 @@ window.pageBoot = function () {
 
     if (!val.error) {
       setTxt('val-ts', ts);
+      setValSdtLabel(dtCurrentFile);
       pendingVal = val;
       renderValidationMeta(val);
       renderValidationCharts(val);
     }
-    loadDtFiles();
-    loadValSdtFiles();
+    await loadDtFiles();
     step('s3', 'done');
   });
 };

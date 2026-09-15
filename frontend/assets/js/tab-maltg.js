@@ -167,7 +167,7 @@ function _mtSkCard(norm){
    maltg.html quedó sin estas funciones definidas: cada slider disparaba
    un ReferenceError silencioso, así que nunca llegaba a POSTear
    /api/ontology/score — ni el indicador, ni el .json, ni (en cascada)
-   el nivel de madurez que lee la página Gemelo Digital & Validación se
+   el nivel de madurez que lee la página Digital Shadow Maturity se
    actualizaban. Movidas aquí, donde el DOM que tocan (.skcard,
    #maltg-tree-card, los KPIs k-onto/k-dt/k-gap) sí existe. */
 function ontoSliderLive(sl){
@@ -202,7 +202,7 @@ async function ontoSliderSave(sl){
         if(sc){ sc.textContent=score+'%'; sc.style.color = score>0 ? 'var(--green,#10e98c)' : 'var(--t3)'; }
       }
     });
-    // recalcular la comparación vs el gemelo digital (Radar de Madurez + GAP + KPIs)
+    // recalcular la comparación vs el Digital Shadow (Radar de Madurez + GAP + KPIs)
     maltgRefreshValidation();
   }catch(e){ console.warn('score save', e); }
 }
@@ -443,7 +443,7 @@ function _injectPowerCardCSS(){
 window.pageBoot = function () {
   runBoot([
     { id: 's1', label: 'Leyendo MALTG_architecture.json…' },
-    { id: 's2', label: 'Leyendo ontología y gemelo digital…' },
+    { id: 's2', label: 'Leyendo ontología y Digital Shadow…' },
     { id: 's3', label: 'Calculando KPIs…' },
     { id: 's4', label: 'Actualizando interfaz…' },
   ], async () => {

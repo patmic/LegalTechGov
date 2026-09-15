@@ -29,42 +29,42 @@ const ITEMS = [
     meta: "13 MÓDULOS · 70 ENDPOINTS", endpoint: "carátula", href: "pages/methodology.html"
   },
   {
-    num: "01", key: "methodology", title: "Metodología",
+    num: "01", key: "methodology", title: "Methodology",
     desc: "Metodología de validación en cinco fases y su modelo formal asociado.",
     meta: "MÉTODO FORMAL", endpoint: "/api/methodology", href: "pages/methodology.html",
     detail: "Las cinco fases del procedimiento de validación MALTG = ⟨Ω, Δ, Γ, Ψ, δ⟩ (ORE → DTSM → HCS → LDCC → MDGA) y el modelo formal que las respalda, incluida la relación entre evidencias, criterios y veredicto.",
     stats: [["FASES", "5"], ["MODELO", "formal"], ["ALCANCE", "método + evidencia"]]
   },
   {
-    num: "02", key: "maltg", title: "MALTG · Arquitectura",
+    num: "02", key: "maltg", title: "Architecture",
     desc: "Panorama general: madurez MALTG, score de ontología vs. gemelo digital y brecha global.",
     meta: "PANEL PRINCIPAL", endpoint: "/api/maltg", href: "pages/maltg.html",
     detail: "Arquitectura multidimensional de gobernanza LegalTech (JSON-LD) con los KPIs centrales del validador: madurez MALTG, nodos de la ontología, score de la ontología OWL, score del gemelo digital y la brecha (GAP) entre ambos.",
     stats: [["FORMATO", "JSON-LD"], ["KPIs", "6 indicadores"], ["FUENTE", "MALTG_architecture.json"]]
   },
   {
-    num: "03", key: "ontology", title: "Ontología MALTG",
+    num: "03", key: "ontology", title: "Ontology",
     desc: "Grafo de la ontología MALTG_ontology.owl servido como estructura D3 (vis-network).",
     meta: "GRAFO SEMÁNTICO", endpoint: "/api/ontology", href: "pages/ontology.html",
     detail: "La ontología se sirve transformada a grafo dirigido: clases, propiedades y relaciones de gobernanza (TOGAF + COBIT + ITIL + NIST + dominio LegalTech), agrupables por clústeres de capa.",
     stats: [["FORMATO", "OWL → grafo"], ["VISTA", "nodos y aristas"], ["FUENTE", "MALTG_ontology.owl"]]
   },
   {
-    num: "04", key: "dt", title: "Gemelo Digital & Validación",
-    desc: "Arquitectura del gemelo digital por servicios, con radar de madurez y brechas en 10 dimensiones.",
-    meta: "GEMELO DIGITAL", endpoint: "/api/dt-arch", href: "pages/dt.html",
-    detail: "Representación estructural del sistema implementado (Structural Digital Shadow) junto al contraste MALTG_onto vs. DT_arch: radar de madurez arquitectural y tabla de brechas por dimensión, con hash de integridad.",
-    stats: [["DIMENSIONES", "10"], ["INTEGRIDAD", "hash SHA-256"], ["FUENTE", "sdt/*.json"]]
-  },
-  {
-    num: "05", key: "simulacion", title: "Esfera Celeste Ontológica",
+    num: "04", key: "digitalShadowGet", title: "Get Digital Shadow",
     desc: "La ontología en 3D con Three.js: nodos como estrellas, capas como constelaciones.",
-    meta: "VISUALIZACIÓN 3D", endpoint: "/api/ontology", href: "pages/simulacion.html",
+    meta: "VISUALIZACIÓN 3D", endpoint: "/api/ontology", href: "pages/digitalShadowGet.html",
     detail: "Vista exploratoria en 3D de la misma ontología MALTG: cada nodo es una estrella y cada capa de gobernanza una constelación, con rotación, enlaces y etiquetas configurables.",
     stats: [["MOTOR", "Three.js"], ["UNIDAD", "nodo = estrella"], ["CONTROL", "rotación / velocidad"]]
   },
   {
-    num: "06", key: "workflow", title: "Workflow · Flujo Procesal",
+    num: "05", key: "digitalShadow", title: "Digital Shadow Maturity",
+    desc: "Arquitectura del Digital Shadow por servicios, con radar de madurez y brechas en 10 dimensiones.",
+    meta: "DIGITAL SHADOW", endpoint: "/api/dt-arch", href: "pages/digitalShadow.html",
+    detail: "Representación estructural del sistema implementado (Structural Digital Shadow) junto al contraste MALTG_onto vs. DT_arch: radar de madurez arquitectural y tabla de brechas por dimensión, con hash de integridad.",
+    stats: [["DIMENSIONES", "10"], ["INTEGRIDAD", "hash SHA-256"], ["FUENTE", "sdt/*.json"]]
+  },
+  {
+    num: "06", key: "workflow", title: "Workflow",
     desc: "Diagrama BPMN del flujo procesal COGEP (Sumario, Ordinario, Ejecución…) por expediente.",
     meta: "PROCESO BPMN", endpoint: "/api/workflow", href: "pages/workflow.html",
     detail: "Parsea los JSON de workflow BPMN (env/data/workflow) y los representa como grafo de flujo procesal: etapas, actos y transiciones del procedimiento COGEP seleccionado.",

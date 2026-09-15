@@ -82,7 +82,7 @@ appLegaltechTesis/
 ├── env/
 │   ├── tools/
 │   │   └── scraper_cj.py       # Instrumento de recolección documental reproducible
-│   │                            #   (snapshots + manifest SHA-256 del Consejo de la Judicatura)
+│   │                            #   (snapshots + manifest SHA-256 en env/digitalShadow/scraping)
 │   └── data/                   # Todo el estado persistente de la app
 │       ├── MALTG_ontology.owl          # Ontología MALTG (OWL/RDF)
 │       ├── MALTG_ontology.json         # Ontología → grafo D3 (estructura)
@@ -99,9 +99,14 @@ appLegaltechTesis/
 │       ├── LegalCase/                  # Expedientes/causas judiciales analizados (47 JSON + PDFs + 2 XLSX)
 │       ├── workflow/                   # Flujos BPMN de procedimientos COGEP (JSON/TXT/PDF)
 │       ├── gold/                       # Anotaciones gold standard + guía de anotación
-│       ├── evidence/                   # Corridas de captura de evidencia (17 corridas: snapshots + manifest)
 │       ├── law/                        # Normativa fuente (COGEP en PDF)
-│       └── architecture/               # Diagramas de arquitectura (PNG)
+│       └── architecture/               # Diagramas de arquitectura (PNG, no usado por la app)
+│   └── digitalShadow/           # Resultados de "04 Get Digital Shadow" / "05 Digital Shadow Maturity"
+│       ├── PROTOCOLO.md                # Protocolo de recolección documental (domain-agnostic)
+│       ├── SDT_CJ.json                 # Último SDT generado por el botón "Get" (regenerado cada corrida)
+│       ├── DS_<dominio>_<fecha>.json   # Copias históricas por dominio auditado (una por corrida)
+│       └── scraping/                   # Corridas de captura: sources_semilla.json + <run_id>/<slug>.html
+│                                        #   + manifest.json (snapshots SHA-256)
 ├── .claude/                    # Config local de Claude Code (agents/) — ignorado en git
 ├── desktop.ini
 └── .gitignore                  # Ignora pat_paper/ y .claude/
@@ -249,6 +254,7 @@ Inicializar el proyecto:
 
 docker compose down
 docker compose up --build
+docker compose up -d
 
 ### Eso te lista todas las rutas que comparten el mismo contenido físico. Si aparece más de una ruta, ahí está la causa raíz.
 

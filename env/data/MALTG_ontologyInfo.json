@@ -64,7 +64,7 @@
       "label": "Preliminary Phase",
       "type": "togaf",
       "cluster": "Foundation",
-      "score": "49",
+      "score": "28",
       "regulation": "TOGAF 10",
       "description": "Preparación y principios de arquitectura. Como marco base de gobernanza, aporta las reglas y controles que el gemelo digital cognitivo aplica para auditar contratos, términos y actuaciones, dando soporte normativo y trazabilidad a las decisiones."
     },
@@ -72,7 +72,7 @@
       "label": "Architecture Vision",
       "type": "togaf",
       "cluster": "Foundation",
-      "score": "91",
+      "score": "46",
       "regulation": "TOGAF 10",
       "description": "Fase A — visión de arquitectura. Como marco base de gobernanza, aporta las reglas y controles que el gemelo digital cognitivo aplica para auditar contratos, términos y actuaciones, dando soporte normativo y trazabilidad a las decisiones."
     },
@@ -80,7 +80,7 @@
       "label": "Business Architecture",
       "type": "togaf",
       "cluster": "Foundation",
-      "score": "68",
+      "score": "31",
       "regulation": "TOGAF 10",
       "description": "Fase B — arquitectura de negocio. Como marco base de gobernanza, aporta las reglas y controles que el gemelo digital cognitivo aplica para auditar contratos, términos y actuaciones, dando soporte normativo y trazabilidad a las decisiones."
     },
@@ -88,7 +88,7 @@
       "label": "Information Systems Architecture",
       "type": "togaf",
       "cluster": "Foundation",
-      "score": "67",
+      "score": "41",
       "regulation": "TOGAF 10",
       "description": "Fase C — datos y aplicaciones. Como marco base de gobernanza, aporta las reglas y controles que el gemelo digital cognitivo aplica para auditar contratos, términos y actuaciones, dando soporte normativo y trazabilidad a las decisiones."
     },
@@ -96,7 +96,7 @@
       "label": "Technology Architecture",
       "type": "togaf",
       "cluster": "Foundation",
-      "score": "66",
+      "score": "58",
       "regulation": "TOGAF 10",
       "description": "Fase D — arquitectura tecnológica. Como marco base de gobernanza, aporta las reglas y controles que el gemelo digital cognitivo aplica para auditar contratos, términos y actuaciones, dando soporte normativo y trazabilidad a las decisiones."
     },
@@ -112,7 +112,7 @@
       "label": "Migration Planning",
       "type": "togaf",
       "cluster": "Foundation",
-      "score": "67",
+      "score": "23",
       "regulation": "TOGAF 10",
       "description": "Fase F — planificación de la migración. Como marco base de gobernanza, aporta las reglas y controles que el gemelo digital cognitivo aplica para auditar contratos, términos y actuaciones, dando soporte normativo y trazabilidad a las decisiones."
     },
@@ -120,7 +120,7 @@
       "label": "Implementation Governance",
       "type": "togaf",
       "cluster": "Foundation",
-      "score": "28",
+      "score": "18",
       "regulation": "TOGAF 10",
       "description": "Fase G — gobernanza de la implementación. Como marco base de gobernanza, aporta las reglas y controles que el gemelo digital cognitivo aplica para auditar contratos, términos y actuaciones, dando soporte normativo y trazabilidad a las decisiones."
     },

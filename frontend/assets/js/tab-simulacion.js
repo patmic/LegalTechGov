@@ -367,7 +367,7 @@ async function runSimScrape(){
   const hudTitle=document.getElementById('sim-hud-title'); if(hudTitle) hudTitle.textContent='▶ INSPECCIÓN EN VIVO';
   simScanClear();
   simLog('▶ Inspección iniciada · <b style="color:#00e5ff">'+url+'</b>','var(--t1)');
-  simLog('&nbsp;&nbsp;protocolo: web scraping + análisis contra MALTG_ontology.owl (gemelo SDT_CJ)','var(--t3)');
+  simLog('&nbsp;&nbsp;protocolo: web scraping + análisis contra MALTG_ontology.owl (Digital Shadow)','var(--t3)');
   stat.textContent='⟳ inspeccionando el sitio…'; stat.style.color='#00e5ff';
   try{
     // la URL se envía como parámetro `base` (uso futuro en el backend)
