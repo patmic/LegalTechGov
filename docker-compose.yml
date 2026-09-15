@@ -2,7 +2,6 @@ version: "3.9"
 
 # ══════════════════════════════════════════════════════════
 #  MALTG Architecture Validator — Docker Compose
-#  UI UX Pro Max Skill integrado — Glassmorphism Dashboard
 #  ► Edita ./storage/data/MALTG_ontology.owl       → Tab Ontología se actualiza en 5s
 #  ► Edita ./storage/data/sdt/SDT_Synthetic.json   → Tab Gemelo Digital / Validación
 #  ► Coloca .json en ./storage/data/sdt/ o ./storage/digitalShadow/ → aparecen en el
@@ -26,6 +25,8 @@ services:
       # Resultados de "04 Get Digital Shadow" / "05 Digital Shadow Maturity":
       # scraping (snapshots+manifest+PROTOCOLO.md) y los DS_<dominio>_<fecha>.json generados
       - ./storage/digitalShadow:/digitalShadow
+      # Flujos BPMN de procedimientos COGEP (tab "06 Workflow")
+      - ./storage/workflow:/workflow
       # Frontend mounted too → edit HTML without rebuild
       - ./frontend:/frontend:ro
       # Backend mounted too → edit main.py without rebuild (uvicorn --reload)
@@ -35,7 +36,6 @@ services:
     restart: unless-stopped
     environment:
       - PYTHONUNBUFFERED=1
-      # UI UX Pro Max — font preload hint for CDN
       - DASHBOARD_STYLE=glassmorphism
     healthcheck:
       test: ["CMD", "python", "-c",
@@ -51,7 +51,6 @@ services:
       - "com.maltg.dt=dt_arch.json"
       - "com.maltg.ui=glassmorphism"
       - "com.maltg.fonts=Outfit+Space+Grotesk+DM+Mono"
-      - "com.maltg.skill=ui-ux-pro-max@v2.5.0"
 
 networks:
   default:

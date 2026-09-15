@@ -147,7 +147,7 @@ function toggleTheme() {
 // el tiempo), cada página trae un <div id="app-header"> vacío y este
 // script inyecta el partial compartido y conecta sus controles.
 //
-// Mismas 13 entradas que el carrusel de Inicio (frontend/index.html →
+// Mismas 12 entradas que el carrusel de Inicio (frontend/index.html →
 // assets/js/inicio.js), en el mismo orden — si se agrega o renombra un
 // módulo ahí, actualizar también aquí.
 const NAV_PAGES = {
@@ -163,7 +163,6 @@ const NAV_PAGES = {
   experto:          { num: '10', label: 'Validación Experta' },
   guia:             { num: '11', label: 'Guía del Experimento' },
   tesis:            { num: '12', label: 'Tesis Doctoral' },
-  styles:           { num: '13', label: 'UI Styles' },
 };
 
 // Íconos de línea (24×24, trazo — mismo idioma visual que la imagen de
@@ -186,7 +185,6 @@ const NAV_ICON_PATHS = {
   experto:     '<path d="M12 2 4 5v6c0 5 3.4 8.4 8 9.9C16.6 19.4 20 16 20 11V5Z"/><path d="M9 12l2 2 4-4"/>',
   guia:        '<path d="M2 5.5C4 4 7 3.5 12 5.5c5-2 8-1.5 10 0v14c-2-1.5-5-2-10 0-5-2-8-1.5-10 0Z"/><line x1="12" y1="5.5" x2="12" y2="19.5"/>',
   tesis:       '<path d="M6 2h9l5 5v15H6z"/><polyline points="15 2 15 7 20 7"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/>',
-  styles:      '<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>',
 };
 function svgIcon(key) {
   return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${NAV_ICON_PATHS[key] || ''}</svg>`;

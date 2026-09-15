@@ -50,7 +50,7 @@ appLegaltechTesis/
 │   └── Dockerfile              # python:3.12-slim + Node.js (uipro-cli) + deps
 ├── frontend/
 │   ├── index.html              # Pantalla de Inicio (landing, "/"): carrusel-menú, único mapa de navegación
-│   ├── pages/                  # Las 13 páginas del dashboard, una por módulo (multi-page, no SPA)
+│   ├── pages/                  # Las 12 páginas del dashboard, una por módulo (multi-page, no SPA)
 │   │   ├── methodology.html    #   01 · Metodología
 │   │   ├── maltg.html          #   02 · MALTG · Arquitectura (KPIs)
 │   │   ├── ontology.html       #   03 · Ontología (grafo vis-network)
@@ -62,19 +62,18 @@ appLegaltechTesis/
 │   │   ├── adaptativo.html     #   09 · Adaptativo · MAPE-K
 │   │   ├── experto.html        #   10 · Validación Experta
 │   │   ├── guia.html           #   11 · Guía del Experimento
-│   │   ├── tesis.html          #   12 · Tesis Doctoral
-│   │   └── styles.html         #   13 · UI Styles
+│   │   └── tesis.html          #   12 · Tesis Doctoral
 │   ├── assets/                 # Todo el CSS/JS compartido vive aquí (nada suelto en frontend/)
 │   │   ├── css/                # 2 hojas de TEMA (color) + 2 hojas de ESTRUCTURA (forma)
 │   │   │   ├── nocturne.css    # TEMA OSCURO — todos los tokens de color de la app (por defecto)
 │   │   │   ├── aurora.css      # TEMA CLARO  — mismos tokens en claro; carga siempre al final
-│   │   │   ├── dashboard.css   # Estructura de las 13 páginas de pages/ (sin colores propios)
+│   │   │   ├── dashboard.css   # Estructura de las 12 páginas de pages/ (sin colores propios)
 │   │   │   └── inicio.css      # Estructura de index.html: carrusel, carátula y modal
 │   │   ├── js/
 │   │   │   ├── core.js         # Runtime compartido: header inyectado, tema, animación de arranque
 │   │   │   ├── sdtcj-render.js # Render SDT_CJ compartido por dt.html y simulacion.html
-│   │   │   ├── inicio.js       # Carrusel de index.html: carátula 00 + las 13 tarjetas de módulo
-│   │   │   └── tab-*.js        # Lógica propia de cada una de las 13 páginas (una por módulo)
+│   │   │   ├── inicio.js       # Carrusel de index.html: carátula 00 + las 12 tarjetas de módulo
+│   │   │   └── tab-*.js        # Lógica propia de cada una de las 12 páginas (una por módulo)
 │   │   └── partials/
 │   │       └── header.html     # Header (logo · módulo actual · ☰ Home/módulos), sin tabs ni botones sueltos
 │   └── flujo_procesal_alertas.html  # Vista independiente de flujo procesal COGEP con alertas de plazo
@@ -97,10 +96,10 @@ appLegaltechTesis/
 │       ├── salud_global_cache.json     # Caché del índice empírico procesal
 │       ├── sdt/                        # Gemelos digitales estructurales (7 .json), incl. SDT_CJ.json
 │       ├── LegalCase/                  # Expedientes/causas judiciales analizados (47 JSON + PDFs + 2 XLSX)
-│       ├── workflow/                   # Flujos BPMN de procedimientos COGEP (JSON/TXT/PDF)
 │       ├── gold/                       # Anotaciones gold standard + guía de anotación
 │       ├── law/                        # Normativa fuente (COGEP en PDF)
 │       └── architecture/               # Diagramas de arquitectura (PNG, no usado por la app)
+│   ├── workflow/                # Flujos BPMN de procedimientos COGEP (JSON/TXT/PDF) — volumen propio
 │   └── digitalShadow/           # Resultados de "04 Get Digital Shadow" / "05 Digital Shadow Maturity"
 │       ├── PROTOCOLO.md                # Protocolo de recolección documental (domain-agnostic)
 │       ├── SDT_CJ.json                 # Último SDT generado por el botón "Get" (regenerado cada corrida)
@@ -179,7 +178,7 @@ Inicio y las 13 páginas comparten:
 |------|-----|
 | `assets/css/nocturne.css` | **Modo oscuro** (por defecto). Tokens de color de toda la app + la piel Nocturne del dashboard. |
 | `assets/css/aurora.css`   | **Modo claro**. Redefine los mismos tokens en claro (estética *Corporate Clean*) y los ajustes de componente que sólo aplican en claro. |
-| `assets/css/dashboard.css`| Estructura de las 13 páginas — layout, componentes, animaciones. Sin colores propios. |
+| `assets/css/dashboard.css`| Estructura de las 12 páginas — layout, componentes, animaciones. Sin colores propios. |
 | `assets/css/inicio.css`   | Estructura de la pantalla de Inicio — carrusel, carátula y modal de detalle. |
 
 El orden de carga importa: (`dashboard.css` o `inicio.css`) → `nocturne.css` →
@@ -255,6 +254,7 @@ Inicializar el proyecto:
 docker compose down
 docker compose up --build
 docker compose up -d
+docker compose down
 
 ### Eso te lista todas las rutas que comparten el mismo contenido físico. Si aparece más de una ruta, ahí está la causa raíz.
 

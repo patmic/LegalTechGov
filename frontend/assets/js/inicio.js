@@ -67,8 +67,8 @@ const ITEMS = [
     num: "06", key: "workflow", title: "Workflow",
     desc: "Diagrama BPMN del flujo procesal COGEP (Sumario, Ordinario, Ejecución…) por expediente.",
     meta: "PROCESO BPMN", endpoint: "/api/workflow", href: "pages/workflow.html",
-    detail: "Parsea los JSON de workflow BPMN (storage/data/workflow) y los representa como grafo de flujo procesal: etapas, actos y transiciones del procedimiento COGEP seleccionado.",
-    stats: [["FORMATO", "BPMN → grafo"], ["PROCESOS", "Sumario, Ordinario…"], ["FUENTE", "data/workflow/*.json"]]
+    detail: "Parsea los JSON de workflow BPMN (storage/workflow) y los representa como grafo de flujo procesal: etapas, actos y transiciones del procedimiento COGEP seleccionado.",
+    stats: [["FORMATO", "BPMN → grafo"], ["PROCESOS", "Sumario, Ordinario…"], ["FUENTE", "storage/workflow/*.json"]]
   },
   {
     num: "07", key: "cogep", title: "Ontología COGEP · IA",
@@ -111,15 +111,7 @@ const ITEMS = [
     meta: "DOCUMENTO", endpoint: "múltiples endpoints", href: "pages/tesis.html",
     detail: "Resumen, 5 capítulos (Introducción, Estado del Arte, Metodología DSR, Propuesta y Resultados, Conclusiones) y bibliografía, con cifras que se leen en vivo desde la propia aplicación (causas analizadas, índice empírico…).",
     stats: [["CAPÍTULOS", "5 + resumen"], ["MÉTRICAS", "en vivo desde la app"], ["METODOLOGÍA", "Design Science Research"]]
-  },
-  {
-    num: "13", key: "styles", title: "UI Styles",
-    desc: "Catálogo de referencia de estilos, paletas y tipografías usado para diseñar el dashboard.",
-    meta: "DESIGN SYSTEM", endpoint: "referencia interna", href: "pages/styles.html",
-    detail: "Panel de referencia de diseño del propio dashboard: estilos catalogados, paletas de color por industria y combinaciones tipográficas (Google Fonts) — documentación interna del sistema visual.",
-    stats: [["ESTILOS", "67"], ["PALETAS", "161"], ["FUENTES", "57 pairings"]]
-  }
-];
+  },];
 
 // ── Tema (claro / oscuro) ──────────────────────────────────────────
 // Misma clave y mismo contrato que core.js en las 13 páginas, para que

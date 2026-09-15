@@ -1028,5 +1028,31 @@
     ],
     "prev_hash": "78bd077fa3e72d86",
     "hash": "bd2ea3b12544c333"
+  },
+  {
+    "id": 78,
+    "ts": "2026-09-15T06:19:22Z",
+    "tipo": "sistema",
+    "actor": "sistema/verificador",
+    "accion": "verificacion_integridad",
+    "detalle": "Corrida DS_corteconstitucional_20260915_044653: evidencia COMPROMETIDA.",
+    "refs": [
+      "DS_corteconstitucional_20260915_044653"
+    ],
+    "prev_hash": "bd2ea3b12544c333",
+    "hash": "dcb3a942c8136456"
+  },
+  {
+    "id": 79,
+    "ts": "2026-09-15T06:19:27Z",
+    "tipo": "sistema",
+    "actor": "sistema/scraper",
+    "accion": "captura_evidencia",
+    "detalle": "Corrida DS_funcionjudicial_20260915_061919: 11/11 fuentes capturadas con snapshot + SHA-256.",
+    "refs": [
+      "DS_funcionjudicial_20260915_061919"
+    ],
+    "prev_hash": "dcb3a942c8136456",
+    "hash": "7e8bac39a7989171"
   }
 ]

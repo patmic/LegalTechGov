@@ -241,7 +241,7 @@ function wfApplyData(wf){
   setTxt('wf-proc-name', wf.codigo ? `${wf.codigo} · ${wf.nombre}` : (wf.nombre||''));
   setTxt('wf-badge',     wf.nombre || 'WORKFLOW');
   setTxt('wf-hash',      wf.hash ? wf.hash.slice(0,8)+'…' : '—');
-  setTxt('wf-srcfile',   '/data/workflow/'+(wf.file||''));
+  setTxt('wf-srcfile',   '/workflow/'+(wf.file||''));
   const sel=document.getElementById('wf-file'); if(sel && wf.file) sel.value=wf.file;
   // second selector — processes contained in the selected file
   const psel=document.getElementById('wf-proc'), plbl=document.getElementById('wf-proc-lbl');
@@ -756,6 +756,18 @@ async function wfModalAnalizar(uid){
 
 // ── Dictamen IA simple sobre PDF (tab 09) ──
 
+// Aspecto y ritmo del foco que recorre la causa (botón "▶ Recorrido").
+// Un único sitio donde ajustarlo si hay que retocar tamaño o velocidad.
+const WF_TOKEN = {
+  color: '#796cbf',      // morado del botón de menú del header (.menu-btn)
+  r: 38.4,               // 19.2 × 2
+  stroke: 7.2,           // 3.6 × 2
+  font: 31.2,            // 15.6 × 2
+  opacidad: 0.55,        // relleno del disco (antes 0.25) — foco más sólido
+  desplazamiento: 1100,  // ms de la transición entre actividades (antes 550)
+  pausa: 1700,           // ms que el foco permanece en cada actividad (antes 850)
+};
+
 let wfPlayTimer=null;
 function wfPlay(){
   const c=wfState.causa, data=wfState.data;
@@ -769,8 +781,17 @@ function wfPlay(){
   if(!seq.length) return;
   const g=document.createElementNS('http://www.w3.org/2000/svg','g');
   g.id='wf-token'; g.setAttribute('class','wf-token');
-  g.innerHTML=`<circle r="16" fill="#00e5ff" fill-opacity="0.25" stroke="#00e5ff" stroke-width="3"/>
-               <text id="wf-token-n" text-anchor="middle" dy="5" font-family="'DM Mono',monospace" font-size="13" font-weight="700" fill="#00e5ff">1</text>`;
+  // El foco toma el morado del botón de menú del header (.menu-btn en
+  // dashboard.css: linear-gradient(155deg,#5d5294,#796cbf)) para que el
+  // recorrido se lea como parte del mismo sistema visual.
+  // Con el disco ya opaco al 55%, el número va en blanco: en morado sobre
+  // morado no se leería. El dy se deriva de la tipografía para que quede
+  // centrado sea cual sea el tamaño que se configure arriba.
+  g.innerHTML=`<circle r="${WF_TOKEN.r}" fill="${WF_TOKEN.color}" fill-opacity="${WF_TOKEN.opacidad}"
+                       stroke="${WF_TOKEN.color}" stroke-width="${WF_TOKEN.stroke}"/>
+               <text id="wf-token-n" text-anchor="middle" dy="${(WF_TOKEN.font*0.35).toFixed(1)}"
+                     font-family="'DM Mono',monospace"
+                     font-size="${WF_TOKEN.font}" font-weight="700" fill="#ffffff">1</text>`;
   root.appendChild(g);
   const info=document.getElementById('wf-causa-info');
   let i=0;
@@ -778,11 +799,11 @@ function wfPlay(){
     if(i>=seq.length){ wfPlayTimer=setTimeout(()=>{const t=document.getElementById('wf-token'); if(t)t.remove();},1500); return; }
     const p=seq[i], n=byId[p.nodeId];
     const cx=n.x+n.w/2, cy=n.y+n.h/2;
-    g.style.transition= i===0?'none':'transform 0.55s ease-in-out';
+    g.style.transition= i===0?'none':`transform ${WF_TOKEN.desplazamiento}ms ease-in-out`;
     g.style.transform=`translate(${cx}px,${cy}px)`;
     const t=g.querySelector('#wf-token-n'); if(t) t.textContent=p.seq;
     if(info) info.textContent=`▶ Paso ${p.seq}/${c.totalPasos} — ${p.nombre||''} · ${(p.fecha||'').slice(0,10)}`;
-    i++; wfPlayTimer=setTimeout(step, 850);
+    i++; wfPlayTimer=setTimeout(step, WF_TOKEN.pausa);
   };
   step();
 }

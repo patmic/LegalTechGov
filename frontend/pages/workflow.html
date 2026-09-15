@@ -25,9 +25,9 @@ window.addEventListener('DOMContentLoaded',()=>{ if(!window.vis){ const s=docume
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Nova+Mono&family=Outfit:wght@200;300;400;500;600;700;800;900&family=JetBrains+Mono:wght@300;400;600&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
 <!-- Estructura primero, luego las dos pieles de tema. El orden importa:
      dashboard.css (forma) → nocturne.css (oscuro) → aurora.css (claro). -->
-<link rel="stylesheet" href="../assets/css/dashboard.css?v=20260915">
-<link rel="stylesheet" href="../assets/css/nocturne.css?v=20260915">
-<link rel="stylesheet" href="../assets/css/aurora.css?v=20260915">
+<link rel="stylesheet" href="../assets/css/dashboard.css?v=20260915b">
+<link rel="stylesheet" href="../assets/css/nocturne.css?v=20260915b">
+<link rel="stylesheet" href="../assets/css/aurora.css?v=20260915b">
 <style>
 /* ── Animaciones flujo procesal (tab 06) + COGEP ─────────────────── */
 @keyframes wfDashMove { to { stroke-dashoffset: -48; } }
@@ -66,8 +66,8 @@ window.addEventListener('DOMContentLoaded',()=>{ if(!window.vis){ const s=docume
 .wf-chat { animation: wfChatIn .25s ease-out; }
 </style>
 <!-- Runtime compartido (header/nav, tema, animación de arranque) + lógica propia de esta página -->
-<script src="../assets/js/core.js?v=20260915" defer></script>
-<script src="../assets/js/tab-workflow.js?v=20260915" defer></script>
+<script src="../assets/js/core.js?v=20260915b" defer></script>
+<script src="../assets/js/tab-workflow.js?v=20260915b" defer></script>
 </head>
 <body data-page="workflow">
 
@@ -83,26 +83,26 @@ window.addEventListener('DOMContentLoaded',()=>{ if(!window.vis){ const s=docume
 
 <main>
 <div class="section active" id="sec-workflow">
-  <div class="stitle">WORKFLOW — Flujo Procesal <span id="wf-proc-name" style="color:var(--cyan)"></span></div>
+  <div class="stitle">WORKFLOW ❱❱ <span id="wf-proc-name" style="color:var(--cyan)"></span></div>
 
   <div class="panel">
     <div class="ph">
-      <div class="ptitle">Diagrama de Flujo Procesal — BPMN</div>
+      <div class="ptitle">Flujo Procesal — BPMN</div>
       <div style="display:flex;align-items:center;gap:.5rem;margin-left:auto;flex-wrap:wrap">
-        <label for="wf-file" style="font-size:.58rem;color:var(--t3);text-transform:uppercase;letter-spacing:.1em">Archivo JSON</label>
+        <label for="wf-file" style="font-size:.58rem;color:var(--t3);text-transform:uppercase;letter-spacing:.1em">storage/workflow/</label>
         <select id="wf-file" class="app-select" onchange="wfLoadFile(this.value)" style="min-width:190px">
           <option value="">Cargando…</option>
         </select>
         <label for="wf-proc" id="wf-proc-lbl" style="display:none;font-size:.58rem;color:var(--t3);text-transform:uppercase;letter-spacing:.1em">Proceso</label>
         <select id="wf-proc" class="app-select" onchange="wfLoadProcess(this.value)"
           style="display:none;min-width:190px;max-width:260px"></select>
-        <span class="pbadge" id="wf-badge">SUMARIO</span>
+        <!-- <span class="pbadge" id="wf-badge">SUMARIO</span> -->
       </div>
     </div>
-    <div class="src-bar">
+    <!-- <div class="src-bar">
       <span>Fuente:</span><span class="src-file" style="color:var(--gold)" id="wf-srcfile">/data/141_SUMARIO.json</span>
       <span class="vsep">·</span><span>Hash:</span><span class="src-ts" id="wf-hash">—</span>
-    </div>
+    </div> -->
     <div class="pbody">
       <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:.8rem;align-items:center">
         <button class="vis-ctrl-btn" onclick="wfZoom(1.25)">＋ Zoom</button>
