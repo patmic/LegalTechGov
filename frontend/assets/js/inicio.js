@@ -180,10 +180,11 @@ function coverCardHTML(it){
               title="Recargar la aplicación">
         <span class="cover-btn-icon">↺</span> Recargar
       </button>
-    </div>
-    <div class="mod-card-bottom">
-      <span class="mod-card-meta">${it.meta}</span>
     </div>`;
+  /* La carátula ya no lleva pie: "13 MÓDULOS · 70 ENDPOINTS" contaba la
+     API, no la tesis. Las otras doce cartas sí conservan el suyo, que
+     ahí sí dice algo del módulo ("DOCUMENTO", "MÉTODO FORMAL"…). El
+     campo meta de ITEMS[0] se mantiene por si vuelve a hacer falta. */
 }
 
 function moduleCardHTML(it, on){

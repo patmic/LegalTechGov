@@ -133,6 +133,24 @@ main.stage {
 .ring-b { animation: in-spin-rev 66s linear infinite; }
 .eyebrow { position: relative; font-size: 11px; letter-spacing: .3em; color: var(--color-neutral-600); }
 
+/* Autoría — tres líneas centradas. El nombre y las instituciones van en
+   el acento, porque son la firma; el año baja a tinta neutra para que
+   no compita. El tracking se afloja respecto al .eyebrow original: a
+   .3em un nombre propio se lee como una sigla. */
+.byline { display: flex; flex-direction: column; align-items: center; gap: 3px; text-align: center; }
+.byline-name {
+  font-size: 12.5px; font-weight: 700; letter-spacing: .16em;
+  text-transform: uppercase; color: var(--color-accent);
+}
+.byline-inst {
+  font-size: 10.5px; font-weight: 700; letter-spacing: .12em;
+  text-transform: uppercase; color: var(--color-accent);
+}
+.byline-year {
+  font-size: 10.5px; font-weight: 400; letter-spacing: .22em;
+  color: var(--color-neutral-500);
+}
+
 #cardStage {
   position: relative; width: 100%; flex: 0 1 auto; min-height: 0;
   height: clamp(216px,42vh,330px); perspective: 1400px;
