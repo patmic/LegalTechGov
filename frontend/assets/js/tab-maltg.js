@@ -261,10 +261,10 @@ function maltgRenderMain(data){
     const comps=(l.components||[]).join('  –  ');
     let inner = `
       <rect x="${BX}" y="${top}" width="${BW}" height="64" rx="14" fill="${l.fill||'#eee'}" stroke="${l.stroke||'#999'}" stroke-width="${drill?2.4:1.4}"/>
-      <text x="${cx}" y="${top+27}" text-anchor="middle" font-family="'Outfit',sans-serif" font-size="17" font-weight="700" fill="${MALTG_TX}">${wfEsc((l.name||'').toUpperCase())}</text>
-      <text x="${cx}" y="${top+50}" text-anchor="middle" font-family="'Space Grotesk',sans-serif" font-size="13" font-weight="700" fill="${MALTG_TX}">${wfEsc(comps)}</text>
-      <text x="${cx}" y="${top+82}" text-anchor="middle" font-family="'Outfit',sans-serif" font-size="12.5" font-style="italic" fill="${MALTG_SUB}">${wfEsc(l.description||'')}</text>
-      <text x="${BX-40}" y="${top+31}" text-anchor="end" font-family="'Space Grotesk',sans-serif" font-size="12.5" font-weight="700" letter-spacing="1" fill="${MALTG_RTX}">${wfEsc((l.role||'').toUpperCase())}</text>
+      <text x="${cx}" y="${top+27}" text-anchor="middle" font-family="'Plus Jakarta Sans',sans-serif" font-size="17" font-weight="700" fill="${MALTG_TX}">${wfEsc((l.name||'').toUpperCase())}</text>
+      <text x="${cx}" y="${top+50}" text-anchor="middle" font-family="'Plus Jakarta Sans',sans-serif" font-size="13" font-weight="700" fill="${MALTG_TX}">${wfEsc(comps)}</text>
+      <text x="${cx}" y="${top+82}" text-anchor="middle" font-family="'Plus Jakarta Sans',sans-serif" font-size="12.5" font-style="italic" fill="${MALTG_SUB}">${wfEsc(l.description||'')}</text>
+      <text x="${BX-40}" y="${top+31}" text-anchor="end" font-family="'Plus Jakarta Sans',sans-serif" font-size="12.5" font-weight="700" letter-spacing="1" fill="${MALTG_RTX}">${wfEsc((l.role||'').toUpperCase())}</text>
       <circle cx="${BX-24}" cy="${top+26}" r="8" fill="${l.roleColor||'#888'}"/>`;
     if(drill){
       inner += `<g id="maltg-foundation" transform="translate(${BX+12},${top+15})" style="cursor:pointer" opacity="0.9">
@@ -284,26 +284,26 @@ function maltgRenderMain(data){
   // el rol de la capa 3, "Operational Layer") que antes (capa 2).
   let cross='';
   (data.crossCutting||[]).forEach((c,i)=>{
-    cross += `<text x="10" y="${188+118+i*17}" font-family="'Outfit',sans-serif" font-size="11.5" fill="#374151">• ${wfEsc(c)}</text>`;
+    cross += `<text x="10" y="${188+118+i*17}" font-family="'Plus Jakarta Sans',sans-serif" font-size="11.5" fill="#374151">• ${wfEsc(c)}</text>`;
   });
 
   // governance council (caja punteada, bajo las capas)
   const ct=600, gc=data.governanceCouncil||{};
   const dims=gc.dimensions||[];
-  const chip=(x,y,w,h,t,fs)=>`<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="5" fill="#f3f4f6" stroke="#b9bfcc"/><text x="${x+w/2}" y="${y+h/2+4}" text-anchor="middle" font-family="'Outfit',sans-serif" font-size="${fs||11.5}" fill="#374151">${wfEsc(t)}</text>`;
+  const chip=(x,y,w,h,t,fs)=>`<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="5" fill="#f3f4f6" stroke="#b9bfcc"/><text x="${x+w/2}" y="${y+h/2+4}" text-anchor="middle" font-family="'Plus Jakarta Sans',sans-serif" font-size="${fs||11.5}" fill="#374151">${wfEsc(t)}</text>`;
   let council=`<rect x="${BX}" y="${ct}" width="420" height="120" rx="8" fill="none" stroke="#9aa0c0" stroke-width="1.5" stroke-dasharray="6 5"/>`;
   council += chip(BX+130,ct+12,150,26, gc.anchor||'Vision and Mission');
-  council += `<rect x="${BX+118}" y="${ct+46}" width="174" height="36" rx="5" fill="#eef0f5" stroke="#b9bfcc"/><text x="${BX+205}" y="${ct+69}" text-anchor="middle" font-family="'Outfit',sans-serif" font-size="11.5" font-weight="600" fill="#374151">${wfEsc(gc.name||'Digital Governance Council')}</text>`;
+  council += `<rect x="${BX+118}" y="${ct+46}" width="174" height="36" rx="5" fill="#eef0f5" stroke="#b9bfcc"/><text x="${BX+205}" y="${ct+69}" text-anchor="middle" font-family="'Plus Jakarta Sans',sans-serif" font-size="11.5" font-weight="600" fill="#374151">${wfEsc(gc.name||'Digital Governance Council')}</text>`;
   if(dims[0]) council+=chip(BX+12,ct+18,104,26,dims[0]);
   if(dims[1]) council+=chip(BX+28,ct+70,78,26,dims[1]);
   if(dims[2]) council+=chip(BX+306,ct+18,96,26,dims[2]);
   if(dims[3]) council+=chip(BX+306,ct+70,96,26,dims[3]);
 
   // impact legend — IZQUIERDA (junto al council)
-  let leg=`<text x="24" y="${ct+10}" font-family="'Space Grotesk',sans-serif" font-size="13" font-weight="700" letter-spacing="1.5" fill="#374151">IMPACT</text>`;
+  let leg=`<text x="24" y="${ct+10}" font-family="'Plus Jakarta Sans',sans-serif" font-size="13" font-weight="700" letter-spacing="1.5" fill="#374151">IMPACT</text>`;
   (data.impactLegend||[]).forEach((m,i)=>{
     const y=ct+34+i*24;
-    leg += `<circle cx="32" cy="${y-4}" r="7" fill="${m.color}"/><text x="48" y="${y}" font-family="'Outfit',sans-serif" font-size="12.5" fill="#374151">${wfEsc(m.level)}</text>`;
+    leg += `<circle cx="32" cy="${y-4}" r="7" fill="${m.color}"/><text x="48" y="${y}" font-family="'Plus Jakarta Sans',sans-serif" font-size="12.5" fill="#374151">${wfEsc(m.level)}</text>`;
   });
 
   // Escala reducida ~15% (0.92 → 0.78) para que el diagrama completo
@@ -326,8 +326,8 @@ function maltgRenderDetail(data){
 
   let defs=`<defs><marker id="maltg-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 1 L9 5 L0 9 z" fill="#374151"/></marker></defs>`;
   let spine=`<line x1="70" y1="${top0+30}" x2="70" y2="${top0+(subs.length-1)*stepY+boxH-30}" stroke="#333" stroke-width="2.5" stroke-dasharray="3 7"/>`;
-  spine += `<text x="34" y="${top0+(subs.length*stepY)/2}" transform="rotate(-90 34 ${top0+(subs.length*stepY)/2})" text-anchor="middle" font-family="'Space Grotesk',sans-serif" font-size="13" fill="#475569">${wfEsc(d.crossLayer||'')}</text>`;
-  let subtitle=`<text x="500" y="34" text-anchor="middle" font-family="'Space Grotesk',sans-serif" font-size="15" fill="#475569">${wfEsc(d.subtitle||'')}</text>`;
+  spine += `<text x="34" y="${top0+(subs.length*stepY)/2}" transform="rotate(-90 34 ${top0+(subs.length*stepY)/2})" text-anchor="middle" font-family="'Plus Jakarta Sans',sans-serif" font-size="13" fill="#475569">${wfEsc(d.crossLayer||'')}</text>`;
+  let subtitle=`<text x="500" y="34" text-anchor="middle" font-family="'Plus Jakarta Sans',sans-serif" font-size="15" fill="#475569">${wfEsc(d.subtitle||'')}</text>`;
 
   let bodies='', tags='', trans='', arrows='', nodes='';
   subs.forEach((s,i)=>{
@@ -335,16 +335,16 @@ function maltgRenderDetail(data){
     const items=(s.items||[]).join('  ·  ')+(s.note?('  ('+s.note+')'):'');
     const lines=wfWrap(items, 64, 3);
     const lh=21, startY=cy+8 - ((lines.length-1)*lh)/2;
-    const tspans=lines.map((ln,k)=>`<text x="440" y="${(startY+k*lh).toFixed(0)}" text-anchor="middle" font-family="'Space Grotesk',sans-serif" font-size="14" fill="#374151">${wfEsc(ln)}</text>`).join('');
+    const tspans=lines.map((ln,k)=>`<text x="440" y="${(startY+k*lh).toFixed(0)}" text-anchor="middle" font-family="'Plus Jakarta Sans',sans-serif" font-size="14" fill="#374151">${wfEsc(ln)}</text>`).join('');
     bodies += `<g>
       <rect x="120" y="${top}" width="640" height="${boxH}" rx="10" fill="${s.fill||'#eee'}" stroke="${s.stroke||'#888'}" stroke-width="2.4"/>
-      <text x="140" y="${top+30}" font-family="'Outfit',sans-serif" font-size="15.5" font-weight="800" fill="${s.titleColor||'#333'}">${wfEsc('LAYER '+(s.order||i+1)+' — '+(s.name||'').toUpperCase()+(s.standard?(' ('+s.standard+')'):''))}</text>
+      <text x="140" y="${top+30}" font-family="'Plus Jakarta Sans',sans-serif" font-size="15.5" font-weight="800" fill="${s.titleColor||'#333'}">${wfEsc('LAYER '+(s.order||i+1)+' — '+(s.name||'').toUpperCase()+(s.standard?(' ('+s.standard+')'):''))}</text>
       ${tspans}
     </g>`;
     // left spine node
     nodes += `<circle cx="70" cy="${cy}" r="9" fill="#fff" stroke="#444" stroke-width="2"/><circle cx="70" cy="${cy}" r="3.4" fill="#444"/>`;
     // right tag
-    if(s.tag) tags += `<text x="800" y="${cy+5}" font-family="'Outfit',sans-serif" font-size="16" font-weight="800" fill="${s.titleColor||'#333'}">${wfEsc('"'+s.tag+'"')}</text>`;
+    if(s.tag) tags += `<text x="800" y="${cy+5}" font-family="'Plus Jakarta Sans',sans-serif" font-size="16" font-weight="800" fill="${s.titleColor||'#333'}">${wfEsc('"'+s.tag+'"')}</text>`;
     // arrow + transition label to next
     if(i<subs.length-1){
       const ax=440, y1=top+boxH, y2=top+stepY;
@@ -353,8 +353,8 @@ function maltgRenderDetail(data){
       if(tr){
         const parts=tr.split('→');
         const ty=y1+gap/2;
-        trans += `<text x="800" y="${ty-2}" font-family="'Outfit',sans-serif" font-size="12.5" fill="#64748b">${wfEsc((parts[0]||'').trim())}</text>`+
-                 `<text x="800" y="${ty+14}" font-family="'Outfit',sans-serif" font-size="12.5" fill="#64748b">→ ${wfEsc((parts[1]||'').trim())}</text>`;
+        trans += `<text x="800" y="${ty-2}" font-family="'Plus Jakarta Sans',sans-serif" font-size="12.5" fill="#64748b">${wfEsc((parts[0]||'').trim())}</text>`+
+                 `<text x="800" y="${ty+14}" font-family="'Plus Jakarta Sans',sans-serif" font-size="12.5" fill="#64748b">→ ${wfEsc((parts[1]||'').trim())}</text>`;
       }
     }
   });
@@ -412,7 +412,7 @@ function _injectPowerCardCSS(){
   .skcard .line-container .line{ width:100%; background:#fff; }
   .skcard .vertical .day > p{ position:absolute; height:20%; bottom:0; margin-bottom:-3px; opacity:.7; font-size:10px; left:50%; transform:translateX(-50%); color:#fff; }
   .skcard .vertical .day .hidden{ opacity:0; }
-  .skcard .header .content .title{ margin-top:18px; font-size:22px; line-height:28px; text-align:center; font-family:var(--font-accent,'Syne'); }
+  .skcard .header .content .title{ margin-top:18px; font-size:22px; line-height:28px; text-align:center; font-family:var(--font-accent); }
   .skcard .header .content .date{ width:100%; opacity:.82; text-align:center; font-size:12px; }
   .skcard .header .content .float{ position:absolute; z-index:1; width:50px; height:50px; top:50%; right:calc(50% - 25px); opacity:0;
     border-radius:100%; background:var(--c2); transition:transform .3s ${EB} 0s, opacity 0s ${EB} 0s; }
@@ -433,7 +433,7 @@ function _injectPowerCardCSS(){
   /* —— info (madurez) —— */
   .skcard .info{ padding:14px 20px 20px; color:var(--t2); border-top:1px solid var(--bdr); }
   .skcard .info > p{ font-size:.74rem; line-height:1.3; }
-  .skcard .info .counter{ margin-top:8px; color:var(--t1); font-size:42px; font-weight:400; line-height:40px; font-family:var(--font-display,'Outfit'); }
+  .skcard .info .counter{ margin-top:8px; color:var(--t1); font-size:42px; font-weight:400; line-height:40px; font-family:var(--font-display); }
   .skcard .info .counter .unit{ font-size:14px; color:var(--t3); }`;
   document.head.appendChild(st);
 }

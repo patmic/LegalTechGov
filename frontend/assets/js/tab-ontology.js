@@ -47,10 +47,10 @@ function buildVisOptions(layout){
       shape: 'dot',
       scaling: { min: 10, max: 38, label: { min: 8, max: 16 } },
       font: {
-        face: 'Space Grotesk, sans-serif',
+        face: 'Plus Jakarta Sans, sans-serif',
         color: font,
         size: 11,
-        bold: { face: 'Outfit, sans-serif', mod: 'bold' },
+        bold: { face: 'Plus Jakarta Sans, sans-serif', mod: 'bold' },
       },
       borderWidth: 2,
       borderWidthSelected: 3,
@@ -64,7 +64,7 @@ function buildVisOptions(layout){
       shadow: false,
       arrows: { to: { enabled: true, scaleFactor: 0.5 } },
       font: {
-        face: 'DM Mono, monospace',
+        face: 'IBM Plex Mono, monospace',
         color: T.edgeFont,
         size: 9,
         align: 'middle',
@@ -366,7 +366,7 @@ function ontoTipShow(nodeId){
     if(names.length) refs = names.slice(0,5).join(', ') + (names.length>5 ? ` (+${names.length-5})` : '');
   }
   tip.innerHTML =
-    `<div style="color:${c};font-weight:700;font-size:.74rem;margin-bottom:4px;font-family:'Syne',sans-serif">${wfEsc(n._fulllabel || n.label)}</div>`
+    `<div style="color:${c};font-weight:700;font-size:.74rem;margin-bottom:4px;font-family:'Plus Jakarta Sans',sans-serif">${wfEsc(n._fulllabel || n.label)}</div>`
     + (desc ? `<div style="color:var(--t2);font-size:.62rem;line-height:1.5;margin-bottom:4px">${wfEsc(desc)}</div>` : '')
     + `<div style="font-size:.58rem;color:var(--t3)">${wfEsc((n._type||'').toUpperCase())}${n._score ? ` · Score ${wfEsc(n._score)}%` : ''}${n._cluster ? ` · ${wfEsc(n._cluster)}` : ''}</div>`
     + (refs ? `<div style="font-size:.58rem;color:var(--t3);margin-top:3px">Conexiones: <span style="color:${c}">${wfEsc(refs)}</span></div>` : '');
@@ -416,7 +416,7 @@ function buildTooltip(n){
   const el = document.createElement('div');
   el.style.cssText = 'line-height:1.5;min-width:160px';
   el.innerHTML = `
-    <div style="color:${c};font-weight:700;font-size:.8rem;margin-bottom:4px;font-family:'Outfit',sans-serif">${n.label}</div>
+    <div style="color:${c};font-weight:700;font-size:.8rem;margin-bottom:4px;font-family:'Plus Jakarta Sans',sans-serif">${n.label}</div>
     ${n.description ? `<div style="color:#7a8db0;font-size:.65rem;margin-bottom:6px;max-width:220px">${n.description}</div>` : ''}
     <div style="display:flex;gap:.9rem;font-size:.62rem">
       <span style="color:#3d5070">Tipo: <span style="color:${c}">${(n.type||'').toUpperCase()}</span></span>
@@ -554,7 +554,7 @@ function clusterByField(field, shape){
         label: lbl + `\n(${groups[key].length})`,
         value: groups[key].length * 8 + 26,
         color: { background: isDark ? '#0d1525' : '#fff', border: c, highlight:{ background: c+'22', border: c } },
-        font:  { size: 14, color: isDark ? '#e8f0ff' : '#0d1526', face:'Outfit,sans-serif', bold:{mod:'bold'} },
+        font:  { size: 14, color: isDark ? '#e8f0ff' : '#0d1526', face:'Plus Jakarta Sans,sans-serif', bold:{mod:'bold'} },
         borderWidth: 3,
         shape: shape,
         shadow: { enabled:true, size:20, color: c+'44', x:0, y:0 },

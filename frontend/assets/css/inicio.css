@@ -20,6 +20,8 @@ button:focus-visible, a:focus-visible { outline: 2px solid var(--color-accent); 
 @keyframes in-spin    { to { transform: rotate(360deg) } }
 @keyframes in-spin-rev{ to { transform: rotate(-360deg) } }
 
+html, body { height: 100%; margin: 0; overflow: hidden; }
+
 #app {
   height: 100vh; overflow: hidden; position: relative;
   display: flex; flex-direction: column;
@@ -27,43 +29,103 @@ button:focus-visible, a:focus-visible { outline: 2px solid var(--color-accent); 
   font-family: var(--font-body); font-weight: 300;
   transition: background .35s, color .35s;
 }
+/* ── Fondo del lienzo ─────────────────────────────────────────────
+   Tres capas absolutas dentro de #app, en orden de pintado. Ninguna
+   lleva z-index: la cabecera y el escenario van después en el DOM y
+   son position:relative, así que quedan encima por orden natural.
+   Todas son pointer-events:none — el fondo no intercepta clics.     */
+
+/* 1 · Halo de acento detrás de la carta. Más tenue que antes: ahora
+      convive con la malla y no debe lavarla. */
 .bg-glow {
   position: absolute; inset: 0; pointer-events: none;
   background: radial-gradient(900px 520px at 50% 42%,
-    color-mix(in srgb, var(--color-accent) 16%, var(--color-bg)) 0%,
+    color-mix(in srgb, var(--color-accent) 10%, var(--color-bg)) 0%,
     var(--color-bg) 72%);
 }
 
+/* 2 · Malla curva. El SVG vive inline en index.html (paso 100 sobre un
+      lienzo 1200×800, deformado con distorsión de barril) para que el
+      trazo pueda salir de una variable CSS y siga al tema. El contenedor
+      se desborda un poco por los cuatro lados: la deformación empuja las
+      líneas hacia fuera y así no se ve dónde terminan. La máscara radial
+      las funde antes de llegar al borde — sin ella, la rejilla compite
+      con el contenido en las esquinas. */
+.bg-grid {
+  position: absolute; inset: -6% -4% -2%; pointer-events: none;
+  opacity: var(--hero-grid-alpha);
+  -webkit-mask-image: radial-gradient(ellipse 78% 86% at 50% 42%,
+                      #000 34%, transparent 92%);
+          mask-image: radial-gradient(ellipse 78% 86% at 50% 42%,
+                      #000 34%, transparent 92%);
+}
+.bg-grid svg { width: 100%; height: 100%; display: block; }
+.bg-grid path {
+  fill: none;
+  stroke: var(--hero-grid-line);
+  stroke-width: 1;
+  /* El trazo no engorda cuando el SVG se estira al viewport. */
+  vector-effect: non-scaling-stroke;
+}
+
+/* 3 · Tres halos radiales asomando por abajo: violeta a la izquierda,
+      azul al centro y menta a la derecha. Los centros caen por debajo
+      del 100% a propósito — se ve la parte alta de cada halo, no el
+      círculo entero. El blur suaviza la banda de corte del degradado. */
+.bg-halos {
+  position: absolute; inset: 46% -12% -12%; pointer-events: none;
+  opacity: var(--hero-halo-alpha);
+  filter: blur(18px);
+  background:
+    radial-gradient(ellipse 52% 70% at 22%  96%, var(--halo-violet) 0%, transparent 70%),
+    radial-gradient(ellipse 62% 74% at 58% 104%, var(--halo-blue)   0%, transparent 72%),
+    radial-gradient(ellipse 40% 56% at 92%  94%, var(--halo-mint)   0%, transparent 72%);
+}
+
 /* ── Cabecera ─────────────────────────────────────────────────── */
-header.top {
-  position: relative; display: flex; align-items: center; justify-content: space-between;
-  gap: 20px; padding: 16px 30px;
-  border-bottom: 1px solid var(--color-neutral-900); flex: 0 0 auto;
+/* ── Pie del escenario ────────────────────────────────────────────
+   El encabezado (marca + estado de API + reloj) se retiró: el carrusel
+   ocupa ahora la pantalla entera y lo único que sobrevive es el reloj,
+   centrado bajo los controles. Sin barra superior, nada compite con la
+   carta del módulo por la primera mirada.                            */
+.stage-time {
+  position: relative; flex: 0 0 auto;
+  display: flex; align-items: center; justify-content: center; gap: 12px;
 }
-.brand { display: flex; align-items: baseline; gap: 14px; min-width: 0; }
-.brand b {
-  font-family: var(--font-heading); font-weight: 500; font-size: 15px;
-  letter-spacing: .18em; white-space: nowrap;
+.clock {
+  font-family: var(--font-mono);
+  font-size: 12px; letter-spacing: .2em; white-space: nowrap;
+  color: var(--color-neutral-500);
+  font-variant-numeric: tabular-nums;   /* los dígitos no bailan al pasar el segundo */
 }
-.brand span {
-  font-size: 11px; letter-spacing: .16em; color: var(--color-neutral-600);
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-}
-.hdr-right {
-  display: flex; align-items: center; gap: 18px; flex: 0 0 auto;
-  font-size: 11px; letter-spacing: .12em; color: var(--color-neutral-500);
-}
-.api-pill { display: flex; align-items: center; gap: 8px; white-space: nowrap; }
+
+/* El estado de la API sigue en el DOM porque inicio.js escribe en él,
+   pero no se muestra. Oculto de la forma accesible: fuera de la vista
+   y sin tamaño, pero leíble por lector de pantalla — display:none lo
+   silenciaría también para ellos. */
+.api-pill { display: flex; align-items: center; gap: 8px; white-space: nowrap;
+            font-size: 11px; letter-spacing: .12em; color: var(--color-neutral-500); }
 .api-dot  { width: 6px; height: 6px; border-radius: 50%; animation: in-pulse 2.4s ease-in-out infinite; }
-.clock    { white-space: nowrap; color: var(--color-neutral-300); }
+.visually-hidden {
+  position: absolute; width: 1px; height: 1px; margin: -1px;
+  padding: 0; border: 0; overflow: hidden; white-space: nowrap;
+  clip-path: inset(50%);
+}
 
 /* ── Escenario del carrusel ───────────────────────────────────── */
 main.stage {
   position: relative; flex: 1; display: flex; flex-direction: column;
   align-items: center; justify-content: center; gap: clamp(14px,3.2vh,34px);
-  min-height: 0; overflow-y: auto; overflow-x: hidden; padding: 14px 0;
+  min-height: 0; padding: 14px 0;
+  /* El escenario NO se desplaza. Es una composición centrada y fija: los
+     anillos y las cartas laterales se salen del marco a propósito, y con
+     overflow-y:auto ese desborde decorativo sacaba una barra de scroll a
+     todo lo alto de la ventana. Lo que sí hace falta es que la
+     composición quepa en ventanas bajas — de eso se encarga el bloque
+     @media (max-height) del final de esta hoja. */
+  overflow: hidden;
 }
-.rings { position: absolute; width: 640px; height: 640px; pointer-events: none; opacity: .5; }
+.rings { position: absolute; width: 640px; height: 640px; pointer-events: none; opacity: .28; }
 .rings svg { position: absolute; inset: 0; width: 100%; height: 100%; }
 .ring-a { animation: in-spin 44s linear infinite; }
 .ring-b { animation: in-spin-rev 66s linear infinite; }
@@ -259,4 +321,30 @@ main.stage {
 .boot-msg {
   font-family: var(--font-heading); font-size: 12px;
   letter-spacing: .15em; color: var(--color-accent-300); text-transform: uppercase;
+}
+
+/* ── Ventanas bajas ───────────────────────────────────────────────
+   Como el escenario ya no se desplaza, la composición tiene que caber.
+   Por debajo de 720px de alto la carta y los anillos se comprimen para
+   que los controles y el reloj sigan visibles; por debajo de 560px se
+   apura un paso más. Los tamaños siguen saliendo de clamp(), así que
+   entre umbrales la transición es continua, no un salto.            */
+@media (max-height: 720px) {
+  main.stage      { gap: clamp(10px, 2.2vh, 20px); padding: 10px 0; }
+  #cardStage      { height: clamp(190px, 38vh, 280px); }
+  .rings          { width: 500px; height: 500px; }
+  .mod-card       { padding: 20px 22px 18px; gap: 11px; }
+  .mod-card-title { font-size: 19px; }
+  .mod-card-desc  { font-size: 12.5px; line-height: 1.5; }
+  .cover-title    { font-size: 25px; }
+  .cover-desc     { font-size: 11.5px; }
+}
+@media (max-height: 560px) {
+  main.stage      { gap: 8px; padding: 6px 0; }
+  #cardStage      { height: clamp(168px, 36vh, 230px); }
+  .rings          { width: 380px; height: 380px; }
+  .mod-card       { padding: 16px 18px 14px; gap: 9px; }
+  .mod-card-title { font-size: 17px; }
+  .mod-card-desc  { font-size: 11.5px; }
+  .eyebrow        { display: none; }
 }

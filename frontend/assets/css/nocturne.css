@@ -23,7 +23,7 @@
    Ningún componente debe llevar colores literales: todos salen de los
    tokens de aquí, para que el tema claro pueda reemplazarlos.
    ═══════════════════════════════════════════════════════════════════ */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap');
 
 :root,
 :root[data-theme="dark"] {
@@ -73,9 +73,9 @@
   --color-section-ghost: #4c5397;
 
   /* Tipografía, espaciado y radios (compartidos por ambos temas) */
-  --font-heading: "Inter", system-ui, sans-serif;
+  --font-heading: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
   --font-heading-weight: 500;
-  --font-body: "Inter", system-ui, sans-serif;
+  --font-body: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
 
   --space-1: 2.8px;  --space-2: 5.6px; --space-3: 8.4px;
   --space-4: 11.2px; --space-6: 16.8px; --space-8: 22.4px;
@@ -173,6 +173,55 @@
   --elev-3: 0 8px 32px rgba(0,0,0,.6), 0 0 0 1px rgba(255,255,255,.06);
   --elev-4: 0 16px 64px rgba(0,0,0,.7), 0 0 0 1px rgba(255,255,255,.08);
 
+  /* ── E · Controles de interfaz (assets/css/controls.css) ──────────
+     Geometría y color de botones, campos, selects y segmentados. Los
+     nombres son de ROL, no de tono: aurora.css redefine sólo los que
+     llevan literal (los que son var(--otro-token) se resuelven solos
+     en cada tema). Ver la cabecera de controls.css.                  */
+  --ctl-r-pill: 999px;
+  --ctl-r-lg:   16px;
+  --ctl-r-md:   12px;
+  --ctl-r-sm:   8px;
+  --ctl-motion: .18s ease;
+
+  --ctl-surface:     var(--color-surface);
+  --ctl-surface-2:   #2b2e3f;              /* campo deshabilitado */
+  --ctl-ink:         var(--t1);
+  --ctl-ink-2:       var(--t2);
+  --ctl-ink-3:       var(--t3);
+  --ctl-line:        var(--color-neutral-800);
+  --ctl-line-strong: var(--color-neutral-700);
+
+  --ctl-accent:      var(--color-accent);
+  --ctl-accent-soft: color-mix(in srgb, var(--color-accent) 14%, transparent);
+  --ctl-focus:       var(--color-accent-400);
+  --ctl-focus-ring:  color-mix(in srgb, var(--color-accent) 26%, transparent);
+
+  /* Píldora del estado activo (segmentado, .vis-ctrl-btn.active) y
+     tinta sobre un botón lleno de color: en oscuro los tonos llegan
+     claros, así que encima va tinta oscura. */
+  --ctl-pill-bg:  var(--color-accent);
+  --ctl-pill-ink: #12101f;
+  --ctl-on-tone:  #12101f;
+
+  --ctl-track-bg:  rgba(255,255,255,.05);
+  --ctl-track-bdr: rgba(255,255,255,.10);
+
+  --ctl-shadow-field: 0 26px 60px -24px rgba(0,0,0,.75), 0 3px 8px -2px rgba(0,0,0,.45);
+  --ctl-shadow-pill:  0 6px 16px -6px rgba(0,0,0,.70);
+  --ctl-shadow-track: 0 10px 30px -18px rgba(0,0,0,.60);
+
+  /* ── F · Fondo de la portada (inicio.css) ─────────────────────────
+     Malla curva y los tres halos del borde inferior. Sobre el índigo
+     de Nocturne los halos van saturados y oscuros: son luz que sube
+     desde abajo, no niebla clara. */
+  --hero-grid-line:  #6d83a3;
+  --hero-grid-alpha: .26;
+  --hero-halo-alpha: .60;
+  --halo-blue:       #1e4f8f;
+  --halo-violet:     #3a3a86;
+  --halo-mint:       #16513b;
+
 }
 
 /* ═══════════════════════════════════════════════════════════════════
@@ -244,19 +293,9 @@
   border-color: var(--color-accent-700);
 }
 
-/* ── Controles de las visualizaciones (vis-network: Ontología, Simulación) ── */
-:root[data-theme="dark"] .vis-ctrl-btn {
-  background: var(--color-surface);
-  border: 1px solid var(--color-neutral-800);
-  color: var(--color-neutral-400);
-  box-shadow: none;
-}
-:root[data-theme="dark"] .vis-ctrl-btn:hover,
-:root[data-theme="dark"] .vis-ctrl-btn.active {
-  border-color: var(--color-accent);
-  color: var(--color-accent);
-  box-shadow: none;
-}
+/* ── Controles (botones, campos, selects, segmentados) ──────────────
+   Ya no viven aquí: assets/css/controls.css los define una sola vez
+   para los dos temas, a partir de los tokens --ctl-* de arriba.     */
 
 /* ── Superficie del grafo (Ontología y Simulación 3D) ───────────── */
 :root[data-theme="dark"] #onto-vis {

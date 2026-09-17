@@ -66,7 +66,7 @@ async function initCogepTab(){
       size: n.r? n.r*1.5 : 14,
       color:{background:(COGEP_COLORS[n.type]||'#888')+'33', border:COGEP_COLORS[n.type]||'#888',
              highlight:{background:(COGEP_COLORS[n.type]||'#888')+'66', border:'#fff'}},
-      font:{color:isDark?'#e8f0ff':'#1a2438', size:11, face:'Space Grotesk'},
+      font:{color:isDark?'#e8f0ff':'#1a2438', size:11, face:'Plus Jakarta Sans'},
       _meta:n
     })));
     const edges=new vis.DataSet(g.links.map((l,i)=>({

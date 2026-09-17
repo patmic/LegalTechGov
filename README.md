@@ -68,7 +68,8 @@ appLegaltechTesis/
 │   │   │   ├── nocturne.css    # TEMA OSCURO — todos los tokens de color de la app (por defecto)
 │   │   │   ├── aurora.css      # TEMA CLARO  — mismos tokens en claro; carga siempre al final
 │   │   │   ├── dashboard.css   # Estructura de las 12 páginas de pages/ (sin colores propios)
-│   │   │   └── inicio.css      # Estructura de index.html: carrusel, carátula y modal
+│   │   │   ├── inicio.css      # Estructura de index.html: carrusel, carátula y modal
+│   │   │   └── controls.css    # Controles: botones, campos, selects, segmentados (carga la ÚLTIMA)
 │   │   ├── js/
 │   │   │   ├── core.js         # Runtime compartido: header inyectado, tema, animación de arranque
 │   │   │   ├── sdtcj-render.js # Render SDT_CJ compartido por dt.html y simulacion.html
@@ -180,12 +181,24 @@ Inicio y las 13 páginas comparten:
 | `assets/css/aurora.css`   | **Modo claro**. Redefine los mismos tokens en claro (estética *Corporate Clean*) y los ajustes de componente que sólo aplican en claro. |
 | `assets/css/dashboard.css`| Estructura de las 12 páginas — layout, componentes, animaciones. Sin colores propios. |
 | `assets/css/inicio.css`   | Estructura de la pantalla de Inicio — carrusel, carátula y modal de detalle. |
+| `assets/css/controls.css` | **Controles de interfaz** — botones (`.ctl-btn`), `.vis-ctrl-btn`, selects, campos de texto, `.searchfield`, `.segmented`, range, file y casillas. Sin literales de color: todo sale de los tokens `--ctl-*`. |
 
 El orden de carga importa: (`dashboard.css` o `inicio.css`) → `nocturne.css` →
-`aurora.css`. Primero la estructura y después las dos pieles, para que cada
-tema gane por cascada sin `!important` extra. Al añadir un componente, usar
-siempre `var(--token)`; si hace falta un color nuevo, declararlo en **ambos**
-temas.
+`aurora.css` → `controls.css`. Primero la estructura, después las dos pieles y
+al final los controles, para que cada capa gane por cascada sin `!important`
+extra. Al añadir un componente, usar siempre `var(--token)`; si hace falta un
+color nuevo, declararlo en **ambos** temas.
+
+Los controles siguen la geometría de la hoja de especímenes *Careers Explorer*
+(píldora de radio completo, campo de búsqueda compuesto, control segmentado,
+anillo de foco de 2px, transiciones de .18s) con la paleta de la casa: la
+referencia aportó la forma, no el color. Sus tokens son los `--ctl-*` del
+bloque **E** de `nocturne.css` / `aurora.css`. En vez de escribir
+`<button style="…">` en cada página, usar `.ctl-btn` (+ `--solid`, `--sm`,
+`--block` y el tono: `--cyan`, `--green`, `--gold`, `--rose`, `--violet`,
+`--indigo`) y `.ctl-input` para los campos. Un `.segmented` con el atributo
+`data-segmented` queda cableado solo: `initSegmented()` en `core.js` mueve
+`aria-selected` al pulsar.
 
 El modo oscuro es el mismo en toda la aplicación: la pantalla de Inicio y las
 13 páginas comparten fondo índigo (`#161826`), superficies planas con filete de
@@ -195,8 +208,21 @@ el tono: lo usan ~50 sitios entre CSS y `tab-*.js`, así que se remapea en vez
 de renombrarse. Los colores que codifican significado (estado procesal, capas
 de la ontología, series de gráficos) conservan su tono en ambos temas.
 
+**Tipografía.** Toda la aplicación usa una sola familia de texto,
+**Plus Jakarta Sans**, y una monoespaciada, **IBM Plex Mono**, para los datos
+duros (hashes, IDs de causa, cifras en columna, código). Los cuatro roles de
+`dashboard.css` —`--font-display`, `--font-ui`, `--font-accent`, `--font-mono`—
+y los dos de `nocturne.css` —`--font-heading`, `--font-body`— se conservan
+porque los nombran ~200 sitios entre CSS y `tab-*.js`, pero ya no distinguen
+familia sino intención: la jerarquía la llevan el peso y el tracking. Nunca
+escribir el nombre de la fuente a mano; usar `var(--font-…)`. Las dos
+excepciones son inevitables: el SVG que generan los `tab-*.js` (un atributo de
+presentación no resuelve `var()`) y las etiquetas de vis-network (se pintan en
+`<canvas>`, que no lee CSS) — ahí va el nombre literal.
+
 `flujo_procesal_alertas.html` es autocontenida (no carga estas hojas) y replica
-la paleta Nocturne en su propio `:root`.
+la paleta Nocturne en su propio `:root`; también carga las dos familias por su
+cuenta.
 
 **Tablas y grillas** comparten un solo componente, `.dtable` (definido en
 `dashboard.css`, tema-aware): fila compacta con separador punteado, columna
