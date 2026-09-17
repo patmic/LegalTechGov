@@ -211,6 +211,17 @@
   --ctl-shadow-pill:  0 6px 16px -6px rgba(0,0,0,.70);
   --ctl-shadow-track: 0 10px 30px -18px rgba(0,0,0,.60);
 
+  /* ── F · Fondo de la portada (inicio.css) ─────────────────────────
+     Malla curva y los tres halos del borde inferior. Sobre el índigo
+     de Nocturne los halos van saturados y oscuros: son luz que sube
+     desde abajo, no niebla clara. */
+  --hero-grid-line:  #6d83a3;
+  --hero-grid-alpha: .26;
+  --hero-halo-alpha: .60;
+  --halo-blue:       #1e4f8f;
+  --halo-violet:     #3a3a86;
+  --halo-mint:       #16513b;
+
 }
 
 /* ═══════════════════════════════════════════════════════════════════

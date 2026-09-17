@@ -27,11 +27,57 @@ button:focus-visible, a:focus-visible { outline: 2px solid var(--color-accent); 
   font-family: var(--font-body); font-weight: 300;
   transition: background .35s, color .35s;
 }
+/* ── Fondo del lienzo ─────────────────────────────────────────────
+   Tres capas absolutas dentro de #app, en orden de pintado. Ninguna
+   lleva z-index: la cabecera y el escenario van después en el DOM y
+   son position:relative, así que quedan encima por orden natural.
+   Todas son pointer-events:none — el fondo no intercepta clics.     */
+
+/* 1 · Halo de acento detrás de la carta. Más tenue que antes: ahora
+      convive con la malla y no debe lavarla. */
 .bg-glow {
   position: absolute; inset: 0; pointer-events: none;
   background: radial-gradient(900px 520px at 50% 42%,
-    color-mix(in srgb, var(--color-accent) 16%, var(--color-bg)) 0%,
+    color-mix(in srgb, var(--color-accent) 10%, var(--color-bg)) 0%,
     var(--color-bg) 72%);
+}
+
+/* 2 · Malla curva. El SVG vive inline en index.html (paso 100 sobre un
+      lienzo 1200×800, deformado con distorsión de barril) para que el
+      trazo pueda salir de una variable CSS y siga al tema. El contenedor
+      se desborda un poco por los cuatro lados: la deformación empuja las
+      líneas hacia fuera y así no se ve dónde terminan. La máscara radial
+      las funde antes de llegar al borde — sin ella, la rejilla compite
+      con el contenido en las esquinas. */
+.bg-grid {
+  position: absolute; inset: -6% -4% -2%; pointer-events: none;
+  opacity: var(--hero-grid-alpha);
+  -webkit-mask-image: radial-gradient(ellipse 78% 86% at 50% 42%,
+                      #000 34%, transparent 92%);
+          mask-image: radial-gradient(ellipse 78% 86% at 50% 42%,
+                      #000 34%, transparent 92%);
+}
+.bg-grid svg { width: 100%; height: 100%; display: block; }
+.bg-grid path {
+  fill: none;
+  stroke: var(--hero-grid-line);
+  stroke-width: 1;
+  /* El trazo no engorda cuando el SVG se estira al viewport. */
+  vector-effect: non-scaling-stroke;
+}
+
+/* 3 · Tres halos radiales asomando por abajo: violeta a la izquierda,
+      azul al centro y menta a la derecha. Los centros caen por debajo
+      del 100% a propósito — se ve la parte alta de cada halo, no el
+      círculo entero. El blur suaviza la banda de corte del degradado. */
+.bg-halos {
+  position: absolute; inset: 46% -12% -12%; pointer-events: none;
+  opacity: var(--hero-halo-alpha);
+  filter: blur(18px);
+  background:
+    radial-gradient(ellipse 52% 70% at 22%  96%, var(--halo-violet) 0%, transparent 70%),
+    radial-gradient(ellipse 62% 74% at 58% 104%, var(--halo-blue)   0%, transparent 72%),
+    radial-gradient(ellipse 40% 56% at 92%  94%, var(--halo-mint)   0%, transparent 72%);
 }
 
 /* ── Cabecera ─────────────────────────────────────────────────── */
@@ -63,7 +109,7 @@ main.stage {
   align-items: center; justify-content: center; gap: clamp(14px,3.2vh,34px);
   min-height: 0; overflow-y: auto; overflow-x: hidden; padding: 14px 0;
 }
-.rings { position: absolute; width: 640px; height: 640px; pointer-events: none; opacity: .5; }
+.rings { position: absolute; width: 640px; height: 640px; pointer-events: none; opacity: .28; }
 .rings svg { position: absolute; inset: 0; width: 100%; height: 100%; }
 .ring-a { animation: in-spin 44s linear infinite; }
 .ring-b { animation: in-spin-rev 66s linear infinite; }

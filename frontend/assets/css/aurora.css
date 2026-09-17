@@ -156,6 +156,16 @@
   --ctl-shadow-field: 0 26px 60px -26px rgba(20,30,70,.26), 0 3px 8px -2px rgba(20,30,70,.08);
   --ctl-shadow-pill:  0 6px 16px -8px rgba(20,30,70,.35);
   --ctl-shadow-track: 0 10px 30px -20px rgba(20,30,70,.28);
+
+  /* ── F · Fondo de la portada ──────────────────────────────────────
+     En claro la malla necesita más presencia (el trazo compite con el
+     blanco) y los halos son pasteles: el mismo gesto, invertido. */
+  --hero-grid-line:  #c3ccdd;
+  --hero-grid-alpha: .55;
+  --hero-halo-alpha: .85;
+  --halo-blue:       #a3c7f3;
+  --halo-violet:     #c2c6f4;
+  --halo-mint:       #cdeedd;
 }
 
 /* ═══════════════════════════════════════════════════════════════════
