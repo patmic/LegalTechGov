@@ -81,27 +81,34 @@ button:focus-visible, a:focus-visible { outline: 2px solid var(--color-accent); 
 }
 
 /* ── Cabecera ─────────────────────────────────────────────────── */
-header.top {
-  position: relative; display: flex; align-items: center; justify-content: space-between;
-  gap: 20px; padding: 16px 30px;
-  border-bottom: 1px solid var(--color-neutral-900); flex: 0 0 auto;
+/* ── Pie del escenario ────────────────────────────────────────────
+   El encabezado (marca + estado de API + reloj) se retiró: el carrusel
+   ocupa ahora la pantalla entera y lo único que sobrevive es el reloj,
+   centrado bajo los controles. Sin barra superior, nada compite con la
+   carta del módulo por la primera mirada.                            */
+.stage-time {
+  position: relative; flex: 0 0 auto;
+  display: flex; align-items: center; justify-content: center; gap: 12px;
 }
-.brand { display: flex; align-items: baseline; gap: 14px; min-width: 0; }
-.brand b {
-  font-family: var(--font-heading); font-weight: 500; font-size: 15px;
-  letter-spacing: .18em; white-space: nowrap;
+.clock {
+  font-family: var(--font-mono);
+  font-size: 12px; letter-spacing: .2em; white-space: nowrap;
+  color: var(--color-neutral-500);
+  font-variant-numeric: tabular-nums;   /* los dígitos no bailan al pasar el segundo */
 }
-.brand span {
-  font-size: 11px; letter-spacing: .16em; color: var(--color-neutral-600);
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-}
-.hdr-right {
-  display: flex; align-items: center; gap: 18px; flex: 0 0 auto;
-  font-size: 11px; letter-spacing: .12em; color: var(--color-neutral-500);
-}
-.api-pill { display: flex; align-items: center; gap: 8px; white-space: nowrap; }
+
+/* El estado de la API sigue en el DOM porque inicio.js escribe en él,
+   pero no se muestra. Oculto de la forma accesible: fuera de la vista
+   y sin tamaño, pero leíble por lector de pantalla — display:none lo
+   silenciaría también para ellos. */
+.api-pill { display: flex; align-items: center; gap: 8px; white-space: nowrap;
+            font-size: 11px; letter-spacing: .12em; color: var(--color-neutral-500); }
 .api-dot  { width: 6px; height: 6px; border-radius: 50%; animation: in-pulse 2.4s ease-in-out infinite; }
-.clock    { white-space: nowrap; color: var(--color-neutral-300); }
+.visually-hidden {
+  position: absolute; width: 1px; height: 1px; margin: -1px;
+  padding: 0; border: 0; overflow: hidden; white-space: nowrap;
+  clip-path: inset(50%);
+}
 
 /* ── Escenario del carrusel ───────────────────────────────────── */
 main.stage {

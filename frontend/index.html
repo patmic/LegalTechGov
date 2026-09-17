@@ -19,12 +19,12 @@
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap" rel="stylesheet">
 <!-- Estructura primero, luego las dos pieles de tema:
      inicio.css (forma) → nocturne.css (oscuro) → aurora.css (claro). -->
-<link rel="stylesheet" href="assets/css/inicio.css?v=20260917a">
-<link rel="stylesheet" href="assets/css/nocturne.css?v=20260917a">
-<link rel="stylesheet" href="assets/css/aurora.css?v=20260917a">
+<link rel="stylesheet" href="assets/css/inicio.css?v=20260917b">
+<link rel="stylesheet" href="assets/css/nocturne.css?v=20260917b">
+<link rel="stylesheet" href="assets/css/aurora.css?v=20260917b">
 <!-- Capa de controles (botones, campos, selects, segmentados).
      Va la ÚLTIMA: gana por cascada sin !important. -->
-<link rel="stylesheet" href="assets/css/controls.css?v=20260917a">
+<link rel="stylesheet" href="assets/css/controls.css?v=20260917b">
 </head>
 <body>
 <div id="app">
@@ -49,21 +49,6 @@
   </div>
   <div class="bg-halos"></div>
 
-  <!-- ══ CABECERA ══ -->
-  <header class="top">
-    <div class="brand">
-      <b>pat_system</b>
-      <span>LEGALTECH ARCHITECTURE (MALTG)</span>
-    </div>
-    <div class="hdr-right">
-      <div class="api-pill">
-        <span class="api-dot" id="apiDot"></span>
-        <span id="apiLabel">SONDEANDO API</span>
-      </div>
-      <span class="clock" id="clock">—</span>
-    </div>
-  </header>
-
   <!-- ══ CARRUSEL ══ -->
   <main class="stage">
     <div class="rings">
@@ -79,6 +64,22 @@
       <button class="arrow-btn" id="prevBtn" title="Anterior">‹‹</button>
       <div class="dots" id="dots"></div>
       <button class="arrow-btn" id="nextBtn" title="Siguiente">››</button>
+    </div>
+
+    <!-- Reloj de sesión, centrado bajo los controles. Antes vivía en el
+         encabezado, que se retiró.
+
+         #apiDot y #apiLabel siguen aquí, ocultos a la vista: inicio.js
+         (probeHealth) escribe en ellos sin comprobar que existan, y
+         borrarlos dejaría el overlay de arranque colgado para siempre.
+         Quedan anunciados por lector de pantalla con role/aria-live;
+         para volver a verlos basta quitarles .visually-hidden. -->
+    <div class="stage-time">
+      <span class="clock" id="clock">—</span>
+      <span class="api-pill visually-hidden" role="status" aria-live="polite">
+        <span class="api-dot" id="apiDot"></span>
+        <span id="apiLabel">SONDEANDO API</span>
+      </span>
     </div>
   </main>
 
@@ -112,6 +113,6 @@
   </div>
 </div>
 
-<script src="assets/js/inicio.js?v=20260917a" defer></script>
+<script src="assets/js/inicio.js?v=20260917b" defer></script>
 </body>
 </html>
