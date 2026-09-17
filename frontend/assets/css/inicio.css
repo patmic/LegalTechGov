@@ -125,7 +125,9 @@ main.stage {
      @media (max-height) del final de esta hoja. */
   overflow: hidden;
 }
-.rings { position: absolute; width: 640px; height: 640px; pointer-events: none; opacity: .28; }
+/* 640px -> 800px: un 25% más grandes. Los dos umbrales de ventana baja
+   del final de la hoja escalan en la misma proporción. */
+.rings { position: absolute; width: 800px; height: 800px; pointer-events: none; opacity: .28; }
 .rings svg { position: absolute; inset: 0; width: 100%; height: 100%; }
 .ring-a { animation: in-spin 44s linear infinite; }
 .ring-b { animation: in-spin-rev 66s linear infinite; }
@@ -139,7 +141,13 @@ main.stage {
 
 /* ── Tarjeta de módulo ────────────────────────────────────────── */
 .mod-card {
-  position: absolute; width: 352px; text-align: left; cursor: pointer;
+  /* 352px -> 422px: un 20% más ancha. El desplazamiento lateral del
+     carrusel en inicio.js se escaló en la misma proporción (232 -> 278)
+     para que las cartas vecinas sigan asomando igual. */
+  /* En pantallas estrechas 422px no cabe, y la carta va absoluta: sin
+     el tope se saldría del marco por los lados. */
+  position: absolute; width: min(422px, calc(100vw - 32px));
+  text-align: left; cursor: pointer;
   background: var(--color-surface);
   border: 1px solid var(--color-neutral-900); border-radius: var(--radius-lg);
   padding: 26px 26px 22px; display: flex; flex-direction: column; gap: 14px;
@@ -162,7 +170,12 @@ main.stage {
 .mod-card-endpoint { font-size: 10px; letter-spacing: .14em; color: var(--color-neutral-600); white-space: nowrap; }
 .mod-card-body { display: flex; flex-direction: column; gap: 9px; }
 .mod-card-title { font-family: var(--font-heading); font-weight: 500; font-size: 22px; line-height: 1.2; letter-spacing: -.01em; }
-.mod-card-desc { font-size: 13.5px; line-height: 1.55; color: var(--color-neutral-400); text-wrap: pretty; }
+/* Justificado: con la carta a 422px las líneas ya son largas y el
+   bloque cierra limpio por los dos lados. hyphens:auto (el documento
+   declara lang="es") evita los ríos de espacio que salen al justificar
+   sin partir palabras largas como "Multidimensional". */
+.mod-card-desc { font-size: 13.5px; line-height: 1.55; color: var(--color-neutral-400);
+                 text-align: justify; hyphens: auto; text-wrap: pretty; }
 .mod-card-rule {
   height: 1px;
   background: linear-gradient(to right, transparent,
@@ -205,7 +218,8 @@ main.stage {
   font-size: 10.5px; letter-spacing: .2em; color: var(--color-neutral-500);
   margin-top: 4px; text-transform: uppercase;
 }
-.cover-desc { font-size: 12.5px; line-height: 1.5; color: var(--color-neutral-400); text-wrap: pretty; }
+.cover-desc { font-size: 12.5px; line-height: 1.5; color: var(--color-neutral-400);
+              text-align: justify; hyphens: auto; text-wrap: pretty; }
 .cover-controls { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
 .cover-btn {
   display: inline-flex; align-items: center; gap: 8px; cursor: pointer;
@@ -332,7 +346,7 @@ main.stage {
 @media (max-height: 720px) {
   main.stage      { gap: clamp(10px, 2.2vh, 20px); padding: 10px 0; }
   #cardStage      { height: clamp(190px, 38vh, 280px); }
-  .rings          { width: 500px; height: 500px; }
+  .rings          { width: 625px; height: 625px; }
   .mod-card       { padding: 20px 22px 18px; gap: 11px; }
   .mod-card-title { font-size: 19px; }
   .mod-card-desc  { font-size: 12.5px; line-height: 1.5; }
@@ -342,7 +356,7 @@ main.stage {
 @media (max-height: 560px) {
   main.stage      { gap: 8px; padding: 6px 0; }
   #cardStage      { height: clamp(168px, 36vh, 230px); }
-  .rings          { width: 380px; height: 380px; }
+  .rings          { width: 475px; height: 475px; }
   .mod-card       { padding: 16px 18px 14px; gap: 9px; }
   .mod-card-title { font-size: 17px; }
   .mod-card-desc  { font-size: 11.5px; }

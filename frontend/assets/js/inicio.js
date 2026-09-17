@@ -216,7 +216,7 @@ function renderCards(){
     // (anidar controles es HTML inválido y rompe el foco por teclado).
     const card = document.createElement(it.cover ? "div" : "button");
     card.className = "mod-card" + (on ? " is-active" : "") + (it.cover ? " cover-card" : "");
-    card.style.transform = `translateX(${o*232}px) translateZ(${-a*190}px) rotateY(${-o*30}deg) scale(${1-a*0.05})`;
+    card.style.transform = `translateX(${o*278}px) translateZ(${-a*190}px) rotateY(${-o*30}deg) scale(${1-a*0.05})`;
     card.style.opacity = far ? 0 : 1-a*0.42;
     card.style.filter = a >= 2 ? "blur(1.4px)" : "none";
     card.style.zIndex = 10 - a;
