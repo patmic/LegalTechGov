@@ -64,7 +64,7 @@
       "label": "Preliminary Phase",
       "type": "togaf",
       "cluster": "Foundation",
-      "score": "28",
+      "score": "51",
       "regulation": "TOGAF 10",
       "description": "Preparación y principios de arquitectura. Como marco base de gobernanza, aporta las reglas y controles que el gemelo digital cognitivo aplica para auditar contratos, términos y actuaciones, dando soporte normativo y trazabilidad a las decisiones."
     },
@@ -72,7 +72,7 @@
       "label": "Architecture Vision",
       "type": "togaf",
       "cluster": "Foundation",
-      "score": "46",
+      "score": "62",
       "regulation": "TOGAF 10",
       "description": "Fase A — visión de arquitectura. Como marco base de gobernanza, aporta las reglas y controles que el gemelo digital cognitivo aplica para auditar contratos, términos y actuaciones, dando soporte normativo y trazabilidad a las decisiones."
     },
@@ -80,7 +80,7 @@
       "label": "Business Architecture",
       "type": "togaf",
       "cluster": "Foundation",
-      "score": "31",
+      "score": "51",
       "regulation": "TOGAF 10",
       "description": "Fase B — arquitectura de negocio. Como marco base de gobernanza, aporta las reglas y controles que el gemelo digital cognitivo aplica para auditar contratos, términos y actuaciones, dando soporte normativo y trazabilidad a las decisiones."
     },
@@ -88,7 +88,7 @@
       "label": "Information Systems Architecture",
       "type": "togaf",
       "cluster": "Foundation",
-      "score": "41",
+      "score": "45",
       "regulation": "TOGAF 10",
       "description": "Fase C — datos y aplicaciones. Como marco base de gobernanza, aporta las reglas y controles que el gemelo digital cognitivo aplica para auditar contratos, términos y actuaciones, dando soporte normativo y trazabilidad a las decisiones."
     },
@@ -96,7 +96,7 @@
       "label": "Technology Architecture",
       "type": "togaf",
       "cluster": "Foundation",
-      "score": "58",
+      "score": "36",
       "regulation": "TOGAF 10",
       "description": "Fase D — arquitectura tecnológica. Como marco base de gobernanza, aporta las reglas y controles que el gemelo digital cognitivo aplica para auditar contratos, términos y actuaciones, dando soporte normativo y trazabilidad a las decisiones."
     },
@@ -104,7 +104,7 @@
       "label": "Opportunities & Solutions",
       "type": "togaf",
       "cluster": "Foundation",
-      "score": "69",
+      "score": "46",
       "regulation": "TOGAF 10",
       "description": "Fase E — oportunidades y soluciones. Como marco base de gobernanza, aporta las reglas y controles que el gemelo digital cognitivo aplica para auditar contratos, términos y actuaciones, dando soporte normativo y trazabilidad a las decisiones."
     },
@@ -112,7 +112,7 @@
       "label": "Migration Planning",
       "type": "togaf",
       "cluster": "Foundation",
-      "score": "23",
+      "score": "38",
       "regulation": "TOGAF 10",
       "description": "Fase F — planificación de la migración. Como marco base de gobernanza, aporta las reglas y controles que el gemelo digital cognitivo aplica para auditar contratos, términos y actuaciones, dando soporte normativo y trazabilidad a las decisiones."
     },
@@ -128,7 +128,7 @@
       "label": "Architecture Change Management",
       "type": "togaf",
       "cluster": "Foundation",
-      "score": "57",
+      "score": "36",
       "regulation": "TOGAF 10",
       "description": "Fase H — gestión del cambio. Como marco base de gobernanza, aporta las reglas y controles que el gemelo digital cognitivo aplica para auditar contratos, términos y actuaciones, dando soporte normativo y trazabilidad a las decisiones."
     },
@@ -136,7 +136,7 @@
       "label": "Requirements Management",
       "type": "togaf",
       "cluster": "Foundation",
-      "score": "45",
+      "score": "25",
       "regulation": "TOGAF 10",
       "description": "Gestión de requisitos (centro del ADM). Como marco base de gobernanza, aporta las reglas y controles que el gemelo digital cognitivo aplica para auditar contratos, términos y actuaciones, dando soporte normativo y trazabilidad a las decisiones."
     },
@@ -768,7 +768,7 @@
       "label": "Workflows",
       "type": "operational",
       "cluster": "Operational",
-      "score": "64",
+      "score": "29",
       "regulation": "",
       "description": "Flujos procesales y contractuales (BPMN): representan el recorrido real de una causa o contrato; son la columna del gemelo digital estructural sobre la que se mide la trazabilidad."
     },
@@ -776,7 +776,7 @@
       "label": "Services",
       "type": "operational",
       "cluster": "Operational",
-      "score": "80",
+      "score": "42",
       "regulation": "",
       "description": "Catálogo y operación de servicios. Integra el gemelo digital estructural: cada proceso, servicio o actuación se refleja como un objeto trazable, monitoreable y auditable en tiempo real."
     },
@@ -808,7 +808,7 @@
       "label": "SLA Monitoring",
       "type": "operational",
       "cluster": "Operational",
-      "score": "61",
+      "score": "48",
       "regulation": "",
       "description": "Monitoreo de acuerdos de nivel de servicio. Integra el gemelo digital estructural: cada proceso, servicio o actuación se refleja como un objeto trazable, monitoreable y auditable en tiempo real."
     },
@@ -816,7 +816,7 @@
       "label": "Case Management",
       "type": "operational",
       "cluster": "Operational",
-      "score": "60",
+      "score": "46",
       "regulation": "",
       "description": "Gestión de casos/expedientes: organiza actuaciones y contratos como objetos del gemelo digital, habilitando soporte, monitoreo y trazabilidad de cada paso."
     },
@@ -824,7 +824,7 @@
       "label": "Process Mining",
       "type": "operational",
       "cluster": "Operational",
-      "score": "74",
+      "score": "46",
       "regulation": "",
       "description": "Minería de procesos. Integra el gemelo digital estructural: cada proceso, servicio o actuación se refleja como un objeto trazable, monitoreable y auditable en tiempo real."
     },
@@ -832,7 +832,7 @@
       "label": "Orchestration",
       "type": "operational",
       "cluster": "Operational",
-      "score": "78",
+      "score": "44",
       "regulation": "",
       "description": "Orquestación de servicios. Integra el gemelo digital estructural: cada proceso, servicio o actuación se refleja como un objeto trazable, monitoreable y auditable en tiempo real."
     },
@@ -840,7 +840,7 @@
       "label": "Observability",
       "type": "operational",
       "cluster": "Operational",
-      "score": "81",
+      "score": "14",
       "regulation": "",
       "description": "Observabilidad (logs, métricas, trazas): da visibilidad operativa al gemelo digital, sustentando el soporte y la trazabilidad de los procesos jurídicos."
     },
@@ -944,7 +944,7 @@
       "label": "GDPR Compliance",
       "type": "legaltech",
       "cluster": "Governance",
-      "score": "31",
+      "score": "18",
       "regulation": "GDPR / eIDAS / NIS2",
       "description": "Cumplimiento del RGPD/GDPR. Garantiza el cumplimiento legal y ético del uso de contratos y datos, con auditoría y trazabilidad de extremo a extremo."
     },
@@ -952,7 +952,7 @@
       "label": "Ethics",
       "type": "legaltech",
       "cluster": "Governance",
-      "score": "27",
+      "score": "22",
       "regulation": "GDPR / eIDAS / NIS2",
       "description": "Ética y deontología jurídica. Garantiza el cumplimiento legal y ético del uso de contratos y datos, con auditoría y trazabilidad de extremo a extremo."
     },
@@ -968,7 +968,7 @@
       "label": "Audit",
       "type": "legaltech",
       "cluster": "Governance",
-      "score": "36",
+      "score": "23",
       "regulation": "GDPR / eIDAS / NIS2",
       "description": "Auditoría y trazabilidad. Garantiza el cumplimiento legal y ético del uso de contratos y datos, con auditoría y trazabilidad de extremo a extremo."
     },
@@ -976,7 +976,7 @@
       "label": "Contract Lifecycle Management",
       "type": "legaltech",
       "cluster": "Governance",
-      "score": "32",
+      "score": "25",
       "regulation": "GDPR / eIDAS / NIS2",
       "description": "Gestión del ciclo de vida del contrato (creación, negociación, firma, ejecución, renovación). Es el eje del uso de contratos: cada etapa queda trazada y auditada como objeto del gemelo digital."
     },
@@ -984,7 +984,7 @@
       "label": "eDiscovery Pipeline",
       "type": "legaltech",
       "cluster": "Governance",
-      "score": "23",
+      "score": "34",
       "regulation": "GDPR / eIDAS / NIS2",
       "description": "Descubrimiento electrónico de evidencia: localiza, preserva y traza documentos relevantes, dando soporte probatorio dentro del gemelo digital."
     },
@@ -992,7 +992,7 @@
       "label": "Legal DLT Notarization",
       "type": "legaltech",
       "cluster": "Governance",
-      "score": "22",
+      "score": "33",
       "regulation": "GDPR / eIDAS / NIS2",
       "description": "Notarización jurídica sobre DLT: ancla en blockchain el sello temporal e íntegro de documentos y contratos, dando trazabilidad y valor probatorio."
     },
@@ -1000,7 +1000,7 @@
       "label": "Regulatory Compliance Engine",
       "type": "legaltech",
       "cluster": "Governance",
-      "score": "26",
+      "score": "35",
       "regulation": "GDPR / eIDAS / NIS2",
       "description": "Motor de cumplimiento regulatorio: evalúa automáticamente contratos y procesos contra GDPR, eIDAS y NIS2, dando soporte de cumplimiento trazable."
     },

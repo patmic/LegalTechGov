@@ -34,10 +34,10 @@
       "@type": "@id"
     }
   },
-  "@id": "sdt:SDT_funcionjudicial",
+  "@id": "sdt:SDT_CJ_Ecuador",
   "@type": "sdt:StructuralDigitalTwin",
   "meta": {
-    "title": "SDT_funcionjudicial — Modelo Digital Estructural (SDT) del Ecosistema Tecnologico de Consejo de la Judicatura del Ecuador",
+    "title": "SDT_CJ — Modelo Digital Estructural (SDT) del Ecosistema Tecnologico del Consejo de la Judicatura del Ecuador",
     "version": "1.0.0",
     "description": "Gemelo digital estructural (SDT) del ecosistema digital del CJ, evaluado contra la ontologia MALTG para determinar su Nivel de Madurez LegalTech.",
     "subject": "Consejo de la Judicatura del Ecuador (funcionjudicial.gob.ec)",
@@ -60,11 +60,7 @@
         "codificacion contra rubrica"
       ]
     },
-    "self_hash": "sha256:e3b968428b2e7ead",
-    "domain": "funcionjudicial",
-    "scraping_target": "https://www.funcionjudicial.gob.ec/",
-    "evidence_run": "DS_funcionjudicial_20260915_163355",
-    "evidence_dir": "/digitalShadow/scraping/DS_funcionjudicial_20260915_163355"
+    "self_hash": "sha256:a6a6cbf683e8d8d3"
   },
   "maturity": {
     "overall_score": 46,

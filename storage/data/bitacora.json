@@ -1054,5 +1054,58 @@
     ],
     "prev_hash": "dcb3a942c8136456",
     "hash": "7e8bac39a7989171"
+  },
+  {
+    "id": 80,
+    "ts": "2026-09-15T16:34:03Z",
+    "tipo": "sistema",
+    "actor": "sistema/scraper",
+    "accion": "captura_evidencia",
+    "detalle": "Corrida DS_funcionjudicial_20260915_163355: 11/11 fuentes capturadas con snapshot + SHA-256.",
+    "refs": [
+      "DS_funcionjudicial_20260915_163355"
+    ],
+    "prev_hash": "7e8bac39a7989171",
+    "hash": "6fb269abd0d796bc"
+  },
+  {
+    "id": 81,
+    "ts": "2026-09-15T16:34:04Z",
+    "tipo": "sistema",
+    "actor": "sistema/scraper",
+    "accion": "regeneracion_sdt_cj",
+    "detalle": "SDT_CJ.json regenerado (madurez 46/100); evidencia: DS_funcionjudicial_20260915_163355",
+    "refs": [
+      "DS_funcionjudicial_20260915_163355",
+      "SDT_CJ.json"
+    ],
+    "prev_hash": "6fb269abd0d796bc",
+    "hash": "d131619e78edb6e2"
+  },
+  {
+    "id": 82,
+    "ts": "2026-09-15T19:04:17Z",
+    "tipo": "adaptacion",
+    "actor": "sistema",
+    "accion": "generacion_owl_cogep",
+    "detalle": "COGEP_ontology.owl regenerado (sha 9cfd001059) desde KB v2.1.0.",
+    "refs": [
+      "/api/cogep/owl/generar"
+    ],
+    "prev_hash": "d131619e78edb6e2",
+    "hash": "d343ab62ed200ea9"
+  },
+  {
+    "id": 83,
+    "ts": "2026-09-17T04:41:56Z",
+    "tipo": "adaptacion",
+    "actor": "sistema",
+    "accion": "generacion_owl_cogep",
+    "detalle": "COGEP_ontology.owl regenerado (sha 9cfd001059) desde KB v2.1.0.",
+    "refs": [
+      "/api/cogep/owl/generar"
+    ],
+    "prev_hash": "d343ab62ed200ea9",
+    "hash": "6bdb458c9f973df6"
   }
 ]
