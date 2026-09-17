@@ -23,7 +23,7 @@
    Ningún componente debe llevar colores literales: todos salen de los
    tokens de aquí, para que el tema claro pueda reemplazarlos.
    ═══════════════════════════════════════════════════════════════════ */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap');
 
 :root,
 :root[data-theme="dark"] {
@@ -73,9 +73,9 @@
   --color-section-ghost: #4c5397;
 
   /* Tipografía, espaciado y radios (compartidos por ambos temas) */
-  --font-heading: "Inter", system-ui, sans-serif;
+  --font-heading: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
   --font-heading-weight: 500;
-  --font-body: "Inter", system-ui, sans-serif;
+  --font-body: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
 
   --space-1: 2.8px;  --space-2: 5.6px; --space-3: 8.4px;
   --space-4: 11.2px; --space-6: 16.8px; --space-8: 22.4px;

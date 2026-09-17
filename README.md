@@ -208,8 +208,21 @@ el tono: lo usan ~50 sitios entre CSS y `tab-*.js`, así que se remapea en vez
 de renombrarse. Los colores que codifican significado (estado procesal, capas
 de la ontología, series de gráficos) conservan su tono en ambos temas.
 
+**Tipografía.** Toda la aplicación usa una sola familia de texto,
+**Plus Jakarta Sans**, y una monoespaciada, **IBM Plex Mono**, para los datos
+duros (hashes, IDs de causa, cifras en columna, código). Los cuatro roles de
+`dashboard.css` —`--font-display`, `--font-ui`, `--font-accent`, `--font-mono`—
+y los dos de `nocturne.css` —`--font-heading`, `--font-body`— se conservan
+porque los nombran ~200 sitios entre CSS y `tab-*.js`, pero ya no distinguen
+familia sino intención: la jerarquía la llevan el peso y el tracking. Nunca
+escribir el nombre de la fuente a mano; usar `var(--font-…)`. Las dos
+excepciones son inevitables: el SVG que generan los `tab-*.js` (un atributo de
+presentación no resuelve `var()`) y las etiquetas de vis-network (se pintan en
+`<canvas>`, que no lee CSS) — ahí va el nombre literal.
+
 `flujo_procesal_alertas.html` es autocontenida (no carga estas hojas) y replica
-la paleta Nocturne en su propio `:root`.
+la paleta Nocturne en su propio `:root`; también carga las dos familias por su
+cuenta.
 
 **Tablas y grillas** comparten un solo componente, `.dtable` (definido en
 `dashboard.css`, tema-aware): fila compacta con separador punteado, columna

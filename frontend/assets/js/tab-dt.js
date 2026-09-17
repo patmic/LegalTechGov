@@ -126,7 +126,7 @@ function renderDT(data){
       fill="${isDark?(l.fill||lyrFill):lyrFill}" rx="4"
       stroke="${isDark?'#1a2744':'#d0d6e4'}" stroke-width=".5"/>
     <text x="${l.x+l.width/2}" y="${l.y+17}" text-anchor="middle"
-      fill="${lyrTxt}" font-size="7" font-family="JetBrains Mono" letter-spacing="1.5">${l.label}</text>`;
+      fill="${lyrTxt}" font-size="7" font-family="'IBM Plex Mono',monospace" letter-spacing="1.5">${l.label}</text>`;
   });
 
   // Connections
@@ -165,14 +165,14 @@ function renderDT(data){
         rx="5" fill="${boxFill}" stroke="${c}" stroke-width="1.2"${fuera?' stroke-dasharray="4,2"':''}/>
       <rect x="${s.x}" y="${s.y}" width="${s.width}" height="3" rx="5" fill="${c}" opacity=".75"/>
       <text x="${s.x+s.width/2}" y="${s.y+17}" text-anchor="middle"
-        fill="${c}" font-size="8.5" font-family="JetBrains Mono" font-weight="600">${s.label}</text>
+        fill="${c}" font-size="8.5" font-family="'IBM Plex Mono',monospace" font-weight="600">${s.label}</text>
       <text x="${s.x+s.width/2}" y="${s.y+28}" text-anchor="middle"
-        fill="${subtxt}" font-size="7" font-family="JetBrains Mono">${s.subtitle}</text>
+        fill="${subtxt}" font-size="7" font-family="'IBM Plex Mono',monospace">${s.subtitle}</text>
       <circle cx="${s.x+s.width-8}" cy="${s.y+10}" r="3" fill="${fuera?GRIS:sc}" opacity=".8"/>
     </g>`;
   });
 
-  h+=`<text x="8" y="${H-6}" fill="${lyrTxt}" font-size="7.5" font-family="JetBrains Mono">
+  h+=`<text x="8" y="${H-6}" fill="${lyrTxt}" font-size="7.5" font-family="'IBM Plex Mono',monospace">
     DT_arch · ${data.meta?.title||''} · v${data.meta?.version||''} · ${data.meta?.maltg_compliance||''}
   </text></svg>`;
 
@@ -185,7 +185,7 @@ function renderDT(data){
     el.addEventListener('mouseover',()=>{
       const d=el.dataset;
       tt.style.display='block';
-      tt.innerHTML=`<div style="color:${d.col};font-weight:600;font-size:.73rem;margin-bottom:4px;font-family:'Syne',sans-serif">${d.lbl}</div>
+      tt.innerHTML=`<div style="color:${d.col};font-weight:600;font-size:.73rem;margin-bottom:4px;font-family:'Plus Jakarta Sans',sans-serif">${d.lbl}</div>
         <div style="color:var(--t2);font-size:.62rem;line-height:1.5;margin-bottom:4px">${d.desc}</div>
         ${d.maltg?`<div style="font-size:.59rem;color:var(--t3)">MALTG refs: <span style="color:${d.col}">${d.maltg}</span></div>`:''}`;
     });
@@ -281,7 +281,7 @@ function renderValidationCharts(val){
   const gridC = isDark ? '#1a2744' : '#d0d6e4';
   const textC = isDark ? '#7a8db0' : '#3a4d70';
   Chart.defaults.color = textC;
-  Chart.defaults.font.family = "'JetBrains Mono',monospace";
+  Chart.defaults.font.family = "'IBM Plex Mono',monospace";
 
   // ── Radar ─────────────────────────────────────────────────────
   // Safe destroy

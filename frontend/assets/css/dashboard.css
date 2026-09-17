@@ -15,12 +15,27 @@
    nuevo, declararlo en AMBOS temas, nunca literal aquí.
 ════════════════════════════════════════════════════════ */
 
-/* ── FONT SYSTEM ─────────────────────────────────────── */
+/* ── FONT SYSTEM ─────────────────────────────────────────
+   Toda la aplicación usa UNA familia de texto: Plus Jakarta Sans. Los
+   cuatro roles se conservan porque los nombran ~200 sitios entre CSS y
+   tab-*.js, pero ya no distinguen FAMILIA sino INTENCIÓN: la jerarquía
+   la llevan el peso y el tracking que cada componente ya fijaba
+   (display 500/-.035em, accent 700-800 con versalitas, ui 400-600).
+   Antes eran Outfit + Space Grotesk + Syne, tres familias que se
+   pisaban entre sí; ahora Plus Jakarta Sans las cubre a las tres.
+
+   Los datos duros —hashes, IDs de causa, cifras en columna, código—
+   siguen en monoespaciada, que es lo que mantiene la alineación:
+   IBM Plex Mono, la pareja de Plus Jakarta Sans en la referencia.
+
+   Las dos familias se cargan con un <link> en cada página (y en el
+   @import de nocturne.css, por si la hoja se usa suelta).            */
 :root{
-  --font-display: 'Outfit', sans-serif;       /* headings, KPI values, titles */
-  --font-ui:      'Space Grotesk', sans-serif; /* nav, labels, UI text         */
-  --font-mono:    'Nova Mono', 'DM Mono', monospace;  /* code, hashes, data values */
-  --font-accent:  'Syne', sans-serif;          /* logo, section titles         */
+  --font-display: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif; /* títulos, KPI */
+  --font-ui:      'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif; /* nav, etiquetas, UI */
+  --font-mono:    'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo,
+                  Consolas, monospace;                                       /* datos, hashes, código */
+  --font-accent:  'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif; /* logo, títulos de sección */
 }
 
 *{margin:0;padding:0;box-sizing:border-box}

@@ -22,18 +22,20 @@
 <script>/* fallback: si vis-network 9 no carga desde el CDN, usar vis 4.21 */
 window.addEventListener('DOMContentLoaded',()=>{ if(!window.vis){ const s=document.createElement('script');
   s.src='https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js'; document.head.appendChild(s); } });</script>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Nova+Mono&family=Outfit:wght@200;300;400;500;600;700;800;900&family=JetBrains+Mono:wght@300;400;600&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+<!-- Una sola familia de texto en toda la app (Plus Jakarta Sans) y
+     una monoespaciada para los datos duros (IBM Plex Mono). -->
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap" rel="stylesheet">
 <!-- Estructura primero, luego las dos pieles de tema. El orden importa:
      dashboard.css (forma) → nocturne.css (oscuro) → aurora.css (claro). -->
-<link rel="stylesheet" href="../assets/css/dashboard.css?v=20260916a">
-<link rel="stylesheet" href="../assets/css/nocturne.css?v=20260916a">
-<link rel="stylesheet" href="../assets/css/aurora.css?v=20260916a">
+<link rel="stylesheet" href="../assets/css/dashboard.css?v=20260916b">
+<link rel="stylesheet" href="../assets/css/nocturne.css?v=20260916b">
+<link rel="stylesheet" href="../assets/css/aurora.css?v=20260916b">
 <!-- Capa de controles (botones, campos, selects, segmentados).
      Va la ÚLTIMA: gana por cascada sin !important. -->
-<link rel="stylesheet" href="../assets/css/controls.css?v=20260916a">
+<link rel="stylesheet" href="../assets/css/controls.css?v=20260916b">
 <!-- Runtime compartido (header/nav, tema, animación de arranque) + lógica propia de esta página -->
-<script src="../assets/js/core.js?v=20260916a" defer></script>
-<script src="../assets/js/tab-maltg.js?v=20260916a" defer></script>
+<script src="../assets/js/core.js?v=20260916b" defer></script>
+<script src="../assets/js/tab-maltg.js?v=20260916b" defer></script>
 </head>
 <body data-page="maltg">
 
@@ -65,7 +67,7 @@ window.addEventListener('DOMContentLoaded',()=>{ if(!window.vis){ const s=docume
       /* ── árbol de configuración (tab 01) ── */
       #maltg-side .mt-head{display:flex;align-items:center;gap:.55rem;padding:.6rem .75rem;border-bottom:1px solid var(--bdr)}
       .mt-ldot{width:12px;height:12px;border-radius:3px;flex-shrink:0}
-      .mt-ltitle{font-family:var(--font-accent,'Syne'),sans-serif;font-weight:800;font-size:.8rem;letter-spacing:.05em;text-transform:uppercase}
+      .mt-ltitle{font-family:var(--font-accent);font-weight:800;font-size:.8rem;letter-spacing:.05em;text-transform:uppercase}
       .mt-lbadge{margin-left:auto;font-size:.56rem;color:var(--t3);font-family:var(--font-mono)}
       .mt-tree{padding:.5rem .55rem;display:flex;flex-direction:column;gap:.15rem;max-height:360px;overflow:auto}
       .mt-branch summary{display:flex;align-items:center;gap:.5rem;list-style:none;cursor:pointer;padding:.42rem .55rem;border-radius:8px;transition:background .15s}

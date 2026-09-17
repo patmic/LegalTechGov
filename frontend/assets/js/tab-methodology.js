@@ -15,12 +15,12 @@ function renderMethodology(meth, val){
     card.style.cssText = `background:var(--bg3);border:1px solid var(--bdr);border-radius:8px;
       padding:.8rem;position:relative;overflow:hidden;transition:background .35s`;
     card.innerHTML = `
-      <div style="font-family:'Syne',sans-serif;font-size:1.5rem;font-weight:800;
+      <div style="font-family:'Plus Jakarta Sans',sans-serif;font-size:1.5rem;font-weight:800;
                   color:var(--cyan);line-height:1;margin-bottom:.4rem">${c.symbol}</div>
       <div style="font-size:.65rem;font-weight:700;color:var(--t1);margin-bottom:.3rem;
-                  font-family:'Syne',sans-serif;text-transform:uppercase;letter-spacing:.08em">${c.name}</div>
+                  font-family:'Plus Jakarta Sans',sans-serif;text-transform:uppercase;letter-spacing:.08em">${c.name}</div>
       <div style="font-size:.58rem;color:var(--t2);line-height:1.5;margin-bottom:.4rem">${c.definition}</div>
-      <div style="font-size:.54rem;color:var(--t3);font-family:'JetBrains Mono',monospace;
+      <div style="font-size:.54rem;color:var(--t3);font-family:'IBM Plex Mono',monospace;
                   background:var(--bg3);border:1px solid var(--bdr);border-radius:3px;
                   padding:.2rem .4rem;word-break:break-all">${c.formal}</div>`;
     fmDiv.appendChild(card);
@@ -31,13 +31,13 @@ function renderMethodology(meth, val){
   ffDiv.innerHTML = `
     <div style="background:var(--bg3);border:1px solid rgba(0,229,255,.2);border-radius:5px;padding:.6rem .8rem">
       <div style="font-size:.56rem;color:var(--t3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.3rem">Cobertura Ψ</div>
-      <div style="font-size:.7rem;color:var(--cyan);font-family:'JetBrains Mono',monospace">
+      <div style="font-size:.7rem;color:var(--cyan);font-family:'IBM Plex Mono',monospace">
         Ψ(d) = 0.4·𝟙[root ∈ R] + 0.6·(|sub_d ∩ R| / |sub_d|)
       </div>
     </div>
     <div style="background:var(--bg3);border:1px solid rgba(255,77,109,.2);border-radius:5px;padding:.6rem .8rem">
       <div style="font-size:.56rem;color:var(--t3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.3rem">Brecha δ</div>
-      <div style="font-size:.7rem;color:var(--rose);font-family:'JetBrains Mono',monospace">
+      <div style="font-size:.7rem;color:var(--rose);font-family:'IBM Plex Mono',monospace">
         δ(d) = score_Ω(d) · (1 − Ψ(d))
       </div>
     </div>`;
@@ -68,13 +68,13 @@ function renderMethodology(meth, val){
           fill="${isDarkNow?'#0d1525':'#ffffff'}" stroke="${p.color}" stroke-width="${strokeW}"/>
         <rect x="${x}" y="${Y}" width="${boxW}" height="3" rx="8" fill="${p.color}" opacity=".8"/>
         <text x="${cx}" y="${Y+20}" text-anchor="middle"
-          fill="${p.color}" font-size="11" font-family="Syne,sans-serif" font-weight="700">${p.id}</text>
+          fill="${p.color}" font-size="11" font-family="'Plus Jakarta Sans',sans-serif" font-weight="700">${p.id}</text>
         <text x="${cx}" y="${Y+34}" text-anchor="middle"
-          fill="${txtMain}" font-size="8.5" font-family="JetBrains Mono,monospace" font-weight="600">${p.abbrev}</text>
+          fill="${txtMain}" font-size="8.5" font-family="'IBM Plex Mono',monospace" font-weight="600">${p.abbrev}</text>
         <text x="${cx}" y="${Y+47}" text-anchor="middle"
-          fill="${txtSub}" font-size="7.5" font-family="JetBrains Mono,monospace">${p.name.split(' ').slice(0,2).join(' ')}</text>
+          fill="${txtSub}" font-size="7.5" font-family="'IBM Plex Mono',monospace">${p.name.split(' ').slice(0,2).join(' ')}</text>
         <text x="${cx}" y="${Y+58}" text-anchor="middle"
-          fill="${txtSub}" font-size="7.5" font-family="JetBrains Mono,monospace">${p.name.split(' ').slice(2).join(' ')}</text>
+          fill="${txtSub}" font-size="7.5" font-family="'IBM Plex Mono',monospace">${p.name.split(' ').slice(2).join(' ')}</text>
       </g>`;
 
     // Arrow to next
@@ -93,7 +93,7 @@ function renderMethodology(meth, val){
     const x = startX + i*(boxW+gap);
     const cx= x + boxW/2;
     svg += `<text x="${cx}" y="${Y+boxH+22}" text-anchor="middle"
-      fill="${txtSub}" font-size="7" font-family="JetBrains Mono,monospace">${p.api}</text>`;
+      fill="${txtSub}" font-size="7" font-family="'IBM Plex Mono',monospace">${p.api}</text>`;
   });
 
   svgEl.setAttribute('viewBox', `0 0 ${W} 200`);
@@ -114,7 +114,7 @@ function renderMethodology(meth, val){
     card.innerHTML = `
       <div style="display:flex;align-items:center;gap:.4rem;margin-bottom:.4rem">
         <div style="width:8px;height:8px;border-radius:50%;background:${p.color};flex-shrink:0"></div>
-        <span style="font-size:.62rem;font-weight:700;color:${p.color};font-family:'Syne',sans-serif;
+        <span style="font-size:.62rem;font-weight:700;color:${p.color};font-family:'Plus Jakarta Sans',sans-serif;
                      text-transform:uppercase;letter-spacing:.08em">${p.abbrev}</span>
       </div>
       <div style="font-size:.6rem;color:var(--t2);line-height:1.5;margin-bottom:.4rem">${p.description.slice(0,120)}…</div>
@@ -136,10 +136,10 @@ function renderMethodology(meth, val){
     d.innerHTML = `
       <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.3rem">
         <span style="font-size:.62rem;color:var(--green)">✓</span>
-        <span style="font-size:.64rem;font-weight:700;color:var(--t1);font-family:'Syne',sans-serif">${vp.property}</span>
+        <span style="font-size:.64rem;font-weight:700;color:var(--t1);font-family:'Plus Jakarta Sans',sans-serif">${vp.property}</span>
       </div>
       <div style="font-size:.6rem;color:var(--t2);line-height:1.5;margin-bottom:.3rem">${vp.guarantee}</div>
-      <div style="font-size:.56rem;color:var(--t3);font-family:'JetBrains Mono',monospace">${vp.test}</div>`;
+      <div style="font-size:.56rem;color:var(--t3);font-family:'IBM Plex Mono',monospace">${vp.test}</div>`;
     vpDiv.appendChild(d);
   });
 
@@ -162,15 +162,15 @@ function renderMethodology(meth, val){
     ${ltDim ? `
     <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:.6rem;margin-bottom:.8rem">
       <div style="background:var(--bg3);border:1px solid rgba(96,165,250,.2);border-radius:5px;padding:.6rem;text-align:center">
-        <div style="font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;color:#60a5fa">${ltDim.onto_score}</div>
+        <div style="font-family:'Plus Jakarta Sans',sans-serif;font-size:1.4rem;font-weight:800;color:#60a5fa">${ltDim.onto_score}</div>
         <div style="font-size:.55rem;color:var(--t3);text-transform:uppercase">Score OWL</div>
       </div>
       <div style="background:var(--bg3);border:1px solid rgba(255,201,71,.2);border-radius:5px;padding:.6rem;text-align:center">
-        <div style="font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;color:var(--gold)">${ltDim.dt_score}</div>
+        <div style="font-family:'Plus Jakarta Sans',sans-serif;font-size:1.4rem;font-weight:800;color:var(--gold)">${ltDim.dt_score}</div>
         <div style="font-size:.55rem;color:var(--t3);text-transform:uppercase">Score DT</div>
       </div>
       <div style="background:var(--bg3);border:1px solid rgba(255,77,109,.2);border-radius:5px;padding:.6rem;text-align:center">
-        <div style="font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;color:var(--rose)">${ltDim.gap}</div>
+        <div style="font-family:'Plus Jakarta Sans',sans-serif;font-size:1.4rem;font-weight:800;color:var(--rose)">${ltDim.gap}</div>
         <div style="font-size:.55rem;color:var(--t3);text-transform:uppercase">GAP</div>
       </div>
     </div>
@@ -190,7 +190,7 @@ function renderMethodology(meth, val){
     <div style="display:flex;flex-wrap:wrap;gap:.3rem">
       ${ltDim.missing_subs.map(r=>`<span style="font-size:.54rem;padding:.12rem .4rem;
         background:rgba(255,77,109,.1);border:1px solid rgba(255,77,109,.2);border-radius:3px;
-        color:var(--rose);font-family:'JetBrains Mono',monospace">${r}</span>`).join('')}
+        color:var(--rose);font-family:'IBM Plex Mono',monospace">${r}</span>`).join('')}
     </div>` : `<div style="font-size:.62rem;color:var(--green)">✓ Todos los conceptos LegalTech cubiertos</div>`}
     ` : '<div style="font-size:.62rem;color:var(--t3)">Recarga para ver datos LegalTech…</div>'}
     <div style="margin-top:.8rem;padding:.6rem;background:var(--bg3);border:1px solid rgba(96,165,250,.15);border-radius:5px">
@@ -201,7 +201,7 @@ function renderMethodology(meth, val){
         ${['GDPR (EU) 2016/679','eIDAS 910/2014','NIS2 2022/2555','EDRM','ABA Model Rule 1.6','ECLI','LegalDocML / Akoma Ntoso','eIDAS 2.0 2024/1183'].map(r=>`
         <span style="font-size:.54rem;padding:.12rem .4rem;background:rgba(96,165,250,.08);
           border:1px solid rgba(96,165,250,.15);border-radius:3px;color:#60a5fa;
-          font-family:'JetBrains Mono',monospace">${r}</span>`).join('')}
+          font-family:'IBM Plex Mono',monospace">${r}</span>`).join('')}
       </div>
     </div>`;
 }

@@ -34,7 +34,7 @@ function renderSdtCjGraph(d, target){
     <rect width="${W}" height="${H}" fill="${bg}" rx="6"/>`;
   (d.layers||[]).forEach(l=>{
     h += `<rect x="${l.x}" y="${l.y}" width="${l.width}" height="${l.height}" fill="${dark?(l.fill||'#0a1020'):'#f2f4f8'}" rx="4" stroke="${dark?'#1a2744':'#d0d6e4'}" stroke-width=".5"/>
-      <text x="${l.x+l.width/2}" y="${l.y+16}" text-anchor="middle" fill="${lyrTxt}" font-size="7" font-family="monospace" letter-spacing="1">${l.label}</text>`;
+      <text x="${l.x+l.width/2}" y="${l.y+16}" text-anchor="middle" fill="${lyrTxt}" font-size="7" font-family="'IBM Plex Mono',monospace" letter-spacing="1">${l.label}</text>`;
   });
   (d.connections||[]).forEach(c=>{
     const f=svcMap[c.from], t=svcMap[c.to]; if(!f||!t) return;
@@ -53,11 +53,11 @@ function renderSdtCjGraph(d, target){
     h += `<g class="scb" style="cursor:pointer" data-desc="${desc}" data-maltg="${refStr}" data-col="${c}" data-lbl="${s.label}" data-st="${SDTCJ_STLBL[s.status]||s.status}" data-ev="${ev}" data-dim="${dim}">
       <rect x="${s.x}" y="${s.y}" width="${s.width}" height="${s.height}" rx="5" fill="${boxFill}" stroke="${c}" stroke-width="1.2" stroke-dasharray="${absent?'4,3':''}" opacity="${absent?.7:1}"/>
       <rect x="${s.x}" y="${s.y}" width="${s.width}" height="3" rx="5" fill="${c}" opacity=".8"/>
-      <text x="${s.x+s.width/2}" y="${s.y+18}" text-anchor="middle" fill="${c}" font-size="8.5" font-family="monospace" font-weight="700">${s.label}</text>
-      <text x="${s.x+s.width/2}" y="${s.y+29}" text-anchor="middle" fill="${dark?'#5a6e8e':'#7a8db0'}" font-size="7" font-family="monospace">${s.subtitle||''}</text>
+      <text x="${s.x+s.width/2}" y="${s.y+18}" text-anchor="middle" fill="${c}" font-size="8.5" font-family="'IBM Plex Mono',monospace" font-weight="700">${s.label}</text>
+      <text x="${s.x+s.width/2}" y="${s.y+29}" text-anchor="middle" fill="${dark?'#5a6e8e':'#7a8db0'}" font-size="7" font-family="'IBM Plex Mono',monospace">${s.subtitle||''}</text>
       <circle cx="${s.x+s.width-9}" cy="${s.y+11}" r="3" fill="${sc}"/></g>`;
   });
-  h += `<text x="8" y="${H-7}" fill="${lyrTxt}" font-size="7.5" font-family="monospace">SDT_CJ · ${(d.meta?.title||'').slice(0,70)} · ${d.meta?.maltg_compliance||''}</text></svg>`;
+  h += `<text x="8" y="${H-7}" fill="${lyrTxt}" font-size="7.5" font-family="'IBM Plex Mono',monospace">SDT_CJ · ${(d.meta?.title||'').slice(0,70)} · ${d.meta?.maltg_compliance||''}</text></svg>`;
   wrap.innerHTML = h;
 
   // tooltip reuse (#dtt)

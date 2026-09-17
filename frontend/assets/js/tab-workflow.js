@@ -35,7 +35,7 @@ function renderWorkflow(wf){
   if(empty) empty.style.display='none';
 
   // resolved colours / fonts (CSS vars are not valid inside SVG attributes)
-  const FUI="'Space Grotesk','Outfit',sans-serif", FMONO="'DM Mono',monospace";
+  const FUI="'Plus Jakarta Sans',sans-serif", FMONO="'IBM Plex Mono',monospace";
   const C = isDark
     ? { node:'#0d1525', box:'#0a1124', t1:'#e8f0ff', t2:'#7a8db0', edge:'#5a6b8c', pill:'#0a1020' }
     : { node:'#ffffff', box:'#ffffff', t1:'#1a2438', t2:'#5a6b88', edge:'#9aa8c0', pill:'#ffffff' };
@@ -551,7 +551,7 @@ function renderSaludPanel(j){
               stroke-dasharray="${(C*pct).toFixed(1)} ${C.toFixed(1)}" transform="rotate(-90 65 65)">
         <animate attributeName="stroke-dasharray" from="0 ${C.toFixed(1)}" to="${(C*pct).toFixed(1)} ${C.toFixed(1)}" dur="0.9s" fill="freeze"/>
       </circle>
-      <text x="65" y="60" text-anchor="middle" font-family="'Space Grotesk',sans-serif" font-size="26" font-weight="700" fill="${col}">${s==null?'—':s}</text>
+      <text x="65" y="60" text-anchor="middle" font-family="'Plus Jakarta Sans',sans-serif" font-size="26" font-weight="700" fill="${col}">${s==null?'—':s}</text>
       <text x="65" y="80" text-anchor="middle" font-size="10" fill="#888">de 100</text>`;
   }
   const proc=document.getElementById('wf-salud-proc');
@@ -790,7 +790,7 @@ function wfPlay(){
   g.innerHTML=`<circle r="${WF_TOKEN.r}" fill="${WF_TOKEN.color}" fill-opacity="${WF_TOKEN.opacidad}"
                        stroke="${WF_TOKEN.color}" stroke-width="${WF_TOKEN.stroke}"/>
                <text id="wf-token-n" text-anchor="middle" dy="${(WF_TOKEN.font*0.35).toFixed(1)}"
-                     font-family="'DM Mono',monospace"
+                     font-family="'IBM Plex Mono',monospace"
                      font-size="${WF_TOKEN.font}" font-weight="700" fill="#ffffff">1</text>`;
   root.appendChild(g);
   const info=document.getElementById('wf-causa-info');

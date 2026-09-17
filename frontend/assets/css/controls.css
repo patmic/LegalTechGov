@@ -38,6 +38,13 @@
      range · file · checkbox · radio             controles nativos
    ═══════════════════════════════════════════════════════════════════ */
 
+/* ── 0 · Herencia tipográfica de los controles ──────────────────────
+   Los controles de formulario NO heredan la fuente del documento: sin
+   esta regla, un <button> sin clase (el ☰ del header, las flechas del
+   carrusel, los iconos del chat) se pinta con la fuente por defecto del
+   navegador. Con una sola familia en toda la app, eso cantaba.        */
+button, input, select, textarea { font-family: inherit; }
+
 /* ── 1 · Foco visible — una sola regla para todos los controles ─────
    :where() deja la especificidad en cero, así que cualquier
    componente puede redefinirlo sin pelear. Sustituye a los
