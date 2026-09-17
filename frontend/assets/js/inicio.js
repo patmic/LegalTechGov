@@ -24,8 +24,8 @@ const ITEMS = [
     // Tarjeta 00 — carátula: no navega a ninguna página, presenta el
     // producto y aloja los controles globales (tema y recarga).
     num: "00", key: "cover", cover: true, title: "MALTG",
-    subtitle: "Architecture Validator · LegalTech",
-    desc: "Transformación digital jurídica guiada por el Modelo de Arquitectura Multidimensional para la Gobernanza LegalTech (MALTG). Evalúa la implementacion de la madurez organizacional, integración estrategica, estándares empresariales, la adopción de tecnologías emergentes y su operatización.",
+    subtitle: "Multidimensional Architecture Model for LegalTech Governance",
+    desc: "Transformación digital jurídica basada en el Modelo de Arquitectura Multidimensional para la Gobernanza LegalTech (MALTG), que evalúa la madurez organizacional y la integración de estrategia, estándares, tecnologías emergentes y capacidades operativas.",
     meta: "13 MÓDULOS · 70 ENDPOINTS", endpoint: "carátula", href: "pages/methodology.html"
   },
   {

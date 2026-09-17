@@ -215,7 +215,12 @@ main.stage {
   font-size: 30px; line-height: 1; letter-spacing: .06em;
 }
 .cover-sub {
-  font-size: 10.5px; letter-spacing: .2em; color: var(--color-neutral-500);
+  /* En negrita: es el nombre del modelo, no una etiqueta de servicio.
+     A 10.5px con .2em de tracking el peso 700 aguanta sin emborronarse;
+     el color sube un escalón de la rampa para que el trazo grueso no
+     quede lavado sobre la superficie clara. */
+  font-size: 10.5px; font-weight: 700; letter-spacing: .2em;
+  color: var(--color-neutral-400);
   margin-top: 4px; text-transform: uppercase;
 }
 .cover-desc { font-size: 12.5px; line-height: 1.5; color: var(--color-neutral-400);
