@@ -20,6 +20,8 @@ button:focus-visible, a:focus-visible { outline: 2px solid var(--color-accent); 
 @keyframes in-spin    { to { transform: rotate(360deg) } }
 @keyframes in-spin-rev{ to { transform: rotate(-360deg) } }
 
+html, body { height: 100%; margin: 0; overflow: hidden; }
+
 #app {
   height: 100vh; overflow: hidden; position: relative;
   display: flex; flex-direction: column;
@@ -114,7 +116,14 @@ button:focus-visible, a:focus-visible { outline: 2px solid var(--color-accent); 
 main.stage {
   position: relative; flex: 1; display: flex; flex-direction: column;
   align-items: center; justify-content: center; gap: clamp(14px,3.2vh,34px);
-  min-height: 0; overflow-y: auto; overflow-x: hidden; padding: 14px 0;
+  min-height: 0; padding: 14px 0;
+  /* El escenario NO se desplaza. Es una composición centrada y fija: los
+     anillos y las cartas laterales se salen del marco a propósito, y con
+     overflow-y:auto ese desborde decorativo sacaba una barra de scroll a
+     todo lo alto de la ventana. Lo que sí hace falta es que la
+     composición quepa en ventanas bajas — de eso se encarga el bloque
+     @media (max-height) del final de esta hoja. */
+  overflow: hidden;
 }
 .rings { position: absolute; width: 640px; height: 640px; pointer-events: none; opacity: .28; }
 .rings svg { position: absolute; inset: 0; width: 100%; height: 100%; }
@@ -312,4 +321,30 @@ main.stage {
 .boot-msg {
   font-family: var(--font-heading); font-size: 12px;
   letter-spacing: .15em; color: var(--color-accent-300); text-transform: uppercase;
+}
+
+/* ── Ventanas bajas ───────────────────────────────────────────────
+   Como el escenario ya no se desplaza, la composición tiene que caber.
+   Por debajo de 720px de alto la carta y los anillos se comprimen para
+   que los controles y el reloj sigan visibles; por debajo de 560px se
+   apura un paso más. Los tamaños siguen saliendo de clamp(), así que
+   entre umbrales la transición es continua, no un salto.            */
+@media (max-height: 720px) {
+  main.stage      { gap: clamp(10px, 2.2vh, 20px); padding: 10px 0; }
+  #cardStage      { height: clamp(190px, 38vh, 280px); }
+  .rings          { width: 500px; height: 500px; }
+  .mod-card       { padding: 20px 22px 18px; gap: 11px; }
+  .mod-card-title { font-size: 19px; }
+  .mod-card-desc  { font-size: 12.5px; line-height: 1.5; }
+  .cover-title    { font-size: 25px; }
+  .cover-desc     { font-size: 11.5px; }
+}
+@media (max-height: 560px) {
+  main.stage      { gap: 8px; padding: 6px 0; }
+  #cardStage      { height: clamp(168px, 36vh, 230px); }
+  .rings          { width: 380px; height: 380px; }
+  .mod-card       { padding: 16px 18px 14px; gap: 9px; }
+  .mod-card-title { font-size: 17px; }
+  .mod-card-desc  { font-size: 11.5px; }
+  .eyebrow        { display: none; }
 }
