@@ -25,7 +25,7 @@ const ITEMS = [
     // producto y aloja los controles globales (tema y recarga).
     num: "00", key: "cover", cover: true, title: "MALTG",
     subtitle: "Architecture Validator · LegalTech",
-    desc: "Valida la conformidad de una arquitectura LegalTech contra la ontología de gobernanza MALTG (TOGAF + COBIT + ITIL + NIST + dominio jurídico), sobre el proceso judicial ecuatoriano COGEP.",
+    desc: "Transformación digital jurídica guiada por el Modelo de Arquitectura Multidimensional para la Gobernanza LegalTech (MALTG). Evalúa la implementacion de la madurez organizacional, integración estrategica, estándares empresariales, la adopción de tecnologías emergentes y su operatización.",
     meta: "13 MÓDULOS · 70 ENDPOINTS", endpoint: "carátula", href: "pages/methodology.html"
   },
   {
