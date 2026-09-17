@@ -25,12 +25,15 @@ window.addEventListener('DOMContentLoaded',()=>{ if(!window.vis){ const s=docume
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Nova+Mono&family=Outfit:wght@200;300;400;500;600;700;800;900&family=JetBrains+Mono:wght@300;400;600&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
 <!-- Estructura primero, luego las dos pieles de tema. El orden importa:
      dashboard.css (forma) → nocturne.css (oscuro) → aurora.css (claro). -->
-<link rel="stylesheet" href="../assets/css/dashboard.css?v=20260915b">
-<link rel="stylesheet" href="../assets/css/nocturne.css?v=20260915b">
-<link rel="stylesheet" href="../assets/css/aurora.css?v=20260915b">
+<link rel="stylesheet" href="../assets/css/dashboard.css?v=20260916a">
+<link rel="stylesheet" href="../assets/css/nocturne.css?v=20260916a">
+<link rel="stylesheet" href="../assets/css/aurora.css?v=20260916a">
+<!-- Capa de controles (botones, campos, selects, segmentados).
+     Va la ÚLTIMA: gana por cascada sin !important. -->
+<link rel="stylesheet" href="../assets/css/controls.css?v=20260916a">
 <!-- Runtime compartido (header/nav, tema, animación de arranque) + lógica propia de esta página -->
-<script src="../assets/js/core.js?v=20260915b" defer></script>
-<script src="../assets/js/tab-experto.js?v=20260915b" defer></script>
+<script src="../assets/js/core.js?v=20260916a" defer></script>
+<script src="../assets/js/tab-experto.js?v=20260916a" defer></script>
 </head>
 <body data-page="experto">
 
@@ -72,11 +75,8 @@ window.addEventListener('DOMContentLoaded',()=>{ if(!window.vis){ const s=docume
       </div>
     </div>
     <div style="display:flex;gap:.6rem;flex-wrap:wrap;align-items:center;padding:0 1rem 1rem">
-      <button onclick="exSimular()" style="cursor:pointer;border:none;border-radius:9px;padding:.55rem 1rem;
-        font-family:var(--font-mono);font-weight:700;font-size:.74rem;color:#04121a;
-        background:linear-gradient(95deg,#a855f7,#ffc947)">🧪 Cargar sesión simulada (demo del flujo)</button>
-      <button onclick="exLimpiar()" style="cursor:pointer;border:1px solid rgba(255,77,109,.5);border-radius:9px;padding:.55rem 1rem;
-        font-family:var(--font-mono);font-weight:700;font-size:.74rem;color:#ff4d6d;background:rgba(255,77,109,.08)">🧹 Limpiar simulación</button>
+      <button class="ctl-btn ctl-btn--solid ctl-btn--gold" onclick="exSimular()">🧪 Cargar sesión simulada (demo del flujo)</button>
+      <button class="ctl-btn ctl-btn--rose" onclick="exLimpiar()">🧹 Limpiar simulación</button>
       <span id="ex-sim-status" style="font-family:var(--font-mono);font-size:.62rem;color:var(--t3)">
         La simulación crea 40 anotaciones (+15 de un 2º anotador) y 3 juicios AHP marcados "SIMULADO", corre la evaluación y queda en bitácora.
       </span>
@@ -95,8 +95,8 @@ window.addEventListener('DOMContentLoaded',()=>{ if(!window.vis){ const s=docume
       <div>
         <div style="display:flex;gap:.5rem;flex-wrap:wrap;align-items:center;margin-bottom:.5rem">
           <select id="ev-causa" class="app-select" onchange="evLoadCausa()"></select>
-          <input id="ev-anotador" placeholder="Anotador (abogado)" style="background:rgba(255,255,255,.06);border:1px solid var(--bdr);border-radius:8px;color:var(--t1);font-family:var(--font-mono);font-size:.7rem;padding:.45rem .55rem">
-          <button onclick="evGuardar()" style="cursor:pointer;border:1px solid rgba(168,85,247,.5);border-radius:8px;padding:.45rem .8rem;font-family:var(--font-mono);font-weight:700;font-size:.72rem;color:#a855f7;background:rgba(168,85,247,.1)">💾 Guardar anotaciones</button>
+          <input class="ctl-input" id="ev-anotador" placeholder="Anotador (abogado)">
+          <button class="ctl-btn ctl-btn--violet" onclick="evGuardar()">💾 Guardar anotaciones</button>
         </div>
         <div style="font-family:var(--font-mono);font-size:.6rem;color:var(--t3);margin-bottom:.4rem">
           Anote el acto correcto según el contenido de la providencia (guía: /data/gold/GUIA_ANOTACION.md). La predicción del sistema se muestra en gris solo como referencia.
@@ -105,9 +105,7 @@ window.addEventListener('DOMContentLoaded',()=>{ if(!window.vis){ const s=docume
         <span id="ev-status" style="font-family:var(--font-mono);font-size:.62rem;color:var(--t3)"></span>
       </div>
       <div>
-        <button onclick="evRun()" style="cursor:pointer;border:none;border-radius:9px;padding:.6rem 1.1rem;width:100%;
-          font-family:var(--font-mono);font-weight:700;font-size:.76rem;color:#04121a;margin-bottom:.6rem;
-          background:linear-gradient(95deg,#a855f7,#00e5ff)">▶ Evaluar razonador contra el gold</button>
+        <button class="ctl-btn ctl-btn--solid ctl-btn--cyan ctl-btn--block" onclick="evRun()" style="margin-bottom:.6rem">▶ Evaluar razonador contra el gold</button>
         <div id="ev-result" style="font-size:.68rem;color:var(--t2);line-height:1.6"></div>
       </div>
     </div>
@@ -121,15 +119,12 @@ window.addEventListener('DOMContentLoaded',()=>{ if(!window.vis){ const s=docume
       <div>
         <div style="font-family:var(--font-mono);font-size:.62rem;color:var(--t3);margin-bottom:.4rem">JUICIO AHP (escala Saaty) — ¿cuánto más importante es cubrir el <b>concepto raíz</b> que los <b>subconceptos</b>?</div>
         <select id="vz-saaty" class="app-select" style="width:100%;margin-bottom:.4rem"></select>
-        <input id="vz-experto" placeholder="Nombre del experto" style="width:100%;box-sizing:border-box;background:rgba(255,255,255,.06);border:1px solid var(--bdr);border-radius:8px;color:var(--t1);font-family:var(--font-mono);font-size:.68rem;padding:.4rem .55rem;margin-bottom:.4rem">
-        <button onclick="vzGuardarAhp()" style="cursor:pointer;border:none;border-radius:9px;padding:.5rem 1rem;width:100%;
-          font-family:var(--font-mono);font-weight:700;font-size:.72rem;color:#04121a;
-          background:linear-gradient(95deg,#a855f7,#00e5ff)">💾 Registrar juicio AHP</button>
+        <input class="ctl-input ctl-input--block" id="vz-experto" placeholder="Nombre del experto" style="margin-bottom:.4rem">
+        <button class="ctl-btn ctl-btn--solid ctl-btn--cyan ctl-btn--block" onclick="vzGuardarAhp()">💾 Registrar juicio AHP</button>
         <div id="vz-ahp-info" style="font-family:var(--font-mono);font-size:.6rem;color:var(--t3);margin-top:.4rem;line-height:1.5"></div>
       </div>
       <div>
-        <button onclick="vzSensibilidad()" style="cursor:pointer;border:1px solid rgba(168,85,247,.5);border-radius:9px;padding:.5rem 1rem;width:100%;
-          font-family:var(--font-mono);font-weight:700;font-size:.72rem;color:#a855f7;background:rgba(168,85,247,.08);margin-bottom:.5rem">📈 Análisis de sensibilidad ±10/20%</button>
+        <button class="ctl-btn ctl-btn--violet ctl-btn--block" onclick="vzSensibilidad()" style="margin-bottom:.5rem">📈 Análisis de sensibilidad ±10/20%</button>
         <div id="vz-sens" style="font-size:.66rem;color:var(--t2);line-height:1.6"></div>
       </div>
       <div>
@@ -139,9 +134,9 @@ window.addEventListener('DOMContentLoaded',()=>{ if(!window.vis){ const s=docume
         </div>
         <div id="vz-rubrica" style="max-height:180px;overflow-y:auto;font-size:.64rem;color:var(--t2);line-height:1.55;border:1px solid var(--bdr);border-radius:8px;padding:.4rem .6rem;margin-bottom:.4rem"></div>
         <div style="display:flex;gap:.4rem;flex-wrap:wrap">
-          <input id="vz-ev-url" placeholder="URL o snapshot de evidencia" style="flex:1;min-width:130px;background:rgba(255,255,255,.06);border:1px solid var(--bdr);border-radius:8px;color:var(--t1);font-family:var(--font-mono);font-size:.64rem;padding:.35rem .5rem">
-          <input id="vz-ev-crit" placeholder="Criterio de rúbrica" style="width:120px;background:rgba(255,255,255,.06);border:1px solid var(--bdr);border-radius:8px;color:var(--t1);font-family:var(--font-mono);font-size:.64rem;padding:.35rem .5rem">
-          <button onclick="vzAddEvidencia()" style="cursor:pointer;border:1px solid rgba(255,201,71,.5);border-radius:8px;padding:.35rem .7rem;font-family:var(--font-mono);font-weight:700;font-size:.68rem;color:var(--gold);background:rgba(255,201,71,.1)">+ Evidencia</button>
+          <input class="ctl-input ctl-input--sm" id="vz-ev-url" placeholder="URL o snapshot de evidencia" style="flex:1;min-width:130px">
+          <input class="ctl-input ctl-input--sm" id="vz-ev-crit" placeholder="Criterio de rúbrica" style="width:132px">
+          <button class="ctl-btn ctl-btn--gold ctl-btn--sm" onclick="vzAddEvidencia()">+ Evidencia</button>
         </div>
         <div id="vz-ev-status" style="font-family:var(--font-mono);font-size:.6rem;color:var(--t3);margin-top:.3rem">Un score sin evidencia queda rotulado "declarado".</div>
       </div>
@@ -160,10 +155,8 @@ window.addEventListener('DOMContentLoaded',()=>{ if(!window.vis){ const s=docume
       <div>
         <div id="xd-sliders" style="display:grid;grid-template-columns:1fr 1fr;gap:.35rem .9rem"></div>
         <div style="display:flex;gap:.5rem;align-items:center;margin-top:.6rem">
-          <input id="xd-experto" placeholder="Nombre del experto" style="background:rgba(255,255,255,.06);border:1px solid var(--bdr);border-radius:8px;color:var(--t1);font-family:var(--font-mono);font-size:.68rem;padding:.4rem .55rem">
-          <button onclick="xdGuardar()" style="cursor:pointer;border:none;border-radius:9px;padding:.5rem 1rem;
-            font-family:var(--font-mono);font-weight:700;font-size:.72rem;color:#04121a;
-            background:linear-gradient(95deg,#ffc947,#00e5ff)">💾 Registrar ponderación</button>
+          <input class="ctl-input" id="xd-experto" placeholder="Nombre del experto">
+          <button class="ctl-btn ctl-btn--solid ctl-btn--cyan" onclick="xdGuardar()">💾 Registrar ponderación</button>
         </div>
         <span id="xd-status" style="font-family:var(--font-mono);font-size:.6rem;color:var(--t3)"></span>
       </div>
@@ -183,10 +176,8 @@ window.addEventListener('DOMContentLoaded',()=>{ if(!window.vis){ const s=docume
       <div>
         <div id="xr-inputs" style="display:grid;grid-template-columns:1fr 1fr;gap:.35rem .9rem"></div>
         <div style="display:flex;gap:.5rem;align-items:center;margin-top:.6rem">
-          <input id="xr-experto" placeholder="Nombre del evaluador" style="background:rgba(255,255,255,.06);border:1px solid var(--bdr);border-radius:8px;color:var(--t1);font-family:var(--font-mono);font-size:.68rem;padding:.4rem .55rem">
-          <button onclick="xrGuardar()" style="cursor:pointer;border:none;border-radius:9px;padding:.5rem 1rem;
-            font-family:var(--font-mono);font-weight:700;font-size:.72rem;color:#04121a;
-            background:linear-gradient(95deg,#10e98c,#00e5ff)">💾 Registrar evaluación</button>
+          <input class="ctl-input" id="xr-experto" placeholder="Nombre del evaluador">
+          <button class="ctl-btn ctl-btn--solid ctl-btn--green" onclick="xrGuardar()">💾 Registrar evaluación</button>
         </div>
         <span id="xr-status" style="font-family:var(--font-mono);font-size:.6rem;color:var(--t3)"></span>
       </div>
@@ -207,17 +198,15 @@ window.addEventListener('DOMContentLoaded',()=>{ if(!window.vis){ const s=docume
           <select id="xv-herr" class="app-select">
             <option>HermiT (Protégé)</option><option>Pellet (Protégé)</option><option>OOPS! Scanner</option><option>Otra</option>
           </select>
-          <input id="xv-ver" placeholder="Versión" style="width:90px;background:rgba(255,255,255,.06);border:1px solid var(--bdr);border-radius:8px;color:var(--t1);font-family:var(--font-mono);font-size:.66rem;padding:.4rem .5rem">
+          <input class="ctl-input ctl-input--sm" id="xv-ver" placeholder="Versión" style="width:104px">
           <select id="xv-res" class="app-select">
             <option value="consistente">✓ Consistente</option><option value="inconsistente">✖ Inconsistente</option>
             <option value="pitfalls_menores">⚠ Pitfalls menores</option><option value="pitfalls_criticos">✖ Pitfalls críticos</option>
           </select>
         </div>
-        <input id="xv-det" placeholder="Detalle (clases insatisfacibles, pitfalls corregidos…)" style="background:rgba(255,255,255,.06);border:1px solid var(--bdr);border-radius:8px;color:var(--t1);font-family:var(--font-mono);font-size:.66rem;padding:.4rem .55rem">
-        <input id="xv-url" placeholder="URL o ruta del informe (opcional)" style="background:rgba(255,255,255,.06);border:1px solid var(--bdr);border-radius:8px;color:var(--t1);font-family:var(--font-mono);font-size:.66rem;padding:.4rem .55rem">
-        <button onclick="xvGuardar()" style="cursor:pointer;border:none;border-radius:9px;padding:.5rem 1rem;
-          font-family:var(--font-mono);font-weight:700;font-size:.72rem;color:#04121a;
-          background:linear-gradient(95deg,#60a5fa,#10e98c)">💾 Asentar verificación</button>
+        <input class="ctl-input ctl-input--sm" id="xv-det" placeholder="Detalle (clases insatisfacibles, pitfalls corregidos…)">
+        <input class="ctl-input ctl-input--sm" id="xv-url" placeholder="URL o ruta del informe (opcional)">
+        <button class="ctl-btn ctl-btn--solid ctl-btn--green" onclick="xvGuardar()">💾 Asentar verificación</button>
         <span id="xv-status" style="font-family:var(--font-mono);font-size:.6rem;color:var(--t3)"></span>
       </div>
       <div id="xv-lista" style="max-height:230px;overflow-y:auto"></div>

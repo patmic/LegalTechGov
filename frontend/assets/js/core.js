@@ -317,7 +317,34 @@ async function runBoot(steps, run) {
   }
 }
 
+
+// ═══════════════════════════════════════════════════════════════════
+//  CONTROL SEGMENTADO  (assets/css/controls.css §7)
+//  Cualquier <div class="segmented" data-segmented> con hijos
+//  .segmented__item queda cableado: al pulsar uno, aria-selected pasa
+//  a él y sale de sus hermanos. El onclick propio de cada botón (la
+//  navegación, el filtro…) sigue corriendo igual; esto sólo lleva el
+//  estado visual, que antes no tenía ninguna hilera de botones.
+// ═══════════════════════════════════════════════════════════════════
+function initSegmented(root) {
+  (root || document).querySelectorAll('.segmented[data-segmented]').forEach(group => {
+    const items = [...group.querySelectorAll('.segmented__item')];
+    if (!items.length) return;
+    if (!items.some(b => b.getAttribute('aria-selected') === 'true')) {
+      items[0].setAttribute('aria-selected', 'true');
+    }
+    group.addEventListener('click', ev => {
+      const btn = ev.target.closest('.segmented__item');
+      if (!btn || !group.contains(btn)) return;
+      items.forEach(b => b.setAttribute('aria-selected', String(b === btn)));
+      // Mantener visible el activo cuando la pista tiene scroll horizontal.
+      if (btn.scrollIntoView) btn.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+    });
+  });
+}
+
 document.addEventListener('DOMContentLoaded', () => {
+  initSegmented();
   initHeader().then(() => {
     if (typeof window.pageBoot === 'function') window.pageBoot();
   });

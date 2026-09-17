@@ -142,6 +142,20 @@
   --elev-2: 0 4px 16px rgba(0,40,120,.1),  0 0 0 1px rgba(0,60,180,.07);
   --elev-3: 0 8px 32px rgba(0,40,120,.12), 0 0 0 1px rgba(0,60,180,.08);
   --elev-4: 0 16px 64px rgba(0,40,120,.16), 0 0 0 1px rgba(0,60,180,.09);
+
+  /* ── E · Controles de interfaz — sólo los tokens con literal ──────
+     El resto (--ctl-surface, --ctl-ink*, --ctl-accent, radios…) apunta
+     a tokens que este bloque ya redefine, así que se resuelven solos. */
+  --ctl-surface-2:   #eef1f7;
+  --ctl-pill-ink:    #ffffff;   /* en claro el acento es oscuro: tinta blanca */
+  --ctl-on-tone:     #ffffff;
+  --ctl-track-bg:    rgba(15,20,45,.04);
+  --ctl-track-bdr:   rgba(15,20,45,.09);
+  --ctl-focus-ring:  color-mix(in srgb, var(--color-accent) 20%, transparent);
+
+  --ctl-shadow-field: 0 26px 60px -26px rgba(20,30,70,.26), 0 3px 8px -2px rgba(20,30,70,.08);
+  --ctl-shadow-pill:  0 6px 16px -8px rgba(20,30,70,.35);
+  --ctl-shadow-track: 0 10px 30px -20px rgba(20,30,70,.28);
 }
 
 /* ═══════════════════════════════════════════════════════════════════
@@ -209,21 +223,9 @@
   box-shadow: 0 4px 20px rgba(0,40,120,.12);
 }
 
-/* Controles de vis-network (páginas Ontología y Simulación 3D) */
-[data-theme="light"] .vis-ctrl-btn {
-  background: rgba(0,0,0,0.04);
-  border-color: var(--glass-bdr);
-  color: var(--t2);
-}
-[data-theme="light"] .vis-ctrl-btn:hover {
-  background: rgba(0,100,220,0.06);
-  border-color: rgba(0,100,220,0.25);
-  color: #0060cc;
-}
-[data-theme="light"] .vis-ctrl-select {
-  background: rgba(255,255,255,0.7);
-  color: var(--t1);
-}
+/* Controles (botones, campos, selects, segmentados) — ya no viven
+   aquí: assets/css/controls.css los define para los dos temas a partir
+   de los tokens --ctl-* de arriba. */
 [data-theme="light"] div.vis-tooltip {
   background: rgba(248,250,255,0.96) !important;
   border-color: rgba(0,80,200,0.2) !important;

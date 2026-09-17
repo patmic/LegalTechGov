@@ -912,29 +912,11 @@ header {
   box-shadow: -2px 0 0 var(--q-cyan), var(--elev-1) !important;
 }
 
-/* ── 10. BUTTONS — Quantum CTAs ───────────────────────────────── */
-/* Vis-network controls upgrade */
-.vis-ctrl-btn {
-  background: rgba(0,245,255,0.04) !important;
-  border: 1px solid rgba(0,245,255,0.12) !important;
-  color: var(--t2) !important;
-  transition: all var(--motion-fast) !important;
-  font-family: var(--font-ui) !important;
-  font-weight: 500 !important;
-}
-.vis-ctrl-btn:hover {
-  background: rgba(0,245,255,0.1) !important;
-  border-color: rgba(0,245,255,0.35) !important;
-  color: var(--q-cyan) !important;
-  box-shadow: var(--glow-cyan) !important;
-  transform: translateY(-1px) !important;
-}
-.vis-ctrl-btn.active {
-  background: rgba(0,245,255,0.15) !important;
-  border-color: var(--q-cyan) !important;
-  color: var(--q-cyan) !important;
-  box-shadow: var(--glow-cyan) !important;
-}
+/* ── 10. BUTTONS ──────────────────────────────────────────────────
+   Los overrides de .vis-ctrl-btn que había aquí (con !important, de la
+   época del acento cian) se retiraron: el botón lo define ahora
+   assets/css/controls.css, que se carga al final y no necesita
+   !important para ganar. */
 
 /* ── 11. BADGES — Quantum Pills ───────────────────────────────── */
 .pbadge {

@@ -25,9 +25,12 @@ window.addEventListener('DOMContentLoaded',()=>{ if(!window.vis){ const s=docume
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Nova+Mono&family=Outfit:wght@200;300;400;500;600;700;800;900&family=JetBrains+Mono:wght@300;400;600&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
 <!-- Estructura primero, luego las dos pieles de tema. El orden importa:
      dashboard.css (forma) → nocturne.css (oscuro) → aurora.css (claro). -->
-<link rel="stylesheet" href="../assets/css/dashboard.css?v=20260915b">
-<link rel="stylesheet" href="../assets/css/nocturne.css?v=20260915b">
-<link rel="stylesheet" href="../assets/css/aurora.css?v=20260915b">
+<link rel="stylesheet" href="../assets/css/dashboard.css?v=20260916a">
+<link rel="stylesheet" href="../assets/css/nocturne.css?v=20260916a">
+<link rel="stylesheet" href="../assets/css/aurora.css?v=20260916a">
+<!-- Capa de controles (botones, campos, selects, segmentados).
+     Va la ÚLTIMA: gana por cascada sin !important. -->
+<link rel="stylesheet" href="../assets/css/controls.css?v=20260916a">
 <style>
 /* ── Animaciones flujo procesal (tab 06) + COGEP ─────────────────── */
 @keyframes wfDashMove { to { stroke-dashoffset: -48; } }
@@ -66,8 +69,8 @@ window.addEventListener('DOMContentLoaded',()=>{ if(!window.vis){ const s=docume
 .wf-chat { animation: wfChatIn .25s ease-out; }
 </style>
 <!-- Runtime compartido (header/nav, tema, animación de arranque) + lógica propia de esta página -->
-<script src="../assets/js/core.js?v=20260915b" defer></script>
-<script src="../assets/js/tab-workflow.js?v=20260915b" defer></script>
+<script src="../assets/js/core.js?v=20260916a" defer></script>
+<script src="../assets/js/tab-workflow.js?v=20260916a" defer></script>
 </head>
 <body data-page="workflow">
 
@@ -184,7 +187,7 @@ window.addEventListener('DOMContentLoaded',()=>{ if(!window.vis){ const s=docume
           <select id="wf-acto-sel" class="app-select" style="min-width:230px">
             <option value="">— Detectar acto automáticamente —</option>
           </select>
-          <input type="file" id="wf-pdf-input" accept=".pdf,.txt" style="font-size:.62rem;color:var(--t2)">
+          <input type="file" id="wf-pdf-input" accept=".pdf,.txt">
           <button class="vis-ctrl-btn" onclick="wfAnalizarActuacion()">🤖 Analizar con IA COGEP</button>
           <span id="wf-pdf-status" style="font-size:.62rem;color:var(--t3)"></span>
         </div>

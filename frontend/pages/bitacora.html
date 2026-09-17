@@ -25,12 +25,15 @@ window.addEventListener('DOMContentLoaded',()=>{ if(!window.vis){ const s=docume
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Nova+Mono&family=Outfit:wght@200;300;400;500;600;700;800;900&family=JetBrains+Mono:wght@300;400;600&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
 <!-- Estructura primero, luego las dos pieles de tema. El orden importa:
      dashboard.css (forma) → nocturne.css (oscuro) → aurora.css (claro). -->
-<link rel="stylesheet" href="../assets/css/dashboard.css?v=20260915b">
-<link rel="stylesheet" href="../assets/css/nocturne.css?v=20260915b">
-<link rel="stylesheet" href="../assets/css/aurora.css?v=20260915b">
+<link rel="stylesheet" href="../assets/css/dashboard.css?v=20260916a">
+<link rel="stylesheet" href="../assets/css/nocturne.css?v=20260916a">
+<link rel="stylesheet" href="../assets/css/aurora.css?v=20260916a">
+<!-- Capa de controles (botones, campos, selects, segmentados).
+     Va la ÚLTIMA: gana por cascada sin !important. -->
+<link rel="stylesheet" href="../assets/css/controls.css?v=20260916a">
 <!-- Runtime compartido (header/nav, tema, animación de arranque) + lógica propia de esta página -->
-<script src="../assets/js/core.js?v=20260915b" defer></script>
-<script src="../assets/js/tab-bitacora.js?v=20260915b" defer></script>
+<script src="../assets/js/core.js?v=20260916a" defer></script>
+<script src="../assets/js/tab-bitacora.js?v=20260916a" defer></script>
 </head>
 <body data-page="bitacora">
 
@@ -65,16 +68,10 @@ window.addEventListener('DOMContentLoaded',()=>{ if(!window.vis){ const s=docume
       <span>Bitácora:</span><span class="src-file">/data/bitacora.json</span>
     </div>
     <div style="display:flex;flex-wrap:wrap;gap:.8rem;align-items:center;padding:.9rem 1.1rem">
-      <button id="ev-capture-btn" onclick="runEvidenceCapture()"
-        style="cursor:pointer;border:none;border-radius:9px;padding:.65rem 1.2rem;font-family:var(--font-mono);
-               font-weight:700;font-size:.8rem;color:#04121a;letter-spacing:.4px;
-               background:linear-gradient(95deg,#ffc947,#10e98c);box-shadow:0 6px 22px rgba(255,201,71,.25)">
+      <button class="ctl-btn ctl-btn--solid ctl-btn--green" id="ev-capture-btn" onclick="runEvidenceCapture()">
         📸 Capturar evidencia
       </button>
-      <button id="ev-verify-btn" onclick="runEvidenceVerify()"
-        style="cursor:pointer;border:1px solid rgba(0,229,255,.4);border-radius:9px;padding:.65rem 1.2rem;
-               font-family:var(--font-mono);font-weight:700;font-size:.8rem;color:var(--cyan);
-               background:rgba(0,229,255,.08)">
+      <button class="ctl-btn ctl-btn--cyan" id="ev-verify-btn" onclick="runEvidenceVerify()">
         ✔ Verificar integridad
       </button>
       <select id="ev-run-sel" class="app-select" onchange="loadEvidenceManifest(this.value)"></select>
@@ -115,18 +112,10 @@ window.addEventListener('DOMContentLoaded',()=>{ if(!window.vis){ const s=docume
     <div class="panel">
       <div class="ph"><div class="ptitle">Nueva entrada manual</div><span class="pbadge d">investigador</span></div>
       <div style="padding:1rem;display:flex;flex-direction:column;gap:.7rem">
-        <input id="bit-actor" placeholder="Actor (ej. pat_mic)" style="background:rgba(255,255,255,.05);
-          border:1px solid var(--bdr);border-radius:8px;color:var(--t1);font-family:var(--font-mono);
-          font-size:.72rem;padding:.6rem .7rem">
-        <input id="bit-accion" placeholder="Acción (ej. decision_metodologica)" style="background:rgba(255,255,255,.05);
-          border:1px solid var(--bdr);border-radius:8px;color:var(--t1);font-family:var(--font-mono);
-          font-size:.72rem;padding:.6rem .7rem">
-        <textarea id="bit-detalle" rows="4" placeholder="Detalle: qué se hizo/decidió y por qué…"
-          style="background:rgba(255,255,255,.05);border:1px solid var(--bdr);border-radius:8px;color:var(--t1);
-          font-family:var(--font-mono);font-size:.72rem;padding:.6rem .7rem;resize:vertical"></textarea>
-        <button onclick="addBitacoraEntry()" style="cursor:pointer;border:none;border-radius:9px;
-          padding:.65rem 1.2rem;font-family:var(--font-mono);font-weight:700;font-size:.78rem;color:#04121a;
-          background:linear-gradient(95deg,#00e5ff,#b060ff)">✍ Asentar en bitácora</button>
+        <input class="ctl-input" id="bit-actor" placeholder="Actor (ej. pat_mic)">
+        <input class="ctl-input" id="bit-accion" placeholder="Acción (ej. decision_metodologica)">
+        <textarea class="ctl-input" id="bit-detalle" rows="4" placeholder="Detalle: qué se hizo/decidió y por qué…"></textarea>
+        <button class="ctl-btn ctl-btn--solid ctl-btn--cyan" onclick="addBitacoraEntry()">✍ Asentar en bitácora</button>
         <span id="bit-status" style="font-family:var(--font-mono);font-size:.64rem;color:var(--t3)">
           Cada entrada queda encadenada por hash (no editable ni borrable desde la app).
         </span>

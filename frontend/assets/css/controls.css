@@ -1,0 +1,565 @@
+/* ═══════════════════════════════════════════════════════════════════
+   CONTROLS — CAPA DE CONTROLES DE INTERFAZ           (v20260916a)
+   ───────────────────────────────────────────────────────────────────
+   Adaptación al proyecto de la hoja de especímenes "Careers Explorer"
+   (styles.css aportada el 2026-09-16). De esa referencia se toma la
+   GEOMETRÍA y el COMPORTAMIENTO de los controles:
+
+     · píldora de radio completo como forma por defecto
+     · campo de búsqueda grande con botón circular de envío
+     · control segmentado sobre pista translúcida
+     · anillo de foco de 2px con offset (no borde de color a secas)
+     · transiciones cortas (.18s ease) y micro-elevación al hover
+
+   …y NINGÚN color ni tipografía suyos: la app conserva su piel
+   Nocturne/Aurora (acento violeta, Inter/Outfit/Space Grotesk). El
+   verde #17cf6a, Plus Jakarta Sans y las superficies de la referencia
+   se quedan fuera a propósito.
+
+   Todos los colores salen de los tokens --ctl-* declarados en
+     assets/css/nocturne.css  (oscuro)   ·   assets/css/aurora.css (claro)
+   igual que el resto del proyecto: AQUÍ NO HAY LITERALES DE COLOR.
+
+   Orden de carga OBLIGATORIO — esta hoja va SIEMPRE la última:
+     (dashboard.css | inicio.css) → nocturne.css → aurora.css → controls.css
+   Por ir al final gana por cascada y no necesita !important. Para que
+   eso funcione se retiraron los overrides de .vis-ctrl-btn /
+   .vis-ctrl-select que vivían en dashboard.css §10 (con !important) y
+   en los bloques de tema de nocturne.css y aurora.css: ese componente
+   lo define ahora este archivo, una sola vez, para ambos temas.
+
+   Componentes:
+     .ctl-btn (+ tonos, --solid, --sm, --block)  botones de acción
+     .vis-ctrl-btn                               botón de control de las 13 páginas
+     select · .app-select · .vis-ctrl-select     desplegables
+     .ctl-input                                  texto, número, fecha, textarea
+     .searchfield (+ __icon __input __submit)    campo de búsqueda compuesto
+     .segmented (+ __item)                       pestañas / filtros segmentados
+     range · file · checkbox · radio             controles nativos
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ── 1 · Foco visible — una sola regla para todos los controles ─────
+   :where() deja la especificidad en cero, así que cualquier
+   componente puede redefinirlo sin pelear. Sustituye a los
+   `outline:none` sueltos que había por el proyecto.               */
+:where(button, input, select, textarea, a.btn,
+       .segmented__item, .searchfield__submit):focus-visible {
+  outline: 2px solid var(--ctl-focus);
+  outline-offset: 2px;
+  border-radius: var(--ctl-r-pill);
+}
+
+/* ── 2 · BOTONES DE ACCIÓN — .ctl-btn ───────────────────────────────
+   Reemplaza los <button style="border:1px solid rgba(…);border-radius:9px;…">
+   que cada página escribía a mano. El color lo pone --tone; las
+   variantes sólo cambian ese token, nunca las reglas.
+
+     <button class="ctl-btn">…</button>                  · acento de la app
+     <button class="ctl-btn ctl-btn--gold">…</button>    · tono semántico
+     <button class="ctl-btn ctl-btn--solid">…</button>   · acción principal
+     <button class="ctl-btn ctl-btn--sm ctl-btn--block">…</button>
+*/
+.ctl-btn {
+  --tone: var(--ctl-accent);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .45rem;
+  padding: .52rem 1.05rem;
+  border: 1px solid color-mix(in srgb, var(--tone) 42%, transparent);
+  border-radius: var(--ctl-r-pill);
+  background: color-mix(in srgb, var(--tone) 12%, transparent);
+  color: var(--tone);
+  font-family: var(--font-ui, var(--font-body));
+  font-size: .72rem;
+  font-weight: 600;
+  letter-spacing: .015em;
+  line-height: 1.25;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color var(--ctl-motion), border-color var(--ctl-motion),
+              color var(--ctl-motion), transform var(--ctl-motion),
+              box-shadow var(--ctl-motion);
+}
+.ctl-btn:hover {
+  background: color-mix(in srgb, var(--tone) 20%, transparent);
+  border-color: var(--tone);
+  transform: translateY(-1px);
+}
+.ctl-btn:active { transform: translateY(0) scale(.97); }
+.ctl-btn:disabled,
+.ctl-btn[aria-disabled="true"] { opacity: .45; cursor: not-allowed; transform: none; }
+
+/* Acción principal — píldora llena. La tinta de encima (--ctl-on-tone)
+   la fija cada tema: oscuro sobre tonos claros, blanco sobre oscuros. */
+.ctl-btn--solid {
+  background: var(--tone);
+  border-color: var(--tone);
+  color: var(--ctl-on-tone);
+  box-shadow: var(--ctl-shadow-pill);
+}
+.ctl-btn--solid:hover {
+  background: var(--tone);
+  filter: brightness(1.07);
+  color: var(--ctl-on-tone);
+}
+
+/* Tonos semánticos — los mismos nombres que ya usa el proyecto */
+.ctl-btn--cyan   { --tone: var(--cyan); }
+.ctl-btn--green  { --tone: var(--green); }
+.ctl-btn--gold   { --tone: var(--gold); }
+.ctl-btn--rose   { --tone: var(--rose); }
+.ctl-btn--violet { --tone: var(--violet); }
+.ctl-btn--indigo { --tone: var(--indigo); }
+.ctl-btn--teal   { --tone: var(--teal); }
+.ctl-btn--muted  { --tone: var(--ctl-ink-2); }
+
+/* Tamaños */
+.ctl-btn--sm  { padding: .38rem .8rem; font-size: .66rem; }
+.ctl-btn--lg  { padding: .65rem 1.3rem; font-size: .8rem; }
+.ctl-btn--block { width: 100%; }
+/* Botón circular de icono (cerrar, ✕, ➤) */
+.ctl-btn--icon {
+  width: 32px; height: 32px; padding: 0;
+  border-radius: 50%; flex: 0 0 auto;
+}
+
+/* ── 3 · .vis-ctrl-btn — el botón de control de las 13 páginas ──────
+   Conserva su voz (micro-etiqueta en versalitas) y su estado .active,
+   pero pasa de rectángulo de 6px a píldora, y el estado activo deja de
+   ser un glow para volverse una píldora llena, como en la referencia. */
+.vis-ctrl-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+  padding: .42rem .95rem;
+  border: 1px solid var(--ctl-line);
+  border-radius: var(--ctl-r-pill);
+  background: var(--ctl-track-bg);
+  color: var(--ctl-ink-2);
+  font-family: var(--font-ui, var(--font-body));
+  font-size: .63rem;
+  font-weight: 600;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  line-height: 1.25;
+  white-space: nowrap;
+  cursor: pointer;
+  box-shadow: none;
+  transition: background-color var(--ctl-motion), border-color var(--ctl-motion),
+              color var(--ctl-motion), transform var(--ctl-motion),
+              box-shadow var(--ctl-motion);
+}
+.vis-ctrl-btn:hover {
+  background: var(--ctl-accent-soft);
+  border-color: var(--ctl-accent);
+  color: var(--ctl-accent);
+  transform: translateY(-1px);
+  box-shadow: none;
+}
+.vis-ctrl-btn:active { transform: translateY(0) scale(.97); }
+.vis-ctrl-btn.active,
+.vis-ctrl-btn[aria-pressed="true"] {
+  background: var(--ctl-pill-bg);
+  border-color: var(--ctl-pill-bg);
+  color: var(--ctl-pill-ink);
+  box-shadow: var(--ctl-shadow-pill);
+}
+.vis-ctrl-btn:disabled { opacity: .45; cursor: not-allowed; transform: none; }
+
+/* ── 4 · DESPLEGABLES ───────────────────────────────────────────────
+   El popup de <option> lo pinta el sistema operativo y sólo obedece a
+   color-scheme y a colores OPACOS: por eso sigue saliendo de los
+   tokens --select-* que ya existían. Aquí cambia la caja: píldora,
+   caret algo más adentro y anillo de foco en vez de sólo borde.     */
+select,
+.app-select,
+.vis-ctrl-select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-color: var(--select-bg);
+  background-image: linear-gradient(45deg, transparent 50%, var(--select-caret) 50%),
+                    linear-gradient(135deg, var(--select-caret) 50%, transparent 50%);
+  background-position: calc(100% - 17px) 54%, calc(100% - 12px) 54%;
+  background-size: 5px 5px, 5px 5px;
+  background-repeat: no-repeat;
+  border: 1px solid var(--select-bdr);
+  border-radius: var(--ctl-r-pill);
+  color: var(--select-fg);
+  padding: .45rem 2.1rem .45rem .95rem;
+  font-family: var(--font-mono, monospace);
+  font-size: .68rem;
+  line-height: 1.25;
+  cursor: pointer;
+  outline: none;
+  transition: background-color var(--ctl-motion), border-color var(--ctl-motion),
+              box-shadow var(--ctl-motion), color var(--ctl-motion);
+}
+select:hover,
+.app-select:hover,
+.vis-ctrl-select:hover {
+  background-color: var(--select-bg-hover);
+  border-color: var(--ctl-accent);
+  color: var(--ctl-ink);
+}
+select:focus,
+.app-select:focus,
+.vis-ctrl-select:focus {
+  border-color: var(--ctl-accent);
+  box-shadow: 0 0 0 4px var(--ctl-focus-ring);
+  color: var(--ctl-ink);
+}
+select option,
+.app-select option,
+.vis-ctrl-select option { background: var(--select-pop); color: var(--select-fg); }
+select option:checked,
+.app-select option:checked { background: var(--select-pop-sel); color: var(--ctl-ink); }
+select:disabled, .app-select:disabled { opacity: .5; cursor: not-allowed; }
+/* Un <select multiple> o con size no es una píldora: es una lista. */
+select[multiple], select[size]:not([size="1"]) {
+  border-radius: var(--ctl-r-md);
+  background-image: none;
+  padding: .4rem;
+}
+
+/* ── 5 · CAMPOS DE TEXTO ────────────────────────────────────────────
+   Se estilan por tipo de elemento (no sólo por clase) para alcanzar
+   también los inputs que las pestañas generan por JS. .ctl-input está
+   para poder marcarlos explícitamente al limpiar los style="" inline.
+   Los componentes con caja propia (.searchfield, el chat de workflow)
+   ganan por especificidad y se quedan como estaban.                 */
+.ctl-input,
+input[type="text"],
+input[type="search"],
+input[type="url"],
+input[type="email"],
+input[type="tel"],
+input[type="password"],
+input[type="number"],
+input[type="date"],
+input[type="datetime-local"],
+input[type="time"],
+input:not([type]),
+textarea {
+  background: var(--ctl-surface);
+  border: 1px solid var(--ctl-line);
+  border-radius: var(--ctl-r-pill);
+  color: var(--ctl-ink);
+  font-family: var(--font-mono, monospace);
+  font-size: .72rem;
+  line-height: 1.4;
+  padding: .55rem .95rem;
+  outline: none;
+  transition: background-color var(--ctl-motion), border-color var(--ctl-motion),
+              box-shadow var(--ctl-motion);
+}
+.ctl-input::placeholder,
+input::placeholder,
+textarea::placeholder { color: var(--ctl-ink-3); opacity: 1; }
+
+.ctl-input:hover,
+input[type="text"]:hover,
+input[type="search"]:hover,
+input[type="url"]:hover,
+input[type="number"]:hover,
+input[type="date"]:hover,
+textarea:hover { border-color: var(--ctl-line-strong); }
+
+.ctl-input:focus,
+input[type="text"]:focus,
+input[type="search"]:focus,
+input[type="url"]:focus,
+input[type="email"]:focus,
+input[type="tel"]:focus,
+input[type="password"]:focus,
+input[type="number"]:focus,
+input[type="date"]:focus,
+input[type="datetime-local"]:focus,
+input[type="time"]:focus,
+input:not([type]):focus,
+textarea:focus {
+  border-color: var(--ctl-accent);
+  box-shadow: 0 0 0 4px var(--ctl-focus-ring);
+}
+.ctl-input:disabled,
+input:disabled,
+textarea:disabled { background: var(--ctl-surface-2); opacity: .65; cursor: not-allowed; }
+
+/* Un área de texto no es una píldora: caja redondeada y alto libre. */
+textarea,
+.ctl-input--area {
+  border-radius: var(--ctl-r-lg);
+  padding: .7rem .9rem;
+  resize: vertical;
+  min-height: 84px;
+}
+/* Números y fechas viven en cajas estrechas fijadas por cada página:
+   menos aire lateral para que el valor no quede cortado. */
+input[type="number"],
+input[type="date"],
+input[type="datetime-local"],
+input[type="time"] { padding-inline: .7rem; }
+/* Variantes de tamaño */
+.ctl-input--sm { padding: .38rem .75rem; font-size: .66rem; }
+.ctl-input--block { width: 100%; box-sizing: border-box; }
+
+/* ── 6 · CAMPO DE BÚSQUEDA COMPUESTO — .searchfield ─────────────────
+   El gesto característico de la referencia: una píldora elevada con
+   lupa a la izquierda, el input sin caja propia y (opcional) un botón
+   circular de envío a la derecha.
+
+     <div class="searchfield">
+       <svg class="searchfield__icon">…</svg>
+       <input class="searchfield__input" placeholder="…">
+       <button class="searchfield__submit">…</button>   ← opcional
+     </div>
+*/
+.searchfield {
+  display: flex;
+  align-items: center;
+  gap: .7rem;
+  width: 100%;
+  padding: .4rem .4rem .4rem 1.1rem;
+  background: var(--ctl-surface);
+  border: 1px solid var(--ctl-line);
+  border-radius: var(--ctl-r-pill);
+  box-shadow: var(--ctl-shadow-field);
+  transition: border-color var(--ctl-motion), box-shadow var(--ctl-motion);
+}
+.searchfield:focus-within {
+  border-color: var(--ctl-accent);
+  box-shadow: var(--ctl-shadow-field), 0 0 0 4px var(--ctl-focus-ring);
+}
+/* El input va con especificidad de dos clases a propósito: sin eso lo
+   alcanzaría la regla genérica input[type="search"] de §5 y aparecería
+   una segunda píldora dentro de la píldora. */
+.searchfield__icon {
+  flex: 0 0 auto;
+  width: 17px;
+  height: 17px;
+  color: var(--ctl-ink-3);
+}
+.searchfield:focus-within .searchfield__icon { color: var(--ctl-accent); }
+.searchfield .searchfield__input {
+  flex: 1 1 auto;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  color: var(--ctl-ink);
+  font-family: var(--font-mono, monospace);
+  font-size: .78rem;
+  line-height: 1.4;
+  padding-block: .42rem;
+  padding-inline: 0;
+  outline: none;
+  box-shadow: none;
+}
+.searchfield .searchfield__input:focus { border: 0; box-shadow: none; outline: none; }
+.searchfield .searchfield__input::placeholder { color: var(--ctl-ink-3); }
+.searchfield__submit {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  aspect-ratio: 1;
+  border: 0;
+  border-radius: 50%;
+  background: var(--ctl-pill-bg);
+  color: var(--ctl-pill-ink);
+  cursor: pointer;
+  transition: transform var(--ctl-motion), filter var(--ctl-motion);
+}
+.searchfield__submit:hover { transform: translateX(2px); filter: brightness(1.08); }
+.searchfield__submit:active { transform: translateX(0) scale(.95); }
+.searchfield__submit svg { width: 16px; height: 16px; }
+/* Variante compacta, para barras de panel */
+.searchfield--sm { padding: .25rem .25rem .25rem .85rem; box-shadow: none; }
+.searchfield.searchfield--sm .searchfield__input { font-size: .7rem; padding-block: .32rem; }
+.searchfield--sm .searchfield__submit { width: 28px; }
+
+/* ── 7 · CONTROL SEGMENTADO — .segmented ────────────────────────────
+   Pestañas/filtros sobre una pista translúcida; el activo es una
+   píldora llena. Sustituye a las hileras de .vis-ctrl-btn que en
+   realidad eran una navegación (p. ej. los capítulos de Tesis).
+
+     <div class="segmented" role="tablist" data-segmented>
+       <button class="segmented__item" aria-selected="true">…</button>
+       <button class="segmented__item">…</button>
+     </div>
+
+   Con el atributo data-segmented, core.js (initSegmented) se encarga
+   de mover aria-selected al pulsar. Sin él, el estado lo pone quien
+   lo use.                                                           */
+.segmented {
+  display: flex;
+  gap: 2px;
+  padding: 4px;
+  max-width: 100%;
+  border: 1px solid var(--ctl-track-bdr);
+  border-radius: var(--ctl-r-pill);
+  background: var(--ctl-track-bg);
+  box-shadow: var(--ctl-shadow-track);
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-backdrop-filter: blur(14px) saturate(1.2);
+          backdrop-filter: blur(14px) saturate(1.2);
+}
+.segmented::-webkit-scrollbar { display: none; }
+.segmented__item {
+  flex: 0 0 auto;
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: var(--ctl-ink-2);
+  font-family: var(--font-ui, var(--font-body));
+  font-size: .7rem;
+  font-weight: 600;
+  letter-spacing: .01em;
+  line-height: 1.25;
+  padding: .5rem 1.05rem;
+  border-radius: var(--ctl-r-pill);
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color var(--ctl-motion), color var(--ctl-motion);
+}
+.segmented__item:hover { background: var(--ctl-accent-soft); color: var(--ctl-ink); }
+.segmented__item[aria-selected="true"],
+.segmented__item.active {
+  background: var(--ctl-pill-bg);
+  color: var(--ctl-pill-ink);
+  box-shadow: var(--ctl-shadow-pill);
+}
+/* Variante que ocupa todo el ancho repartiendo a partes iguales */
+.segmented--fill { width: 100%; }
+.segmented--fill .segmented__item { flex: 1 1 0; justify-content: center; text-align: center; }
+
+/* ── 8 · DESLIZADORES (range) ───────────────────────────────────────
+   Los pesos del modelo adaptativo y las barras de .lg-sl, que hasta
+   ahora salían con el control nativo del navegador. Respeta --c, el
+   color por serie que tab-maltg.js pone en cada barra.              */
+input[type="range"] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 100%;
+  height: 20px;
+  background: transparent;
+  cursor: pointer;
+}
+input[type="range"]::-webkit-slider-runnable-track {
+  height: 6px;
+  border-radius: var(--ctl-r-pill);
+  /* La pista translúcida de la referencia se pierde sobre nuestros dos
+     fondos; se tiñe con la tinta terciaria para que se vea en ambos. */
+  background: color-mix(in srgb, var(--ctl-ink-3) 34%, transparent);
+  border: 1px solid var(--ctl-line);
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 15px;
+  height: 15px;
+  margin-top: -5.5px;
+  border-radius: 50%;
+  background: var(--c, var(--ctl-accent));
+  border: 2px solid var(--ctl-surface);
+  box-shadow: var(--ctl-shadow-pill);
+  transition: transform var(--ctl-motion);
+}
+input[type="range"]:hover::-webkit-slider-thumb { transform: scale(1.12); }
+input[type="range"]::-moz-range-track {
+  height: 6px;
+  border-radius: var(--ctl-r-pill);
+  background: color-mix(in srgb, var(--ctl-ink-3) 34%, transparent);
+  border: 1px solid var(--ctl-line);
+}
+input[type="range"]::-moz-range-thumb {
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background: var(--c, var(--ctl-accent));
+  border: 2px solid var(--ctl-surface);
+  box-shadow: var(--ctl-shadow-pill);
+}
+
+/* ── 9 · SELECTOR DE ARCHIVO ────────────────────────────────────────
+   El botón nativo ("Choose file") pasa a ser una píldora del sistema;
+   el nombre del archivo queda en tinta secundaria.                  */
+input[type="file"] {
+  color: var(--ctl-ink-2);
+  font-family: var(--font-mono, monospace);
+  font-size: .64rem;
+  cursor: pointer;
+}
+input[type="file"]::file-selector-button {
+  margin-right: .6rem;
+  padding: .38rem .9rem;
+  border: 1px solid var(--ctl-line);
+  border-radius: var(--ctl-r-pill);
+  background: var(--ctl-track-bg);
+  color: var(--ctl-ink-2);
+  font-family: var(--font-ui, var(--font-body));
+  font-size: .62rem;
+  font-weight: 600;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background-color var(--ctl-motion), border-color var(--ctl-motion),
+              color var(--ctl-motion);
+}
+input[type="file"]::file-selector-button:hover {
+  background: var(--ctl-accent-soft);
+  border-color: var(--ctl-accent);
+  color: var(--ctl-accent);
+}
+
+/* ── 10 · CASILLAS Y RADIOS ─────────────────────────────────────────
+   accent-color deja que el navegador pinte el control nativo con el
+   acento del tema: es accesible y no necesita reconstruir el widget. */
+input[type="checkbox"],
+input[type="radio"] {
+  accent-color: var(--ctl-accent);
+  width: 15px;
+  height: 15px;
+  cursor: pointer;
+}
+input[type="checkbox"]:disabled,
+input[type="radio"]:disabled { opacity: .5; cursor: not-allowed; }
+/* Etiqueta con casilla — alineación y zona de clic cómoda */
+.ctl-check {
+  display: inline-flex;
+  align-items: center;
+  gap: .45rem;
+  cursor: pointer;
+  font-family: var(--font-ui, var(--font-body));
+  font-size: .68rem;
+  color: var(--ctl-ink-2);
+}
+
+/* ── 11 · PANTALLA DE INICIO (index.html) ───────────────────────────
+   Sus controles ya eran coherentes; sólo se alinean las formas
+   (píldora en .btn) y se les añade la micro-elevación común.        */
+.btn { border-radius: var(--ctl-r-pill); transition: background-color var(--ctl-motion), transform var(--ctl-motion), border-color var(--ctl-motion); }
+.btn:active { transform: scale(.97); }
+.arrow-btn { transition: border-color var(--ctl-motion), color var(--ctl-motion), transform var(--ctl-motion); }
+.arrow-btn:hover { transform: translateY(-1px); }
+
+/* ── 12 · RESPONSIVE ────────────────────────────────────────────────
+   Los grupos que pueden desbordar (segmentado, búsqueda) se estiran y
+   dejan de forzar scroll horizontal en la página.                   */
+@media (max-width: 640px) {
+  .segmented { align-self: stretch; justify-content: flex-start; }
+  .searchfield { gap: .5rem; padding-left: .85rem; }
+  .ctl-btn { padding: .48rem .9rem; }
+}
+
+/* ── 13 · MOVIMIENTO REDUCIDO ───────────────────────────────────────
+   dashboard.css ya lo cubre globalmente; se repite aquí para que la
+   hoja funcione sola si alguna página la carga sin el resto.        */
+@media (prefers-reduced-motion: reduce) {
+  .ctl-btn, .vis-ctrl-btn, .segmented__item,
+  .searchfield, .searchfield__submit, .arrow-btn, .btn {
+    transition-duration: .01ms;
+  }
+  .ctl-btn:hover, .vis-ctrl-btn:hover,
+  .searchfield__submit:hover, .arrow-btn:hover { transform: none; }
+}

@@ -25,12 +25,15 @@ window.addEventListener('DOMContentLoaded',()=>{ if(!window.vis){ const s=docume
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Nova+Mono&family=Outfit:wght@200;300;400;500;600;700;800;900&family=JetBrains+Mono:wght@300;400;600&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
 <!-- Estructura primero, luego las dos pieles de tema. El orden importa:
      dashboard.css (forma) → nocturne.css (oscuro) → aurora.css (claro). -->
-<link rel="stylesheet" href="../assets/css/dashboard.css?v=20260915b">
-<link rel="stylesheet" href="../assets/css/nocturne.css?v=20260915b">
-<link rel="stylesheet" href="../assets/css/aurora.css?v=20260915b">
+<link rel="stylesheet" href="../assets/css/dashboard.css?v=20260916a">
+<link rel="stylesheet" href="../assets/css/nocturne.css?v=20260916a">
+<link rel="stylesheet" href="../assets/css/aurora.css?v=20260916a">
+<!-- Capa de controles (botones, campos, selects, segmentados).
+     Va la ÚLTIMA: gana por cascada sin !important. -->
+<link rel="stylesheet" href="../assets/css/controls.css?v=20260916a">
 <!-- Runtime compartido (header/nav, tema, animación de arranque) + lógica propia de esta página -->
-<script src="../assets/js/core.js?v=20260915b" defer></script>
-<script src="../assets/js/tab-adaptativo.js?v=20260915b" defer></script>
+<script src="../assets/js/core.js?v=20260916a" defer></script>
+<script src="../assets/js/tab-adaptativo.js?v=20260916a" defer></script>
 </head>
 <body data-page="adaptativo">
 
@@ -110,13 +113,11 @@ window.addEventListener('DOMContentLoaded',()=>{ if(!window.vis){ const s=docume
         </div>
         <div style="display:flex;gap:.8rem;flex-wrap:wrap;align-items:center">
           <label style="font-family:var(--font-mono);font-size:.66rem;color:var(--t3)">Loop ≥
-            <input type="number" id="ad-u-loop" min="2" max="10" value="3" style="width:52px;background:rgba(255,255,255,.06);border:1px solid var(--bdr);border-radius:6px;color:var(--t1);padding:.25rem .4rem"> repeticiones</label>
+            <input class="ctl-input" type="number" id="ad-u-loop" min="2" max="10" value="3" style="width:64px"> repeticiones</label>
           <label style="font-family:var(--font-mono);font-size:.66rem;color:var(--t3)">Gap referencial
-            <input type="number" id="ad-u-gap" min="5" max="365" value="60" style="width:60px;background:rgba(255,255,255,.06);border:1px solid var(--bdr);border-radius:6px;color:var(--t1);padding:.25rem .4rem"> días háb.</label>
+            <input class="ctl-input" type="number" id="ad-u-gap" min="5" max="365" value="60" style="width:72px"> días háb.</label>
         </div>
-        <button onclick="adSaveConfig()" style="cursor:pointer;border:none;border-radius:9px;padding:.6rem 1.1rem;
-          font-family:var(--font-mono);font-weight:700;font-size:.76rem;color:#04121a;
-          background:linear-gradient(95deg,#b060ff,#00e5ff)">💾 Guardar métricas → recalcular ranking</button>
+        <button class="ctl-btn ctl-btn--solid ctl-btn--cyan" onclick="adSaveConfig()">💾 Guardar métricas → recalcular ranking</button>
         <span id="ad-cfg-status" style="font-family:var(--font-mono);font-size:.62rem;color:var(--t3)">Los pesos se normalizan y quedan asentados en la bitácora (M5).</span>
       </div>
     </div>
@@ -126,21 +127,19 @@ window.addEventListener('DOMContentLoaded',()=>{ if(!window.vis){ const s=docume
         <span class="pbadge g" id="ad-fer-count">—</span></div>
       <div style="padding:.8rem 1rem;display:flex;flex-direction:column;gap:.6rem">
         <div style="display:flex;gap:.5rem;flex-wrap:wrap;align-items:center">
-          <input type="date" id="ad-fer-fecha" style="background:rgba(255,255,255,.06);border:1px solid var(--bdr);border-radius:8px;color:var(--t1);font-family:var(--font-mono);font-size:.7rem;padding:.45rem .5rem">
-          <input id="ad-fer-motivo" placeholder="Motivo (ej. feriado local, traslado)" style="flex:1;min-width:150px;background:rgba(255,255,255,.06);border:1px solid var(--bdr);border-radius:8px;color:var(--t1);font-family:var(--font-mono);font-size:.7rem;padding:.45rem .55rem">
-          <button onclick="adAddFeriado()" style="cursor:pointer;border:1px solid rgba(255,201,71,.5);border-radius:8px;padding:.45rem .8rem;font-family:var(--font-mono);font-weight:700;font-size:.72rem;color:var(--gold);background:rgba(255,201,71,.1)">+ Feriado</button>
+          <input class="ctl-input" type="date" id="ad-fer-fecha">
+          <input class="ctl-input" id="ad-fer-motivo" placeholder="Motivo (ej. feriado local, traslado)" style="flex:1;min-width:150px">
+          <button class="ctl-btn ctl-btn--gold" onclick="adAddFeriado()">+ Feriado</button>
         </div>
         <div id="ad-fer-list" style="max-height:170px;overflow-y:auto;border:1px solid var(--bdr);border-radius:8px;padding:.4rem .6rem"></div>
         <div style="display:flex;gap:.5rem;flex-wrap:wrap;align-items:center">
-          <input type="date" id="ad-sus-desde" title="Desde" style="background:rgba(255,255,255,.06);border:1px solid var(--bdr);border-radius:8px;color:var(--t1);font-family:var(--font-mono);font-size:.7rem;padding:.45rem .5rem">
-          <input type="date" id="ad-sus-hasta" title="Hasta" style="background:rgba(255,255,255,.06);border:1px solid var(--bdr);border-radius:8px;color:var(--t1);font-family:var(--font-mono);font-size:.7rem;padding:.45rem .5rem">
-          <input id="ad-sus-motivo" placeholder="Suspensión del CJ (resolución)" style="flex:1;min-width:130px;background:rgba(255,255,255,.06);border:1px solid var(--bdr);border-radius:8px;color:var(--t1);font-family:var(--font-mono);font-size:.7rem;padding:.45rem .55rem">
-          <button onclick="adAddSuspension()" style="cursor:pointer;border:1px solid rgba(0,229,255,.5);border-radius:8px;padding:.45rem .8rem;font-family:var(--font-mono);font-weight:700;font-size:.72rem;color:var(--cyan);background:rgba(0,229,255,.08)">+ Suspensión</button>
+          <input class="ctl-input" type="date" id="ad-sus-desde" title="Desde">
+          <input class="ctl-input" type="date" id="ad-sus-hasta" title="Hasta">
+          <input class="ctl-input" id="ad-sus-motivo" placeholder="Suspensión del CJ (resolución)" style="flex:1;min-width:130px">
+          <button class="ctl-btn ctl-btn--cyan" onclick="adAddSuspension()">+ Suspensión</button>
         </div>
         <div id="ad-sus-list" style="max-height:90px;overflow-y:auto;border:1px solid var(--bdr);border-radius:8px;padding:.4rem .6rem"></div>
-        <button onclick="adSaveFeriados()" style="cursor:pointer;border:none;border-radius:9px;padding:.6rem 1.1rem;
-          font-family:var(--font-mono);font-weight:700;font-size:.76rem;color:#04121a;
-          background:linear-gradient(95deg,#ffc947,#10e98c)">💾 Guardar calendario → recomputar días hábiles</button>
+        <button class="ctl-btn ctl-btn--solid ctl-btn--green" onclick="adSaveFeriados()">💾 Guardar calendario → recomputar días hábiles</button>
         <span id="ad-fer-status" style="font-family:var(--font-mono);font-size:.62rem;color:var(--t3)">Todo dictamen usa este calendario para el cómputo de términos; el cambio queda en bitácora.</span>
       </div>
     </div>
@@ -155,9 +154,7 @@ window.addEventListener('DOMContentLoaded',()=>{ if(!window.vis){ const s=docume
     </div>
     <div id="ad-su-table" style="padding:.6rem 1rem;overflow-x:auto"></div>
     <div style="display:flex;gap:.8rem;align-items:center;padding:0 1rem 1rem">
-      <button onclick="adSaveSupuestos()" style="cursor:pointer;border:none;border-radius:9px;padding:.6rem 1.1rem;
-        font-family:var(--font-mono);font-weight:700;font-size:.76rem;color:#04121a;
-        background:linear-gradient(95deg,#ffc947,#00e5ff)">💾 Aplicar supuestos → recalcular todo</button>
+      <button class="ctl-btn ctl-btn--solid ctl-btn--cyan" onclick="adSaveSupuestos()">💾 Aplicar supuestos → recalcular todo</button>
       <span id="ad-su-status" style="font-family:var(--font-mono);font-size:.62rem;color:var(--t3)"></span>
     </div>
   </div>
@@ -172,21 +169,18 @@ window.addEventListener('DOMContentLoaded',()=>{ if(!window.vis){ const s=docume
         <div id="nm-regla-info" style="font-family:var(--font-mono);font-size:.64rem;color:var(--t3)"></div>
         <div style="display:flex;gap:.5rem;flex-wrap:wrap">
           <label style="font-family:var(--font-mono);font-size:.64rem;color:var(--t3)">Nuevo término
-            <input type="number" id="nm-termino" min="1" max="365" style="width:64px;background:rgba(255,255,255,.06);border:1px solid var(--bdr);border-radius:6px;color:var(--t1);padding:.3rem .4rem"> días</label>
+            <input class="ctl-input" type="number" id="nm-termino" min="1" max="365" style="width:74px"> días</label>
           <label style="font-family:var(--font-mono);font-size:.64rem;color:var(--t3)">Vigente desde
-            <input type="date" id="nm-vigencia" style="background:rgba(255,255,255,.06);border:1px solid var(--bdr);border-radius:6px;color:var(--t1);padding:.3rem .4rem"></label>
+            <input class="ctl-input" type="date" id="nm-vigencia"></label>
         </div>
         <div style="display:flex;gap:.5rem;flex-wrap:wrap">
           <select id="nm-tipo" class="app-select"><option value="reforma">Reforma legal</option><option value="jurisprudencia">Jurisprudencia</option></select>
-          <input id="nm-ref" placeholder="Fuente: RO / sentencia (obligatorio)" style="flex:1;min-width:150px;background:rgba(255,255,255,.06);border:1px solid var(--bdr);border-radius:8px;color:var(--t1);font-family:var(--font-mono);font-size:.68rem;padding:.4rem .55rem">
+          <input class="ctl-input" id="nm-ref" placeholder="Fuente: RO / sentencia (obligatorio)" style="flex:1;min-width:150px">
         </div>
-        <input id="nm-motivo" placeholder="Motivo / nota" style="background:rgba(255,255,255,.06);border:1px solid var(--bdr);border-radius:8px;color:var(--t1);font-family:var(--font-mono);font-size:.68rem;padding:.4rem .55rem">
+        <input class="ctl-input" id="nm-motivo" placeholder="Motivo / nota">
         <div style="display:flex;gap:.6rem">
-          <button onclick="nmRegistrar()" style="cursor:pointer;border:none;border-radius:9px;padding:.55rem 1rem;
-            font-family:var(--font-mono);font-weight:700;font-size:.74rem;color:#04121a;
-            background:linear-gradient(95deg,#60a5fa,#10e98c)">✍ Registrar cambio</button>
-          <button onclick="nmImpacto()" style="cursor:pointer;border:1px solid rgba(96,165,250,.5);border-radius:9px;padding:.55rem 1rem;
-            font-family:var(--font-mono);font-weight:700;font-size:.74rem;color:#60a5fa;background:rgba(96,165,250,.08)">⚡ Re-evaluar impacto</button>
+          <button class="ctl-btn ctl-btn--solid ctl-btn--green" onclick="nmRegistrar()">✍ Registrar cambio</button>
+          <button class="ctl-btn ctl-btn--indigo" onclick="nmImpacto()">⚡ Re-evaluar impacto</button>
         </div>
         <span id="nm-status" style="font-family:var(--font-mono);font-size:.62rem;color:var(--t3)">El razonador aplica la versión de la regla vigente a la fecha de cada acto.</span>
       </div>

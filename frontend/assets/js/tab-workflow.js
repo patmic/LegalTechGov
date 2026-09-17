@@ -417,7 +417,7 @@ function wfOpenActivity(nodeId){
       <div style="margin-top:.8rem;padding:.7rem .75rem;border:1px solid var(--bdr2);border-radius:8px;background:var(--card-bg)">
         <div style="font-size:.62rem;color:var(--t2);margin-bottom:.45rem;text-transform:uppercase;letter-spacing:.08em">⚖ Análisis IA de una actuación — suba el documento del juzgador (PDF/TXT)</div>
         <div style="display:flex;gap:.5rem;align-items:center;flex-wrap:wrap">
-          <input type="file" id="wf-mod-file-${uid}" accept=".pdf,.txt" style="font-size:.62rem;color:var(--t2)">
+          <input type="file" id="wf-mod-file-${uid}" accept=".pdf,.txt">
           <button class="vis-ctrl-btn" onclick="wfModalAnalizar('${uid}')">⚖ Analizar con IA COGEP</button>
           <span id="wf-mod-status-${uid}" style="font-size:.62rem;color:var(--t3)"></span>
         </div>
