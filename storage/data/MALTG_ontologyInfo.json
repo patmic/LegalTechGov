@@ -72,7 +72,7 @@
       "label": "Architecture Vision",
       "type": "togaf",
       "cluster": "Foundation",
-      "score": "62",
+      "score": "45",
       "regulation": "TOGAF 10",
       "description": "Fase A — visión de arquitectura. Como marco base de gobernanza, aporta las reglas y controles que el gemelo digital cognitivo aplica para auditar contratos, términos y actuaciones, dando soporte normativo y trazabilidad a las decisiones."
     },
@@ -80,7 +80,7 @@
       "label": "Business Architecture",
       "type": "togaf",
       "cluster": "Foundation",
-      "score": "51",
+      "score": "37",
       "regulation": "TOGAF 10",
       "description": "Fase B — arquitectura de negocio. Como marco base de gobernanza, aporta las reglas y controles que el gemelo digital cognitivo aplica para auditar contratos, términos y actuaciones, dando soporte normativo y trazabilidad a las decisiones."
     },
@@ -88,7 +88,7 @@
       "label": "Information Systems Architecture",
       "type": "togaf",
       "cluster": "Foundation",
-      "score": "45",
+      "score": "34",
       "regulation": "TOGAF 10",
       "description": "Fase C — datos y aplicaciones. Como marco base de gobernanza, aporta las reglas y controles que el gemelo digital cognitivo aplica para auditar contratos, términos y actuaciones, dando soporte normativo y trazabilidad a las decisiones."
     },
@@ -96,7 +96,7 @@
       "label": "Technology Architecture",
       "type": "togaf",
       "cluster": "Foundation",
-      "score": "36",
+      "score": "22",
       "regulation": "TOGAF 10",
       "description": "Fase D — arquitectura tecnológica. Como marco base de gobernanza, aporta las reglas y controles que el gemelo digital cognitivo aplica para auditar contratos, términos y actuaciones, dando soporte normativo y trazabilidad a las decisiones."
     },
@@ -104,7 +104,7 @@
       "label": "Opportunities & Solutions",
       "type": "togaf",
       "cluster": "Foundation",
-      "score": "46",
+      "score": "19",
       "regulation": "TOGAF 10",
       "description": "Fase E — oportunidades y soluciones. Como marco base de gobernanza, aporta las reglas y controles que el gemelo digital cognitivo aplica para auditar contratos, términos y actuaciones, dando soporte normativo y trazabilidad a las decisiones."
     },
@@ -112,7 +112,7 @@
       "label": "Migration Planning",
       "type": "togaf",
       "cluster": "Foundation",
-      "score": "38",
+      "score": "24",
       "regulation": "TOGAF 10",
       "description": "Fase F — planificación de la migración. Como marco base de gobernanza, aporta las reglas y controles que el gemelo digital cognitivo aplica para auditar contratos, términos y actuaciones, dando soporte normativo y trazabilidad a las decisiones."
     },
@@ -128,7 +128,7 @@
       "label": "Architecture Change Management",
       "type": "togaf",
       "cluster": "Foundation",
-      "score": "36",
+      "score": "12",
       "regulation": "TOGAF 10",
       "description": "Fase H — gestión del cambio. Como marco base de gobernanza, aporta las reglas y controles que el gemelo digital cognitivo aplica para auditar contratos, términos y actuaciones, dando soporte normativo y trazabilidad a las decisiones."
     },
@@ -152,7 +152,7 @@
       "label": "EDM — Evaluate, Direct, Monitor",
       "type": "cobit",
       "cluster": "Foundation",
-      "score": "63",
+      "score": "43",
       "regulation": "COBIT 2019",
       "description": "Gobierno: evaluar, dirigir y monitorear (EDM01-05). Como marco base de gobernanza, aporta las reglas y controles que el gemelo digital cognitivo aplica para auditar contratos, términos y actuaciones, dando soporte normativo y trazabilidad a las decisiones."
     },
@@ -160,7 +160,7 @@
       "label": "APO — Align, Plan, Organize",
       "type": "cobit",
       "cluster": "Foundation",
-      "score": "61",
+      "score": "41",
       "regulation": "COBIT 2019",
       "description": "Alinear, planificar y organizar (APO01-14). Como marco base de gobernanza, aporta las reglas y controles que el gemelo digital cognitivo aplica para auditar contratos, términos y actuaciones, dando soporte normativo y trazabilidad a las decisiones."
     },
@@ -168,7 +168,7 @@
       "label": "BAI — Build, Acquire, Implement",
       "type": "cobit",
       "cluster": "Foundation",
-      "score": "60",
+      "score": "43",
       "regulation": "COBIT 2019",
       "description": "Construir, adquirir e implementar (BAI01-11). Como marco base de gobernanza, aporta las reglas y controles que el gemelo digital cognitivo aplica para auditar contratos, términos y actuaciones, dando soporte normativo y trazabilidad a las decisiones."
     },
@@ -176,7 +176,7 @@
       "label": "DSS — Deliver, Service, Support",
       "type": "cobit",
       "cluster": "Foundation",
-      "score": "66",
+      "score": "45",
       "regulation": "COBIT 2019",
       "description": "Entregar, dar servicio y soporte (DSS01-06). Como marco base de gobernanza, aporta las reglas y controles que el gemelo digital cognitivo aplica para auditar contratos, términos y actuaciones, dando soporte normativo y trazabilidad a las decisiones."
     },
@@ -184,7 +184,7 @@
       "label": "MEA — Monitor, Evaluate, Assess",
       "type": "cobit",
       "cluster": "Foundation",
-      "score": "58",
+      "score": "39",
       "regulation": "COBIT 2019",
       "description": "Monitorear, evaluar y valorar (MEA01-04). Como marco base de gobernanza, aporta las reglas y controles que el gemelo digital cognitivo aplica para auditar contratos, términos y actuaciones, dando soporte normativo y trazabilidad a las decisiones."
     },
@@ -192,7 +192,7 @@
       "label": "EDM01 — Gobernanza asegurada",
       "type": "cobit",
       "cluster": "Foundation",
-      "score": "58",
+      "score": "36",
       "regulation": "COBIT 2019",
       "description": "Marco de gobierno establecido y mantenido. Como marco base de gobernanza, aporta las reglas y controles que el gemelo digital cognitivo aplica para auditar contratos, términos y actuaciones, dando soporte normativo y trazabilidad a las decisiones."
     },
@@ -200,7 +200,7 @@
       "label": "APO12 — Gestión de riesgos",
       "type": "cobit",
       "cluster": "Foundation",
-      "score": "61",
+      "score": "41",
       "regulation": "COBIT 2019",
       "description": "Gestión del riesgo de TI. Como marco base de gobernanza, aporta las reglas y controles que el gemelo digital cognitivo aplica para auditar contratos, términos y actuaciones, dando soporte normativo y trazabilidad a las decisiones."
     },
@@ -208,7 +208,7 @@
       "label": "APO13 — Gestión de seguridad",
       "type": "cobit",
       "cluster": "Foundation",
-      "score": "62",
+      "score": "33",
       "regulation": "COBIT 2019",
       "description": "Sistema de gestión de seguridad de la información. Como marco base de gobernanza, aporta las reglas y controles que el gemelo digital cognitivo aplica para auditar contratos, términos y actuaciones, dando soporte normativo y trazabilidad a las decisiones."
     },
@@ -224,7 +224,7 @@
       "label": "MEA03 — Cumplimiento externo",
       "type": "cobit",
       "cluster": "Foundation",
-      "score": "50",
+      "score": "33",
       "regulation": "COBIT 2019",
       "description": "Monitoreo del cumplimiento con requisitos externos. Como marco base de gobernanza, aporta las reglas y controles que el gemelo digital cognitivo aplica para auditar contratos, términos y actuaciones, dando soporte normativo y trazabilidad a las decisiones."
     },
@@ -504,7 +504,7 @@
       "label": "Smart Contracts",
       "type": "blockchain",
       "cluster": "Technology",
-      "score": "46",
+      "score": "30",
       "regulation": "DLT",
       "description": "Contratos inteligentes: cláusulas autoejecutables sobre DLT. Convierten obligaciones contractuales en lógica verificable y trazable, núcleo del uso de contratos en la gobernanza LegalTech."
     },
@@ -512,7 +512,7 @@
       "label": "DLT Network",
       "type": "blockchain",
       "cluster": "Technology",
-      "score": "47",
+      "score": "26",
       "regulation": "DLT",
       "description": "Red de libro mayor distribuido. Es un medio tecnológico que operativiza la gobernanza: soporta el ciclo de vida de los contratos y genera trazabilidad verificable que alimenta al gemelo digital."
     },
@@ -520,7 +520,7 @@
       "label": "Consensus Protocol",
       "type": "blockchain",
       "cluster": "Technology",
-      "score": "48",
+      "score": "31",
       "regulation": "DLT",
       "description": "Protocolo de consenso. Es un medio tecnológico que operativiza la gobernanza: soporta el ciclo de vida de los contratos y genera trazabilidad verificable que alimenta al gemelo digital."
     },
@@ -528,7 +528,7 @@
       "label": "Tokenization",
       "type": "blockchain",
       "cluster": "Technology",
-      "score": "50",
+      "score": "32",
       "regulation": "DLT",
       "description": "Tokenización de activos. Es un medio tecnológico que operativiza la gobernanza: soporta el ciclo de vida de los contratos y genera trazabilidad verificable que alimenta al gemelo digital."
     },
@@ -536,7 +536,7 @@
       "label": "Immutability Ledger",
       "type": "blockchain",
       "cluster": "Technology",
-      "score": "50",
+      "score": "29",
       "regulation": "DLT",
       "description": "Registro inmutable (hash-chain): asegura que ninguna actuación o cláusula pueda alterarse sin dejar evidencia, base de la trazabilidad jurídica."
     },
@@ -544,7 +544,7 @@
       "label": "Notarization",
       "type": "blockchain",
       "cluster": "Technology",
-      "score": "50",
+      "score": "27",
       "regulation": "DLT",
       "description": "Notarización digital de documentos. Es un medio tecnológico que operativiza la gobernanza: soporta el ciclo de vida de los contratos y genera trazabilidad verificable que alimenta al gemelo digital."
     },
@@ -552,7 +552,7 @@
       "label": "Hash SHA-256",
       "type": "blockchain",
       "cluster": "Technology",
-      "score": "50",
+      "score": "30",
       "regulation": "DLT",
       "description": "Integridad por hash SHA-256: sella documentos y actuaciones para detectar cualquier manipulación, sustento técnico de la notarización y la trazabilidad."
     },
@@ -560,7 +560,7 @@
       "label": "Audit Trail",
       "type": "blockchain",
       "cluster": "Technology",
-      "score": "54",
+      "score": "33",
       "regulation": "DLT",
       "description": "Pista de auditoría verificable: reconstruye quién hizo qué y cuándo sobre contratos y expedientes, dando soporte probatorio y trazabilidad de extremo a extremo."
     },
@@ -784,7 +784,7 @@
       "label": "Incidents",
       "type": "operational",
       "cluster": "Operational",
-      "score": "78",
+      "score": "57",
       "regulation": "",
       "description": "Gestión de incidentes operativos. Integra el gemelo digital estructural: cada proceso, servicio o actuación se refleja como un objeto trazable, monitoreable y auditable en tiempo real."
     },
@@ -792,7 +792,7 @@
       "label": "Changes",
       "type": "operational",
       "cluster": "Operational",
-      "score": "77",
+      "score": "34",
       "regulation": "",
       "description": "Gestión de cambios. Integra el gemelo digital estructural: cada proceso, servicio o actuación se refleja como un objeto trazable, monitoreable y auditable en tiempo real."
     },
@@ -800,7 +800,7 @@
       "label": "Service Catalog",
       "type": "operational",
       "cluster": "Operational",
-      "score": "79",
+      "score": "56",
       "regulation": "",
       "description": "Catálogo de servicios. Integra el gemelo digital estructural: cada proceso, servicio o actuación se refleja como un objeto trazable, monitoreable y auditable en tiempo real."
     },
@@ -872,7 +872,7 @@
       "label": "Risk Management",
       "type": "strategic",
       "cluster": "Strategic",
-      "score": "1",
+      "score": "12",
       "regulation": "",
       "description": "Gestión de riesgos: identifica y controla los riesgos jurídicos, operativos y de cumplimiento sobre contratos y procesos, alimentando el dictamen del gemelo cognitivo."
     },
@@ -880,7 +880,7 @@
       "label": "Metrics & KPIs",
       "type": "strategic",
       "cluster": "Strategic",
-      "score": "1",
+      "score": "13",
       "regulation": "",
       "description": "Métricas e indicadores clave. Alinea la gobernanza LegalTech con los objetivos institucionales y provee métricas de soporte y desempeño sobre contratos y procesos."
     },
@@ -888,7 +888,7 @@
       "label": "Roadmap",
       "type": "strategic",
       "cluster": "Strategic",
-      "score": "13",
+      "score": "24",
       "regulation": "",
       "description": "Hoja de ruta tecnológica. Alinea la gobernanza LegalTech con los objetivos institucionales y provee métricas de soporte y desempeño sobre contratos y procesos."
     },
@@ -896,7 +896,7 @@
       "label": "Investment Governance",
       "type": "strategic",
       "cluster": "Strategic",
-      "score": "13",
+      "score": "25",
       "regulation": "",
       "description": "Gobernanza de inversiones. Alinea la gobernanza LegalTech con los objetivos institucionales y provee métricas de soporte y desempeño sobre contratos y procesos."
     },
@@ -904,7 +904,7 @@
       "label": "Value Realization",
       "type": "strategic",
       "cluster": "Strategic",
-      "score": "14",
+      "score": "25",
       "regulation": "",
       "description": "Realización de valor. Alinea la gobernanza LegalTech con los objetivos institucionales y provee métricas de soporte y desempeño sobre contratos y procesos."
     },
@@ -912,7 +912,7 @@
       "label": "Stakeholder Management",
       "type": "strategic",
       "cluster": "Strategic",
-      "score": "14",
+      "score": "23",
       "regulation": "",
       "description": "Gestión de partes interesadas. Alinea la gobernanza LegalTech con los objetivos institucionales y provee métricas de soporte y desempeño sobre contratos y procesos."
     },
@@ -928,7 +928,7 @@
       "label": "Benefits Management",
       "type": "strategic",
       "cluster": "Strategic",
-      "score": "29",
+      "score": "17",
       "regulation": "",
       "description": "Gestión de beneficios. Alinea la gobernanza LegalTech con los objetivos institucionales y provee métricas de soporte y desempeño sobre contratos y procesos."
     },
@@ -984,7 +984,7 @@
       "label": "eDiscovery Pipeline",
       "type": "legaltech",
       "cluster": "Governance",
-      "score": "34",
+      "score": "51",
       "regulation": "GDPR / eIDAS / NIS2",
       "description": "Descubrimiento electrónico de evidencia: localiza, preserva y traza documentos relevantes, dando soporte probatorio dentro del gemelo digital."
     },

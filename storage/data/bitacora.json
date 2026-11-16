@@ -1107,5 +1107,167 @@
     ],
     "prev_hash": "d343ab62ed200ea9",
     "hash": "6bdb458c9f973df6"
+  },
+  {
+    "id": 84,
+    "ts": "2026-10-07T16:16:46Z",
+    "tipo": "sistema",
+    "actor": "sistema/scraper",
+    "accion": "captura_evidencia",
+    "detalle": "Corrida DS_funcionjudicial_20261007_161625: 11/11 fuentes capturadas con snapshot + SHA-256.",
+    "refs": [
+      "DS_funcionjudicial_20261007_161625"
+    ],
+    "prev_hash": "6bdb458c9f973df6",
+    "hash": "a44c2f07ef622469"
+  },
+  {
+    "id": 85,
+    "ts": "2026-10-07T16:16:46Z",
+    "tipo": "sistema",
+    "actor": "sistema/scraper",
+    "accion": "regeneracion_sdt_cj",
+    "detalle": "SDT_CJ.json regenerado (madurez 46/100); evidencia: DS_funcionjudicial_20261007_161625",
+    "refs": [
+      "DS_funcionjudicial_20261007_161625",
+      "SDT_CJ.json"
+    ],
+    "prev_hash": "a44c2f07ef622469",
+    "hash": "7cf1ba2383be4f18"
+  },
+  {
+    "id": 86,
+    "ts": "2026-10-26T20:54:01Z",
+    "tipo": "sistema",
+    "actor": "sistema/scraper",
+    "accion": "captura_evidencia",
+    "detalle": "Corrida DS_funcionjudicial_20261026_205349: 11/11 fuentes capturadas con snapshot + SHA-256.",
+    "refs": [
+      "DS_funcionjudicial_20261026_205349"
+    ],
+    "prev_hash": "7cf1ba2383be4f18",
+    "hash": "41a6ce710c19c554"
+  },
+  {
+    "id": 87,
+    "ts": "2026-10-26T20:54:02Z",
+    "tipo": "sistema",
+    "actor": "sistema/scraper",
+    "accion": "regeneracion_sdt_cj",
+    "detalle": "SDT_CJ.json regenerado (madurez 46/100); evidencia: DS_funcionjudicial_20261026_205349",
+    "refs": [
+      "DS_funcionjudicial_20261026_205349",
+      "SDT_CJ.json"
+    ],
+    "prev_hash": "41a6ce710c19c554",
+    "hash": "00ec02c97c159809"
+  },
+  {
+    "id": 88,
+    "ts": "2026-10-30T15:21:53Z",
+    "tipo": "sistema",
+    "actor": "sistema/scraper",
+    "accion": "captura_evidencia",
+    "detalle": "Corrida DS_funcionjudicial_20261030_152142: 11/11 fuentes capturadas con snapshot + SHA-256.",
+    "refs": [
+      "DS_funcionjudicial_20261030_152142"
+    ],
+    "prev_hash": "00ec02c97c159809",
+    "hash": "a5e38f175844d038"
+  },
+  {
+    "id": 89,
+    "ts": "2026-10-30T15:21:53Z",
+    "tipo": "sistema",
+    "actor": "sistema/scraper",
+    "accion": "regeneracion_sdt_cj",
+    "detalle": "SDT_CJ.json regenerado (madurez 46/100); evidencia: DS_funcionjudicial_20261030_152142",
+    "refs": [
+      "DS_funcionjudicial_20261030_152142",
+      "SDT_CJ.json"
+    ],
+    "prev_hash": "a5e38f175844d038",
+    "hash": "9106f7d271eedc93"
+  },
+  {
+    "id": 90,
+    "ts": "2026-11-04T20:52:49Z",
+    "tipo": "sistema",
+    "actor": "sistema/scraper",
+    "accion": "captura_evidencia",
+    "detalle": "Corrida DS_funcionjudicial_20261104_205138: 8/11 fuentes capturadas con snapshot + SHA-256.",
+    "refs": [
+      "DS_funcionjudicial_20261104_205138"
+    ],
+    "prev_hash": "9106f7d271eedc93",
+    "hash": "8002418f6b7c813b"
+  },
+  {
+    "id": 91,
+    "ts": "2026-11-04T20:52:49Z",
+    "tipo": "sistema",
+    "actor": "sistema/scraper",
+    "accion": "regeneracion_sdt_cj",
+    "detalle": "SDT_CJ.json regenerado (madurez 46/100); evidencia: DS_funcionjudicial_20261104_205138",
+    "refs": [
+      "DS_funcionjudicial_20261104_205138",
+      "SDT_CJ.json"
+    ],
+    "prev_hash": "8002418f6b7c813b",
+    "hash": "de45cdf6a326d46d"
+  },
+  {
+    "id": 92,
+    "ts": "2026-11-10T19:15:20Z",
+    "tipo": "sistema",
+    "actor": "sistema/scraper",
+    "accion": "captura_evidencia",
+    "detalle": "Corrida DS_funcionjudicial_20261110_191335: 1/11 fuentes capturadas con snapshot + SHA-256.",
+    "refs": [
+      "DS_funcionjudicial_20261110_191335"
+    ],
+    "prev_hash": "de45cdf6a326d46d",
+    "hash": "93c40a609bad28bf"
+  },
+  {
+    "id": 93,
+    "ts": "2026-11-10T19:15:20Z",
+    "tipo": "sistema",
+    "actor": "sistema/scraper",
+    "accion": "regeneracion_sdt_cj",
+    "detalle": "SDT_CJ.json regenerado (madurez 46/100); evidencia: DS_funcionjudicial_20261110_191335",
+    "refs": [
+      "DS_funcionjudicial_20261110_191335",
+      "SDT_CJ.json"
+    ],
+    "prev_hash": "93c40a609bad28bf",
+    "hash": "05d6c044df4048d4"
+  },
+  {
+    "id": 94,
+    "ts": "2026-11-10T19:35:12Z",
+    "tipo": "sistema",
+    "actor": "sistema/scraper",
+    "accion": "captura_evidencia",
+    "detalle": "Corrida DS_funcionjudicial_20261110_193329: 1/11 fuentes capturadas con snapshot + SHA-256.",
+    "refs": [
+      "DS_funcionjudicial_20261110_193329"
+    ],
+    "prev_hash": "05d6c044df4048d4",
+    "hash": "ce9c789a03aadbbd"
+  },
+  {
+    "id": 95,
+    "ts": "2026-11-10T19:35:13Z",
+    "tipo": "sistema",
+    "actor": "sistema/scraper",
+    "accion": "regeneracion_sdt_cj",
+    "detalle": "SDT_CJ.json regenerado (madurez 46/100); evidencia: DS_funcionjudicial_20261110_193329",
+    "refs": [
+      "DS_funcionjudicial_20261110_193329",
+      "SDT_CJ.json"
+    ],
+    "prev_hash": "ce9c789a03aadbbd",
+    "hash": "e710679c7c86625d"
   }
 ]

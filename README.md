@@ -42,82 +42,56 @@ bajo `storage/data/`, montados como volumen dentro del contenedor.
 ## Estructura del proyecto
 
 ```
-appLegaltechTesis/
-├── docker-compose.yml          # Orquesta el servicio "maltg" (puerto 8080)
+LegalTechGov/
+├── docker-compose.yml               # Servicio "maltg" (puerto 8080) y volúmenes montados
+├── ARCHITECTURE_PROPOSAL.md         # Análisis C4 y propuesta de capas (monolito modular)
 ├── backend/
-│   ├── main.py                 # API FastAPI (~3500 líneas, 70+ endpoints)
-│   ├── requirements.txt        # fastapi, uvicorn, python-multipart, pypdf
-│   └── Dockerfile              # python:3.12-slim + Node.js (uipro-cli) + deps
+│   ├── main.py                      # API FastAPI (3 886 líneas, 70 endpoints)
+│   ├── requirements.txt             # fastapi 0.111, uvicorn 0.29, python-multipart, pypdf
+│   └── Dockerfile                   # python:3.12-slim + Node 20 (uipro-cli) + dependencias
 ├── frontend/
-│   ├── index.html              # Pantalla de Inicio (landing, "/"): carrusel-menú, único mapa de navegación
-│   ├── pages/                  # Las 12 páginas del dashboard, una por módulo (multi-page, no SPA)
-│   │   ├── methodology.html    #   01 · Metodología
-│   │   ├── maltg.html          #   02 · MALTG · Arquitectura (KPIs)
-│   │   ├── ontology.html       #   03 · Ontología (grafo vis-network)
-│   │   ├── dt.html             #   04 · Gemelo Digital & Validación (radar + brechas)
-│   │   ├── simulacion.html     #   05 · Esfera Celeste Ontológica (Three.js 3D)
-│   │   ├── workflow.html       #   06 · Workflow · Flujo Procesal (BPMN + chat COGEP)
-│   │   ├── cogep.html          #   07 · Ontología COGEP · IA
-│   │   ├── bitacora.html       #   08 · Bitácora · Evidencia
-│   │   ├── adaptativo.html     #   09 · Adaptativo · MAPE-K
-│   │   ├── experto.html        #   10 · Validación Experta
-│   │   ├── guia.html           #   11 · Guía del Experimento
-│   │   └── tesis.html          #   12 · Tesis Doctoral
-│   ├── assets/                 # Todo el CSS/JS compartido vive aquí (nada suelto en frontend/)
-│   │   ├── css/                # 2 hojas de TEMA (color) + 2 hojas de ESTRUCTURA (forma)
-│   │   │   ├── nocturne.css    # TEMA OSCURO — todos los tokens de color de la app (por defecto)
-│   │   │   ├── aurora.css      # TEMA CLARO  — mismos tokens en claro; carga siempre al final
-│   │   │   ├── dashboard.css   # Estructura de las 12 páginas de pages/ (sin colores propios)
-│   │   │   ├── inicio.css      # Estructura de index.html: carrusel, carátula y modal
-│   │   │   └── controls.css    # Controles: botones, campos, selects, segmentados (carga la ÚLTIMA)
-│   │   ├── js/
-│   │   │   ├── core.js         # Runtime compartido: header inyectado, tema, animación de arranque
-│   │   │   ├── sdtcj-render.js # Render SDT_CJ compartido por dt.html y simulacion.html
-│   │   │   ├── inicio.js       # Carrusel de index.html: carátula 00 + las 12 tarjetas de módulo
-│   │   │   └── tab-*.js        # Lógica propia de cada una de las 12 páginas (una por módulo)
-│   │   └── partials/
-│   │       └── header.html     # Header (logo · módulo actual · ☰ Home/módulos), sin tabs ni botones sueltos
-│   └── flujo_procesal_alertas.html  # Vista independiente de flujo procesal COGEP con alertas de plazo
-│                                #   (autocontenida: no depende de assets/, no está en el menú)
-├── storage/
-│   ├── tools/
-│   │   └── scraper_cj.py       # Instrumento de recolección documental reproducible
-│   │                            #   (snapshots + manifest SHA-256 en storage/digitalShadow/scraping)
-│   └── data/                   # Todo el estado persistente de la app
-│       ├── MALTG_ontology.owl          # Ontología MALTG (OWL/RDF)
-│       ├── MALTG_ontology.json         # Ontología → grafo D3 (estructura)
-│       ├── MALTG_ontologyInfo.json     # Detalle informativo por nodo de la ontología
-│       ├── MALTG_architecture.json     # Arquitectura MALTG (JSON-LD multidimensional)
-│       ├── cogep_kb.json               # Base de conocimiento COGEP (reglas/plazos)
-│       ├── competency_questions.json   # Competency questions de la ontología COGEP
-│       ├── rubrica_dimensiones.json    # Rúbrica 0-100 por dimensión de validez
-│       ├── adaptativo_config.json      # Config del ciclo MAPE-K (pesos/umbrales del usuario)
-│       ├── feriados_judiciales.json    # Feriados/suspensiones de término
-│       ├── bitacora.json               # Bitácora append-only hash-encadenada
-│       ├── salud_global_cache.json     # Caché del índice empírico procesal
-│       ├── sdt/                        # Gemelos digitales estructurales (7 .json), incl. SDT_CJ.json
-│       ├── LegalCase/                  # Expedientes/causas judiciales analizados (47 JSON + PDFs + 2 XLSX)
-│       ├── gold/                       # Anotaciones gold standard + guía de anotación
-│       ├── law/                        # Normativa fuente (COGEP en PDF)
-│       └── architecture/               # Diagramas de arquitectura (PNG, no usado por la app)
-│   ├── workflow/                # Flujos BPMN de procedimientos COGEP (JSON/TXT/PDF) — volumen propio
-│   └── digitalShadow/           # Resultados de "04 Get Digital Shadow" / "05 Digital Shadow Maturity"
-│       ├── PROTOCOLO.md                # Protocolo de recolección documental (domain-agnostic)
-│       ├── SDT_CJ.json                 # Último SDT generado por el botón "Get" (regenerado cada corrida)
-│       ├── DS_<dominio>_<fecha>.json   # Copias históricas por dominio auditado (una por corrida)
-│       └── scraping/                   # Corridas de captura: sources_semilla.json + <run_id>/<slug>.html
-│                                        #   + manifest.json (snapshots SHA-256)
-├── .claude/                    # Config local de Claude Code (agents/) — ignorado en git
-├── desktop.ini
-└── .gitignore                  # Ignora pat_paper/ y .claude/
+│   ├── index.html                   # Inicio (landing "/"): carrusel, único mapa de navegación
+│   ├── flujo_procesal_alertas.html  # Vista autocontenida de alertas de plazo (fuera del menú)
+│   ├── pages/                       # 12 páginas del dashboard, una por módulo (multi-página)
+│   │   ├── methodology.html         #   01 · Metodología
+│   │   ├── maltg.html               #   02 · Arquitectura MALTG (KPIs)
+│   │   ├── ontology.html            #   03 · Ontología (grafo vis-network)
+│   │   ├── digitalShadowGet.html    #   04 · Get Digital Shadow (captura documental)
+│   │   ├── digitalShadow.html       #   05 · Digital Shadow Maturity
+│   │   ├── workflow.html            #   06 · Workflow · Flujo procesal (BPMN)
+│   │   ├── cogep.html               #   07 · Ontología COGEP · IA
+│   │   ├── bitacora.html            #   08 · Bitácora · Evidencia
+│   │   ├── adaptativo.html          #   09 · Adaptativo · MAPE-K
+│   │   ├── experto.html             #   10 · Validación Experta
+│   │   ├── guia.html                #   11 · Guía del Experimento
+│   │   └── tesis.html               #   12 · Tesis Doctoral
+│   └── assets/
+│       ├── css/                     # nocturne.css (oscuro) · aurora.css (claro) · dashboard.css · inicio.css · controls.css
+│       ├── js/                      # core.js (runtime compartido) · inicio.js · sdtcj-render.js · tab-*.js (lógica por módulo)
+│       └── partials/header.html     # Encabezado compartido
+├── storage/                         # Estado persistente (sin base de datos), montado en el contenedor
+│   ├── data/                        # → /data
+│   │   ├── MALTG_ontology.owl / .json, MALTG_ontologyInfo.json   # Ontología MALTG
+│   │   ├── MALTG_architecture.json  # Arquitectura MALTG (JSON-LD)
+│   │   ├── COGEP_ontology.owl       # Ontología COGEP generada desde la KB
+│   │   ├── cogep_kb.json            # Base de conocimiento COGEP (16 actos, 11 reglas, umbrales)
+│   │   ├── competency_questions.json, rubrica_dimensiones.json, pesos_ahp.json
+│   │   ├── adaptativo_config.json, feriados_judiciales.json, salud_global_cache.json
+│   │   ├── bitacora.json            # Bitácora append-only hash-encadenada
+│   │   ├── LegalCase/               # 47 causas en JSON (797 actuaciones) + 2 archivos PDF/XLSX
+│   │   ├── gold/                    # gold_standard.json (55 anotaciones), eval_report.json, GUIA_ANOTACION.md
+│   │   └── law/                     # COGEP consolidado (PDF)
+│   ├── workflow/                    # → /workflow: COGEP.json (82 procedimientos BPMN) y PDF del SUMARIO
+│   ├── digitalShadow/               # → /digitalShadow: captura documental y madurez
+│   │   ├── PROTOCOLO.md, SDT_CJ.json, DS_Synthetic.json, DS_<dominio>_<fecha>.json
+│   │   ├── tools/scraper_cj.py      # Captura reproducible con manifest SHA-256
+│   │   └── scraping/<run_id>/       # Snapshots + manifest.json por corrida
+│   └── architecture/                # Diagramas PNG (no usados por la app)
+├── papers/                          # 8 PDFs de publicaciones (sin versionar en git)
+└── .gitignore                       # Excluye pat_paper/, .claude/, __pycache__ y copias *.bak
 ```
 
-> Nota: el repositorio contiene además, sólo en local y fuera del control de
-> versiones (`.gitignore`), la carpeta `pat_paper/` con la producción académica
-> asociada: los papers (`Paper/`, `PaperImplement/`, `PaperWF/`,
-> `PaperLegalShadow/`, `PaperLegalShadow_ICI2ST/`), la tesis en LaTeX
-> (`tesisLatex_MALTG/`) y los planes de trabajo (`PLAN_*.md`). No forma parte de
-> la aplicación desplegable.
+> `pat_paper/` (producción académica en LaTeX) está excluida por `.gitignore` y no forma parte de la aplicación desplegable.
 
 ## Puesta en marcha
 
@@ -128,7 +102,7 @@ docker compose up --build
 ```
 
 - Inicio (landing, carrusel de módulos): `http://localhost:8080/` — todo el dashboard arranca desde aquí
-- Dashboard (13 páginas independientes, una por módulo): p. ej. `http://localhost:8080/pages/methodology.html` — se abren desde el carrusel de Inicio y se vuelve a él con el botón **MENÚ** del header
+- Dashboard (12 páginas independientes, una por módulo): p. ej. `http://localhost:8080/pages/methodology.html` — se abren desde el carrusel de Inicio y se vuelve a él con el botón **MENÚ** del header
 - API (Swagger/OpenAPI): `http://localhost:8080/docs`
 - Health check: `http://localhost:8080/api/health`
 
@@ -147,7 +121,7 @@ actual (número + nombre) y, a la derecha, el botón de rayas (☰).
 **El botón ☰ despliega un panel con todo lo que antes eran controles
 sueltos**: Home (vuelve al carrusel), el conmutador de tema — en caliente,
 sin recargar, sincronizando vis-network/Chart.js si la página los usa —, el
-punto de estado, y el atajo a los 13 módulos, cada uno con su ícono de línea
+punto de estado, y el atajo a los 12 módulos, cada uno con su ícono de línea
 (24×24, trazo — `NAV_ICON_PATHS` en `core.js`). Lo arma `initNavMenu()` a
 partir de la misma tabla `NAV_PAGES` que rotula el título, resaltando el
 módulo activo. El panel es semitransparente (`rgba` + `backdrop-filter:
@@ -161,10 +135,7 @@ El título de la página vive en el header, no en el cuerpo: `core.js` **mueve**
 módulo. Al mover el nodo en vez de duplicar el texto, siguen funcionando los
 trozos que cada `tab-*.js` actualiza en vivo dentro del título — `#maltg-name`,
 `#wf-proc-name`, `#cogep-validez-chip`, `#ts-live-badge` — sin tocar esos
-archivos. Sólo sube el `.stitle` que **encabeza** la sección: el de `dt.html`
-está a media página separando dos bloques del mismo módulo, así que se queda
-donde está; esa página y las que no tienen `.stitle` (Ontología, Simulación)
-muestran el rótulo de `NAV_PAGES`.
+archivos. Sólo sube el `.stitle` que **encabeza** la sección: las páginas que no tienen `.stitle` de apertura (p. ej. Ontología) muestran el rótulo de `NAV_PAGES`.
 
 La primera tarjeta del carrusel (**00**) es la carátula de la aplicación:
 presenta MALTG y aloja los dos controles globales — **cambiar de tema** y
@@ -173,7 +144,7 @@ presenta MALTG y aloja los dos controles globales — **cambiar de tema** y
 **Dos temas, dos hojas de estilo.** El aspecto de cada tema es CSS puro (nada
 de estilos inyectados desde JavaScript); el único trabajo de JS es conmutar
 `data-theme` en `<html>` y persistirlo en `localStorage['maltg-theme']`, que
-Inicio y las 13 páginas comparten:
+Inicio y las 12 páginas comparten:
 
 | Hoja | Rol |
 |------|-----|
@@ -201,7 +172,7 @@ bloque **E** de `nocturne.css` / `aurora.css`. En vez de escribir
 `aria-selected` al pulsar.
 
 El modo oscuro es el mismo en toda la aplicación: la pantalla de Inicio y las
-13 páginas comparten fondo índigo (`#161826`), superficies planas con filete de
+12 páginas comparten fondo índigo (`#161826`), superficies planas con filete de
 un píxel — el tratamiento de las tarjetas del carrusel — y acento violeta
 (`#9184d9`). En esa piel, `--cyan` designa el *rol* de acento de interfaz, no
 el tono: lo usan ~50 sitios entre CSS y `tab-*.js`, así que se remapea en vez
@@ -230,13 +201,12 @@ primaria en dos líneas (`.dt-primary` — nombre + subtítulo/meta), columnas
 numéricas a la derecha (`.dt-num`) y, cuando la tabla tiene un indicador
 principal (score, riesgo, índice…), una columna de énfasis (`.dt-emphasis`)
 con una franja de fondo continua entre cabecera y cuerpo. Antes cada
-`tab-*.js` escribía su propia tabla con estilos inline; las 13 tablas de la
-app (ranking de riesgo, evidencia, supuestos, alineación LKIF-Core, tablas de
+`tab-*.js` escribía su propia tabla con estilos inline; las tablas de la app (ranking de riesgo, evidencia, supuestos, alineación LKIF-Core, tablas de
 la tesis…) usan ahora este mismo idioma visual.
 
 ## API — áreas principales
 
-El backend expone más de 70 endpoints REST, agrupados por tags en Swagger:
+El backend expone 70 endpoints REST, agrupados por etiqueta en Swagger:
 
 | Tag                     | Endpoints | Qué cubre |
 |--------------------------|:---------:|-----------|
@@ -250,6 +220,51 @@ El backend expone más de 70 endpoints REST, agrupados por tags en Swagger:
 | `System`                  | 1  | Health check |
 
 Ver el detalle completo en `/docs` (Swagger UI) una vez levantado el servicio.
+
+## Módulo Workflow · Flujo procesal COGEP (módulo 06)
+
+Muestra el procedimiento como diagrama BPMN, superpone la trayectoria de una causa real sobre él y la contrasta con las reglas de plazos del COGEP.
+
+### Componentes
+
+| Capa | Elemento | Responsabilidad |
+|------|----------|-----------------|
+| Datos: diagramas | `storage/workflow/COGEP.json` (16,8 MB) | 82 procedimientos en TSV: `código \t nombre \t diagrama BPMN (JointJS) \t metadatos` |
+| Datos: causas | `storage/data/LegalCase/*.json` | 47 causas, 797 actuaciones. Cada actuación apunta a un nodo con `IdGrafoFlujoEstructura = <nº flujo>-<UUID nodo>` |
+| Datos: reglas | `storage/data/cogep_kb.json` | 16 actos procesales, 11 reglas de término, umbrales y 7 procedimientos |
+| Backend: parser | `parse_workflow`, `_wf_rows`, `_stage_of` | Extrae nodos (actividades y eventos), flujos, etapas (grupos) y anotaciones; calcula estadísticas y bounding box |
+| Backend: causa | `get_expediente`, `_causa_flujo`, `_grafo_node` | Ordena las actuaciones por fecha y las ubica en el diagrama |
+| Backend: motor de reglas | `razonar_expediente` | Evaluación determinista y explicable de cada término; produce `resultados` y `node_alerts` |
+| Backend: integridad | `get_ledger`, `get_opendata` | Cadena SHA-256 de actuaciones y exportación JSON-LD / CSV + DCAT |
+| Backend: IA | `/api/cogep/analisis`, `/api/cogep/juicio-pdf`, `/api/cogep/chat` | Análisis de una actuación subida, juicio sobre un PDF y chat sobre la causa |
+| Frontend: página | `frontend/pages/workflow.html` | Lienzo SVG, barra de herramientas, paneles de salud, análisis de PDF, tira tecnológica, modal de actividad y chat |
+| Frontend: lógica | `frontend/assets/js/tab-workflow.js` (916 líneas) | Render del diagrama, zoom, selección de procedimiento y causa, animación de la traza y paneles |
+| Standalone | `frontend/flujo_procesal_alertas.html` | Alertas de plazo en vivo; autocontenida y fuera del menú |
+
+### Endpoints
+
+- `GET /api/workflow-files`: lista los JSON que contienen un diagrama BPMN.
+- `GET /api/workflow?file=&row=`: grafo normalizado de un procedimiento. `row` selecciona uno de los 82.
+- `GET /api/expedientes` y `GET /api/expediente?file=`: lista las causas y devuelve sus actuaciones ordenadas (`pasos`, `nodeRefs`, `flujo`).
+- `GET /api/cogep/juicio?file=`: resultado del motor de reglas (`salud`, `resultados`, `node_alerts`).
+- `GET /api/ledger?file=` y `GET /api/opendata?file=`: cadena de integridad y exportación abierta.
+
+### Flujo de datos
+
+1. Al abrir la página, `pageBoot` pide en paralelo `/api/workflow`, `/api/workflow-files` y `/api/expedientes`.
+2. `renderWorkflow` dibuja nodos y flujos sobre SVG. `_stage_of` asigna cada actividad a una etapa si su centro cae dentro del rectángulo del grupo.
+3. Al elegir una causa, `wfLoadCausa` lanza cuatro peticiones en paralelo: expediente, juicio, ledger y opendata.
+4. Con `nodeRefs` se resalta la trayectoria, `seqByNode` numera los nodos recorridos y `node_alerts` marca los nodos con incumplimiento.
+5. Los paneles de salud, la tira tecnológica y el modal de actividad usan esas mismas respuestas. `wfPlay` reproduce la traza paso a paso.
+
+### Observaciones de diseño
+
+- **Cobertura desigual.** El archivo tiene 82 procedimientos, pero la KB sólo modela 7 (SUMARIO, ORDINARIO, MONITORIO, EJECUTIVO, APELACIÓN, EJECUCIÓN y VOLUNTARIO). El juicio de plazos sólo puede evaluar esos 7.
+- **Sin caché en la ruta de parseo.** `parse_workflow` lee y parsea el JSON de 16,8 MB en cada petición y calcula `file_hash` en cada respuesta. `list_workflow_files` revisa los primeros 200 KB de cada archivo al listar. Una caché en memoria o un índice preprocesado reduciría la latencia.
+- **Enlace por convención.** La relación causa → nodo depende de que el prefijo numérico de `IdGrafoFlujoEstructura` coincida con el código del procedimiento. No hay validación explícita de esa correspondencia.
+- **Indicador de calidad incorporado.** `stats.dangling` cuenta los flujos cuyo origen o destino no corresponde a ningún nodo. Conviene vigilarlo como medida de calidad del diagrama.
+- **Etapas por geometría.** Una actividad fuera de todos los grupos queda sin etapa. Depende de la posición visual en el diagrama.
+- **Duplicación.** `flujo_procesal_alertas.html` replica parte de la lógica de alertas fuera del módulo. Conviene decidir si se integra en `workflow.html` o se retira.
 
 ## Dimensiones de validación
 
@@ -272,6 +287,14 @@ python storage/digitalShadow/tools/scraper_cj.py --verificar <run_id>      # re-
 
 Este proyecto está subido a:
 https://github.com/patmic/LegalTechGov.git
+
+## Estado del proyecto (noviembre 2026)
+
+- **Versión commiteada:** `df02605` (17 sep 2026), rama `main`.
+- **Cambios sin commit:** datos regenerados (`MALTG_ontology.json`, `MALTG_ontologyInfo.json`, `bitacora.json`, `salud_global_cache.json`, `SDT_CJ.json`) y 6 corridas de captura Digital Shadow nuevas (oct–nov 2026).
+- **Validación contra gold standard:** 55 anotaciones, exactitud de mapeo 0.855, F1 macro 0.621. Varias clases tienen pocas muestras, así que sus métricas son inestables.
+- **Pendiente:** separar `backend/main.py` en módulos internos, según `ARCHITECTURE_PROPOSAL.md`.
+- **Inconsistencia de versión:** la etiqueta de `docker-compose.yml` dice `2.5.0` y `/api/health` responde `3.0.0`.
 
 ## CMD 
 

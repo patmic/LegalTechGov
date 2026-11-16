@@ -1,0 +1,178 @@
+{
+  "run_id": "DS_funcionjudicial_20261007_161625",
+  "captured_at": "2026-10-07T16:16:46Z",
+  "domain": "funcionjudicial",
+  "sdt_file": "/digitalShadow/DS_funcionjudicial_20261007.json",
+  "user_agent": "MALTG-SDT-Auditor/1.0 (+legaltech-governance-scraper; protocolo v1)",
+  "seed_file": "/digitalShadow/scraping/sources_semilla.json",
+  "protocol": "/digitalShadow/PROTOCOLO.md",
+  "n_total": 11,
+  "n_ok": 11,
+  "entries": [
+    {
+      "slug": "portal_cj",
+      "label": "Portal CJ",
+      "url": "https://www.funcionjudicial.gob.ec/",
+      "ok": true,
+      "status": 200,
+      "bytes": 400000,
+      "sha256": "6ef30c45ae6cbccb9785e228b60e50abcbd7bd516b53893a4762b9755e70e833",
+      "file": "DS_funcionjudicial_20261007_161625/portal_cj.html",
+      "ms": 206,
+      "captured_at": "2026-10-07T16:16:25Z",
+      "dimensiones": [
+        "D2"
+      ]
+    },
+    {
+      "slug": "satje_spa",
+      "label": "SATJE Consulta de Procesos (SPA v4.0.1)",
+      "url": "https://procesosjudiciales.funcionjudicial.gob.ec/busqueda",
+      "ok": true,
+      "status": 200,
+      "bytes": 79412,
+      "sha256": "724242db3cb2ac0dda4feefebe115bdb1f8b4cd9a389e5213d550098c522a66d",
+      "file": "DS_funcionjudicial_20261007_161625/satje_spa.html",
+      "ms": 298,
+      "captured_at": "2026-10-07T16:16:26Z",
+      "dimensiones": [
+        "D2"
+      ]
+    },
+    {
+      "slug": "esatje_ogje",
+      "label": "e-SATJE 2020 (OGJE)",
+      "url": "https://www.funcionjudicial.gob.ec/satje/",
+      "ok": true,
+      "status": 200,
+      "bytes": 400000,
+      "sha256": "bf36138e1bd9616e09d9a4815c1120f6dfc2e96c332efd9c446323f0d6f45892",
+      "file": "DS_funcionjudicial_20261007_161625/esatje_ogje.html",
+      "ms": 324,
+      "captured_at": "2026-10-07T16:16:26Z",
+      "dimensiones": [
+        "D2"
+      ]
+    },
+    {
+      "slug": "plan_estrategico_2026_2031",
+      "label": "Plan Estrategico 2026-2031",
+      "url": "https://www.funcionjudicial.gob.ec/el-pleno-aprueba-el-plan-estrategico-2026-2031-para-transformar-la-funcion-judicial/",
+      "ok": true,
+      "status": 200,
+      "bytes": 338137,
+      "sha256": "e150742f0395813569ce885dd1e1f68f025343a84a1415d2555a188aeb2e46a4",
+      "file": "DS_funcionjudicial_20261007_161625/plan_estrategico_2026_2031.html",
+      "ms": 879,
+      "captured_at": "2026-10-07T16:16:27Z",
+      "dimensiones": [
+        "D3"
+      ]
+    },
+    {
+      "slug": "inversion_transf_digital",
+      "label": "Inversion en transformacion digital / infra obsoleta",
+      "url": "https://www.funcionjudicial.gob.ec/consejo-de-la-judicatura-prioriza-inversion-en-la-transformacion-digital-repotenciacion-de-la-infraestructura-y-combate-a-la-impunidad/",
+      "ok": true,
+      "status": 200,
+      "bytes": 338674,
+      "sha256": "2e5eed0f46c8b31d711d30c29c986062a49f7f776c2defea92f99b20217ac96c",
+      "file": "DS_funcionjudicial_20261007_161625/inversion_transf_digital.html",
+      "ms": 3337,
+      "captured_at": "2026-10-07T16:16:30Z",
+      "dimensiones": [
+        "D3"
+      ]
+    },
+    {
+      "slug": "iso37001_sgas",
+      "label": "ISO 37001 Antisoborno (SGAS)",
+      "url": "https://www.funcionjudicial.gob.ec/sistema-de-gestion-antisoborno-de-acuerdo-a-la-norma-iso-37001/",
+      "ok": true,
+      "status": 200,
+      "bytes": 366700,
+      "sha256": "4a6f9d8683ca15249d5d4c8b9bbc63f40df1b417493c20a846f6aa2fca03380d",
+      "file": "DS_funcionjudicial_20261007_161625/iso37001_sgas.html",
+      "ms": 4198,
+      "captured_at": "2026-10-07T16:16:34Z",
+      "dimensiones": [
+        "D4"
+      ]
+    },
+    {
+      "slug": "modernizacion_disciplinario",
+      "label": "Modernizacion del sistema disciplinario",
+      "url": "https://www.funcionjudicial.gob.ec/consejo-de-la-judicatura-modernizara-su-sistema-disciplinario-con-plataforma-de-ultima-generacion-y-controles-de-seguridad/",
+      "ok": true,
+      "status": 200,
+      "bytes": 338753,
+      "sha256": "99c4b7453088f061560cb88ba378291d69d10b5ab0ba0b24f6b38fd004c98e4f",
+      "file": "DS_funcionjudicial_20261007_161625/modernizacion_disciplinario.html",
+      "ms": 4041,
+      "captured_at": "2026-10-07T16:16:38Z",
+      "dimensiones": [
+        "D4"
+      ]
+    },
+    {
+      "slug": "plan_integridad_2024_2028",
+      "label": "Plan Nacional de Integridad Publica 2024-2028",
+      "url": "https://www.funcionjudicial.gob.ec/consejo-de-la-judicatura-se-adhiere-al-plan-nacional-de-integridad-publica-y-lucha-contra-la-corrupcion-2024-2028/",
+      "ok": true,
+      "status": 200,
+      "bytes": 338791,
+      "sha256": "f555315296af153bc80ab1da4b228ee8f21dade208c89ad0749f83aa35f9543e",
+      "file": "DS_funcionjudicial_20261007_161625/plan_integridad_2024_2028.html",
+      "ms": 2664,
+      "captured_at": "2026-10-07T16:16:41Z",
+      "dimensiones": [
+        "D4"
+      ]
+    },
+    {
+      "slug": "justicia_abierta",
+      "label": "Justicia Abierta — datos abiertos judiciales",
+      "url": "https://www.funcionjudicial.gob.ec/consejo-de-la-judicatura-trabaja-en-el-portal-unico-de-datos-abiertos-y-estadistica-judicial-justicia-abierta-transparentando-la-informacion-para-combatir-la-corrupcion/",
+      "ok": true,
+      "status": 200,
+      "bytes": 336662,
+      "sha256": "849427173e0d60341daa9edf5917d5289a8c332482ff4e81ab135fc2301a5307",
+      "file": "DS_funcionjudicial_20261007_161625/justicia_abierta.html",
+      "ms": 1252,
+      "captured_at": "2026-10-07T16:16:42Z",
+      "dimensiones": [
+        "D1"
+      ]
+    },
+    {
+      "slug": "ckan_datosabiertos_cj",
+      "label": "Datos Abiertos Ecuador (CKAN) — organizacion CJ",
+      "url": "https://datosabiertos.gob.ec/dataset/?organization=cj",
+      "ok": true,
+      "status": 200,
+      "bytes": 21834,
+      "sha256": "ea4154e1ed43e085eb7e239fcbc5252998ccd7f3115768265858fed760acd592",
+      "file": "DS_funcionjudicial_20261007_161625/ckan_datosabiertos_cj.html",
+      "ms": 3068,
+      "captured_at": "2026-10-07T16:16:45Z",
+      "dimensiones": [
+        "D1"
+      ]
+    },
+    {
+      "slug": "portal_estadisticas",
+      "label": "Portal de Estadisticas Judiciales",
+      "url": "https://fsweb.funcionjudicial.gob.ec/estadisticas/datoscj/portalestadistica.html",
+      "ok": true,
+      "status": 200,
+      "bytes": 34799,
+      "sha256": "5dddde8d7bf4635d29e27aa5c60cb88dfdb5342acc2ff4780414495b8c3c254e",
+      "file": "DS_funcionjudicial_20261007_161625/portal_estadisticas.html",
+      "ms": 191,
+      "captured_at": "2026-10-07T16:16:46Z",
+      "dimensiones": [
+        "D1"
+      ]
+    }
+  ]
+}
