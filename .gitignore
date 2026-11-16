@@ -1,4 +1,3 @@
-pat_paper/
 .claude/
 
 # Python bytecode
@@ -8,3 +7,5 @@ __pycache__/
 # Copias/backups de datos
 *" - Copy".json
 *.bak
+
+.papers/
